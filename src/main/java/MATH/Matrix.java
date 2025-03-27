@@ -89,6 +89,7 @@ public class Matrix {
      * Add to a matrix another. Note: Matrix can be summed only if their dimensions are equal
      *
      * @param other A matrix that will be added to the matrix that its being applied this function
+     * @throws IllegalArgumentException when dimensions of the matrices are not the same
      * @return a new Matrix result of the addition from origin Matrix and other Matrix
      */
     public Matrix add(Matrix other) {
@@ -99,6 +100,26 @@ public class Matrix {
         for (int i=0;i<rows;i++){
             for (int j=0;j<cols;j++){
                 result.data[i][j] = data[i][j] + other.data[i][j];
+            }
+        }
+        return result;
+    }
+
+    /**
+     *  From an origin matrix subtracts another. Note: Matrix can be subtracted only if their dimensions are equal
+     *
+     * @param other A matrix that will be subtracted to the matrix that its being applied this function
+     * @throws IllegalArgumentException when dimensions of the matrices are not the same
+     * @return a new Matrix result of the subtraction from origin Matrix and other Matrix
+     */
+    public Matrix sub(Matrix other) {
+        if (this.rows != other.rows || this.cols != other.cols){
+            throw new IllegalArgumentException("Cannot Subtract Matrices of distinct dimensions");
+        }
+        Matrix result = new Matrix(rows, cols);
+        for (int i=0;i<rows;i++){
+            for (int j=0;j<cols;j++){
+                result.data[i][j] = data[i][j] - other.data[i][j];
             }
         }
         return result;
