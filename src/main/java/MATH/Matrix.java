@@ -126,6 +126,30 @@ public class Matrix {
     }
 
     /**
+     * Multiply two matrices. Note: A matrix multiplication: (a b) x (1 2)= (a1+b3, a2+b4)
+     *                                                       (c d)   (3 4)= (c1+d3, c2+d4)
+     * @param other Another matrix that will be multiplied by origin matrix
+     * @return a Matrix object result of the multiplication
+     */
+    public Matrix multiply(Matrix other) {
+        if (this.rows != other.rows || this.cols != other.cols){
+            throw new IllegalArgumentException("Cannot Subtract Matrices of distinct dimensions");
+        }
+        Matrix result = new Matrix(rows, cols);
+        for (int i=0;i<this.rows;i++){
+            for (int j=0;j<other.cols;j++){
+                double sum = 0;
+                for (int k=0;k<this.cols;i++) {
+                    sum += data[i][k] * other.data[k][j];
+                }
+                result.data[i][j] = sum;
+            }
+        }
+        return result;
+    }
+
+
+    /**
      * Checks if a Matrix is squared by comparing rows and cols
      *
      * @return True if rows and columns are the same number and False otherwise
