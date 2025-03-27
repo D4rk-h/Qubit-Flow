@@ -60,13 +60,14 @@ public class Matrix {
      *
      * @param row element row index
      * @param col element col index
-     * @return a double, the element that is where the indexes are pointing
+     * @param newValue new value that the certain element position being accessed will have
+     * @throws IndexOutOfBoundsException if index is out of bounds
      */
-    public double set(int row, int col){
+    public void set(int row, int col, double newValue){
         if (row < 0 || row >= rows || col < 0 || col>= cols){
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        return data[row][col];
+        data[row][col] = newValue;
     }
 
     /**
@@ -74,6 +75,7 @@ public class Matrix {
      *
      * @param row element row index
      * @param col element col index
+     * @throws IndexOutOfBoundsException if index is out of bounds
      * @return a double, the element that is where the indexes are pointing
      */
     public double get(int row, int col){
