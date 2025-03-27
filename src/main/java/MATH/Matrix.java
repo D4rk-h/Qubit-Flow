@@ -147,7 +147,7 @@ public class Matrix {
         }
         return result;
     }
-
+    // Todo scalar_multiply and transpose methods
 
     /**
      * Checks if a Matrix is squared by comparing rows and cols
