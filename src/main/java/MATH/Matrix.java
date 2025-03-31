@@ -2,6 +2,7 @@ package MATH;
 
 public class Matrix {
     private final double[][] data;
+    private final Complex[][] complexData;
     private final int rows;
     private final int cols;
     /**
@@ -17,6 +18,27 @@ public class Matrix {
         this.rows = rows;
         this.cols = cols;
         this.data = new double[rows][cols];
+        this.complexData = new Complex[rows][cols];
+    }
+
+    /**
+     * Constructs a new matrix from a 2D Complex numbers (tuples with real and imaginary parts) array.
+     * @param data: The 2D Complex array acting as a Matrix
+     * @throws IllegalArgumentException: If array is empty or has negative dimensions
+     */
+    public Matrix(Complex[][] data){
+        if (data == null ||data.length == 0 || data[0].length == 0){
+            throw new IllegalArgumentException("Matrix is empty.");
+        }
+        this.rows = data.length;
+        this.cols = data[0].length;
+        this.complexData = new Complex[rows][cols];
+        for (int i = 0; i < rows; i ++ ){
+            if (data[i].length != cols){
+                throw new IllegalArgumentException("Inconsistent matrix. e.g. 2x3, 2x1...");
+            }
+            System.arraycopy(data[i], 0, this.complexData[i], 0, cols);
+        }
     }
 
     /**
@@ -147,14 +169,84 @@ public class Matrix {
         }
         return result;
     }
-    // Todo scalar_multiply and transpose methods
 
     /**
-     * Checks if a Matrix is squared by comparing rows and cols
+     * Multiplies a Matrix by a scalar number
      *
-     * @return True if rows and columns are the same number and False otherwise
+     * @param lambda: An integer number that multiplies a Matrix
+     * @return a Matrix result of the multiplication of the Matrix by a scalar
      */
-    public boolean isSquared(){
-        return rows == cols;
+    public Matrix multiply(double lambda){
+        Matrix result = new Matrix(rows, cols);
+        int i;
+        for (i=0;i<rows;i++) {
+            for (int j=0;j<cols;j++) {
+                result.data[i][j] = lambda * this.data[i][j];
+            }
+        }
+        return result;
     }
+
+//    /**
+//     * Todo FUTURE CHANGES BASING ON COMPLEX CLASS DEVELOP
+//     * Multiplies a Matrix by a scalar number
+//     *
+//     * @param lambda: A Complex number that multiplies a Matrix
+//     * @return a Matrix result of the multiplication of the Matrix by a scalar
+//     */
+//    public Matrix multiply(Complex lambda){
+//        Matrix result = new Matrix(rows, cols);
+//        int i;
+//        for (i=0;i<rows;i++) {
+//            for (int j=0;j<cols;j++) {
+//                result.complexData[i][j] = lambda[i] * this.data[i][j] ;
+//            }
+//        }
+//        return result;
+//    }
+
+
+    /**
+     * Sets the rows to columns and vice versa
+     *
+     * @return : Transposed matrix (rows by columns and columns by rows)
+     * @trows: InvalidT
+     */
+    public Matrix transpose() {
+        if (this.rows <= 0 || this.cols <= 0) {
+            throw new IllegalArgumentException("Matrix is empty...");
+        }
+        int i;
+        int j;
+        Matrix result = new Matrix(rows, cols);
+        for (i=0;i<this.rows;i++) {
+            for (j=0;j<this.cols;j++){
+                result.data[j][i] = this.data[i][j];
+            }
+        }
+        return result;
+    }
+
+// Todo MATRIX INVERSE, DETERMINANTS (SARRUS, ...)
+
+
+//    /**
+//     * Checks if a Matrix is squared by comparing rows and cols
+//     *
+//     * @return True if rows and columns are the same number and False otherwise
+//     */
+//    public boolean isSquared(){
+//        return rows == cols;
+//    }
+//
+//    public Matrix inverse() {
+//        Matrix result = new Matrix(rows, cols);
+//        int i, j;
+//        for (i=0;i<rows;i++) {
+//            for (j=0;j<cols;j++) {
+//
+//            }
+//        }
+//        return result;
+//    }
 }
