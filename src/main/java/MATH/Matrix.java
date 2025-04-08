@@ -2,8 +2,8 @@ package MATH;
 
 public class Matrix {
     private final double[][] data;
-    private final Complex[][] complexData;
     private final int rows;
+    private static final double EPSILON = 1e-10;
     private final int cols;
     /**
      * Constructs a new matrix object with a given number of rows and columns, initialized to 0
@@ -18,27 +18,6 @@ public class Matrix {
         this.rows = rows;
         this.cols = cols;
         this.data = new double[rows][cols];
-        this.complexData = new Complex[rows][cols];
-    }
-
-    /**
-     * Constructs a new matrix from a 2D Complex numbers (tuples with real and imaginary parts) array.
-     * @param data: The 2D Complex array acting as a Matrix
-     * @throws IllegalArgumentException: If array is empty or has negative dimensions
-     */
-    public Matrix(Complex[][] data){
-        if (data == null ||data.length == 0 || data[0].length == 0){
-            throw new IllegalArgumentException("Matrix is empty.");
-        }
-        this.rows = data.length;
-        this.cols = data[0].length;
-        this.complexData = new Complex[rows][cols];
-        for (int i = 0; i < rows; i ++ ){
-            if (data[i].length != cols){
-                throw new IllegalArgumentException("Inconsistent matrix. e.g. 2x3, 2x1...");
-            }
-            System.arraycopy(data[i], 0, this.complexData[i], 0, cols);
-        }
     }
 
     /**
@@ -201,7 +180,7 @@ public class Matrix {
 //            for (int j=0;j<cols;j++) {
 //                result.complexData[i][j] = lambda[i] * this.data[i][j] ;
 //            }
-//        }
+//
 //        return result;
 //    }
 
@@ -227,26 +206,131 @@ public class Matrix {
         return result;
     }
 
-// Todo MATRIX INVERSE, DETERMINANTS (SARRUS, ...)
+    /**
+     * Calculates the determinant of the matrix.
+     * Uses Laplace (cofactor) expansion.
+     *
+     * @return The determinant of the matrix.
+     * @throws IllegalStateException if the matrix is not square.
+     */
+    public double determinant() {
+        if (rows != cols) {
+            throw new IllegalStateException("Determinant can only be calculated for square matrices. Got " + rows + "x" + cols);
+        }
+        if (rows == 0) {
+            return 1.0;
+        }
+        return calculateDeterminant(this.data);
+    }
 
+    /**
+     * Recursive helper function to calculate the determinant.
+     *
+     * @param matrixData The 2D array representing the current matrix or submatrix.
+     * @return The determinant of the given matrix data.
+     */
+    private double calculateDeterminant(double[][] matrixData) {
+        int n = matrixData.length;
+        if (n == 1) {
+            return matrixData[0][0];
+        }
+        if (n == 2) {
+            return matrixData[0][0] * matrixData[1][1] - matrixData[0][1] * matrixData[1][0];
+        }
+        double det = 0;
+        for (int j = 0; j < n; j++) {
+            double[][] submatrix = createSubmatrix(matrixData, 0, j);
+            double cofactor = Math.pow(-1, j) * matrixData[0][j] * calculateDeterminant(submatrix);
+            det += cofactor;
+        }
 
-//    /**
-//     * Checks if a Matrix is squared by comparing rows and cols
-//     *
-//     * @return True if rows and columns are the same number and False otherwise
-//     */
-//    public boolean isSquared(){
-//        return rows == cols;
-//    }
-//
-//    public Matrix inverse() {
-//        Matrix result = new Matrix(rows, cols);
-//        int i, j;
-//        for (i=0;i<rows;i++) {
-//            for (j=0;j<cols;j++) {
-//
-//            }
-//        }
-//        return result;
-//    }
+        return det;
+    }
+
+    /**
+     * Creates a submatrix by removing a certain row or column
+     *
+     * @param originalData The matrix data to create the submatrix
+     * @param rowToRemove  The index of the row to remove
+     * @param colToRemove  The index of the column to remove
+     * @return A new 2D array representing the submatrix
+     */
+    private double[][] createSubmatrix(double[][] originalData, int rowToRemove, int colToRemove) {
+        int n = originalData.length;
+        double[][] submatrix = new double[n - 1][n - 1];
+        int subRow = 0;
+        for (int r = 0; r < n; r++) {
+            if (r == rowToRemove) {
+                continue;
+            }
+            int subCol = 0;
+            for (int c = 0; c < n; c++) {
+                if (c == colToRemove) {
+                    continue;
+                }
+                submatrix[subRow][subCol] = originalData[r][c];
+                subCol++;
+            }
+            subRow++;
+        }
+        return submatrix;
+    }
+
+    /**
+     * Checks if a Matrix is squared by comparing rows and cols
+     *
+     * @return True if rows and columns are the same number and False otherwise
+     */
+    public boolean isSquared(){
+        return rows == cols;
+    }
+
+    /**
+     * Calculates the inverse of the matrix.
+     * Uses the formula: inverse(A) = (1/det(A)) * adj(A)
+     * where adj(A) is the adjugate matrix (transpose of the cofactor matrix).
+     *
+     * @return A new Matrix object representing the inverse.
+     * @throws IllegalStateException if the matrix is not square or is singular (determinant is zero).
+     */
+    public Matrix inverse() {
+        if (rows != cols) {
+            throw new IllegalStateException("Matrix must be square to calculate inverse. Got " + rows + "x" + cols);
+        }
+        int n = rows;
+        if (n == 0) {
+            throw new IllegalStateException("Cannot invert a 0x0 matrix.");
+        }
+        double det = determinant();
+        if (Math.abs(det) < EPSILON) {
+            throw new IllegalStateException("Matrix is singular (determinant is approximately zero), cannot calculate inverse.");
+        }
+        if (n == 1) {
+            return new Matrix(new double[][]{{1.0 / data[0][0]}});
+        }
+        double[][] cofactorData = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                double[][] minor = createSubmatrix(this.data, i, j);
+                double minorDet = calculateDeterminant(minor);
+                double sign = ((i + j) % 2 == 0) ? 1.0 : -1.0;
+                cofactorData[i][j] = sign * minorDet;
+            }
+        }
+        double[][] adjugateData = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                adjugateData[j][i] = cofactorData[i][j];
+            }
+        }
+        double[][] inverseData = new double[n][n];
+        double invDet = 1.0 / det;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                inverseData[i][j] = invDet * adjugateData[i][j];
+            }
+        }
+        return new Matrix(inverseData);
+    }
+
 }
