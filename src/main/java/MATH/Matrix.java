@@ -5,6 +5,7 @@ public class Matrix {
     private final int rows;
     private static final double EPSILON = 1e-10;
     private final int cols;
+    private Complex[][] complexData;
     /**
      * Constructs a new matrix object with a given number of rows and columns, initialized to 0
     * @param rows: The number of rows that matrix has
@@ -19,6 +20,7 @@ public class Matrix {
         this.cols = cols;
         this.data = new double[rows][cols];
     }
+
 
     /**
      * Constructs a new matrix from a 2D double array.
@@ -39,6 +41,7 @@ public class Matrix {
             System.arraycopy(data[i], 0, this.data[i], 0, cols);
         }
     }
+
 
     /**
      * Get the number of columns of the matrix
@@ -165,6 +168,7 @@ public class Matrix {
         }
         return result;
     }
+
 
 //    /**
 //     * Todo FUTURE CHANGES BASING ON COMPLEX CLASS DEVELOP
