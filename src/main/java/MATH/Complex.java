@@ -1,17 +1,32 @@
 package MATH;
 
 public class Complex {
-    private final double real;
-    private final double imaginary;
+    private double real;
+    private double imaginary;
 
     public Complex(double real_part, double imaginary_part) {
         real = real_part;
         imaginary = imaginary_part;
     }
 
+    public double getRealPart(){
+        return real;
+    }
+
+    public double getImaginaryPart(){
+        return imaginary;
+    }
+
+    public void setRealPart(double newRealPart){
+        real = newRealPart;
+    }
+
+    public void setImaginaryPart(double newImaginaryPart){
+        imaginary = newImaginaryPart;
+    }
+
     /**
      * Finds the magnitude of a complex number using hypotenuse from Math library
-     *
      * The magnitude can be calculated by:
      *              |z| = x^2 + y^2, where:
      * z = x + iy is a complex number, and x and y are real numbers
