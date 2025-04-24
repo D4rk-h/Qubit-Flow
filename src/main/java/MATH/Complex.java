@@ -3,10 +3,12 @@ package MATH;
 public class Complex {
     private double real;
     private double imaginary;
+    private String istringpart;
 
-    public Complex(double real_part, double imaginary_part) {
+    public Complex(double real_part, double imaginary_part, String i_string_part) {
         real = real_part;
         imaginary = imaginary_part;
+        istringpart = i_string_part;
     }
 
     public double getRealPart(){
@@ -15,6 +17,14 @@ public class Complex {
 
     public double getImaginaryPart(){
         return imaginary;
+    }
+
+    public String getFullImaginaryPart() {
+        return getImaginaryPart() + getIStringPart();
+    }
+
+    public String getIStringPart(){
+        return istringpart;
     }
 
     public void setRealPart(double newRealPart){
@@ -42,7 +52,78 @@ public class Complex {
     *
     * @return : A new Complex Object with the double number as real part and 0 as imaginary part
     */
+
+
+    /**
+     * Convert a double number to a Complex with imaginary part = 0
+     * @param number a certain double number.
+     * @return a new Complex object with real part = number
+     * and imaginary part = 0
+     */
     public Complex toComplex(double number) {
-        return new Complex(number, 0);
+        return new Complex(number, 0, "");
+    }
+
+
+    /**
+     * Addition of Complex Numbers:
+     * Given: zj = a + bi and zjj = c + di then
+     * zj + zjj = (a + c) + (b + d)i
+     * @param number: Complex number we are adding to another Complex number
+     * @return A new Complex number fruit of the addition.
+     * @throws IllegalArgumentException when number is null
+     */
+    public Complex add(Complex number){
+        if (number == null) {
+            throw new IllegalArgumentException("Number given is null");
+        }
+        double realAddition = this.getRealPart() + number.getRealPart();
+        double imaginaryAddition = this.getImaginaryPart() + number.getImaginaryPart();
+        if (imaginaryAddition == 0) return new Complex(realAddition, imaginaryAddition, "");
+        if (number.getIStringPart().isEmpty()) return new Complex(realAddition, imaginaryAddition, this.getIStringPart());
+        return new Complex(realAddition, imaginaryAddition, number.getIStringPart());
+    }
+
+
+    /**
+     * Addition of Complex Numbers:
+     * Given: zj = a - bi and zjj = c - di then
+     * zj - zjj = (a - c) + (b - d)i
+     * @param number: Complex number we are adding to another Complex number
+     * @return A new Complex number fruit of the addition.
+     * @throws IllegalArgumentException when number is null
+     */
+    public Complex subtract(Complex number){
+        double realSubtraction = this.getRealPart() - number.getRealPart();
+        double imaginarySubtraction = this.getImaginaryPart() - number.getImaginaryPart();
+        if (imaginarySubtraction == 0) return new Complex(realSubtraction, imaginarySubtraction, "");
+        if (number.getIStringPart().isEmpty()) return new Complex(realSubtraction, imaginarySubtraction, this.getIStringPart());
+        return new Complex(realSubtraction, imaginarySubtraction, number.getIStringPart());
+    }
+
+
+    /**Todo Create a form to successfully multiply complex numbers
+     * Addition of Complex Numbers:
+     * Given: zj = a + bi and zjj = c + di then
+     * zj * zjj = (ac-bd)+i(ad+bc)
+     * @param number: Complex number we are adding to another Complex number
+     * @return A new Complex number fruit of the addition.
+     * @throws IllegalArgumentException when number is null
+     */
+    public Complex multiply(Complex number){
+        return null;
+    }
+
+
+    /**
+     * Formatting Complex parts to look how a real Complex numbers
+     *
+     * @return formatted numbers given certain conditions.
+     */
+    public String toString() {
+        if (real == 0) return imaginary + "i";
+        if (imaginary == 0) return real + "";
+        if (imaginary <  0) return real + " - " + (-imaginary) + "i";
+        return real + " + " + imaginary + "i";
     }
 }
