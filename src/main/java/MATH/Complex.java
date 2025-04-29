@@ -48,13 +48,6 @@ public class Complex {
     public double magnitude() {return Math.hypot(real, imaginary);}
 
     /**
-    * Sets a double number (element of a matrix) to Complex with im part as 0
-    *
-    * @return : A new Complex Object with the double number as real part and 0 as imaginary part
-    */
-
-
-    /**
      * Convert a double number to a Complex with imaginary part = 0
      * @param number a certain double number.
      * @return a new Complex object with real part = number
@@ -102,16 +95,32 @@ public class Complex {
     }
 
 
-    /**Todo Create a form to successfully multiply complex numbers
+    /**
      * Addition of Complex Numbers:
      * Given: zj = a + bi and zjj = c + di then
      * zj * zjj = (ac-bd)+i(ad+bc)
-     * @param number: Complex number we are adding to another Complex number
+     * @param number: Complex number we are multiplying to another Complex number
      * @return A new Complex number fruit of the addition.
      * @throws IllegalArgumentException when number is null
      */
     public Complex multiply(Complex number){
-        return null;
+        double a = number.getRealPart();
+        double b = number.getImaginaryPart();
+        double d = this.getImaginaryPart();
+        double c = this.getRealPart();
+        if (this.getFullImaginaryPart().contains("i") && number.getFullImaginaryPart().contains("i")) {
+            double newRealPart = (a * c - b * d);
+            double newImaginaryPart = (a * d + b * c);
+            return new Complex(newRealPart, newImaginaryPart, "i");
+        } else if (!number.getFullImaginaryPart().contains("i")) {
+            double newRealPart = a * c;
+            double newImaginaryPart = b * c;
+            return new Complex(newRealPart, newImaginaryPart, "i");
+        } else {
+            double newRealPart = a * c;
+            double newImaginaryPart = a * d;
+            return new Complex(newRealPart, newImaginaryPart, "i");
+        }
     }
 
 
