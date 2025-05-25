@@ -88,17 +88,13 @@ public class Complex {
      * @param lambda A double number that scales a Complex numbers
      * @return a new scaled Complex number.
      */
-    public Complex scalar(double lambda) {return new Complex(this.real * lambda, this.imaginary * lambda, this.getIStringPart());}
+    public Complex scalar(double lambda) {return new Complex(this.real * lambda, this.imaginary * lambda);}
 
     /**
      * Formatting Complex parts to look how a real Complex numbers
      *
      * @return formatted numbers given certain conditions.
      */
-    public String toString() {
-        if (real == 0) return imaginary + "i";
-        if (imaginary == 0) return real + "";
-        if (imaginary <  0) return real + " - " + (-imaginary) + "i";
-        return real + " + " + imaginary + "i";
+    public String toString() {if (real == 0) return imaginary + "i"; if (imaginary == 0) return real + ""; if (imaginary <  0) return real + " - " + (-imaginary) + "i";return real + " + " + imaginary + "i";
     }
 }
