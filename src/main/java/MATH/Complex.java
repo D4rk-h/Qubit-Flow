@@ -79,9 +79,7 @@ public class Complex {
      * @throws IllegalArgumentException when number is null
      */
     public Complex multiply(Complex number){
-        //todo Think of other way to code this basing on check if imaginary part == 0
-        // then not i and if not i: scalar() (scalar * real, scalar*imaginary)
-        return new Complex(this.real * number.real, this.imaginary * number.imaginary, "i");
+        return new Complex(this.real * number.real, this.imaginary * number.imaginary);
     }
 
     /**
