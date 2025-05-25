@@ -51,9 +51,7 @@ public class Complex {
         }
         double realAddition = this.getRealPart() + number.getRealPart();
         double imaginaryAddition = this.getImaginaryPart() + number.getImaginaryPart();
-        if (imaginaryAddition == 0) return new Complex(realAddition, imaginaryAddition, "");
-        if (number.getIStringPart().isEmpty()) return new Complex(realAddition, imaginaryAddition, this.getIStringPart());
-        return new Complex(realAddition, imaginaryAddition, number.getIStringPart());
+        return new Complex(realAddition, imaginaryAddition);
     }
 
 
