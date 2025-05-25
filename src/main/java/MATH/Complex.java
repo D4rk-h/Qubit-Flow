@@ -3,12 +3,10 @@ package MATH;
 public class Complex {
     private double real;
     private double imaginary;
-    private String istringpart;
 
-    public Complex(double real_part, double imaginary_part, String i_string_part) {
+    public Complex(double real_part, double imaginary_part) {
         real = real_part;
         imaginary = imaginary_part;
-        istringpart = i_string_part;
     }
 
     public double getRealPart(){
@@ -17,14 +15,6 @@ public class Complex {
 
     public double getImaginaryPart(){
         return imaginary;
-    }
-
-    public String getFullImaginaryPart() {
-        return getImaginaryPart() + getIStringPart();
-    }
-
-    public String getIStringPart(){
-        return istringpart;
     }
 
     public void setRealPart(double newRealPart){
@@ -46,17 +36,6 @@ public class Complex {
      * @return a double number that corresponds to the magnitude of that complex number.
      */
     public double magnitude() {return Math.hypot(real, imaginary);}
-
-    /**
-     * Convert a double number to a Complex with imaginary part = 0
-     * @param number a certain double number.
-     * @return a new Complex object with real part = number
-     * and imaginary part = 0
-     */
-    public Complex toComplex(double number) {
-        return new Complex(number, 0, "");
-    }
-
 
     /**
      * Addition of Complex Numbers:
@@ -104,25 +83,18 @@ public class Complex {
      * @throws IllegalArgumentException when number is null
      */
     public Complex multiply(Complex number){
-        double a = number.getRealPart();
-        double b = number.getImaginaryPart();
-        double d = this.getImaginaryPart();
-        double c = this.getRealPart();
-        if (this.getFullImaginaryPart().contains("i") && number.getFullImaginaryPart().contains("i")) {
-            double newRealPart = (a * c - b * d);
-            double newImaginaryPart = (a * d + b * c);
-            return new Complex(newRealPart, newImaginaryPart, "i");
-        } else if (!number.getFullImaginaryPart().contains("i")) {
-            double newRealPart = a * c;
-            double newImaginaryPart = b * c;
-            return new Complex(newRealPart, newImaginaryPart, "i");
-        } else {
-            double newRealPart = a * c;
-            double newImaginaryPart = a * d;
-            return new Complex(newRealPart, newImaginaryPart, "i");
-        }
+        //todo Think of other way to code this basing on check if imaginary part == 0
+        // then not i and if not i: scalar() (scalar * real, scalar*imaginary)
+        return new Complex(this.real * number.real, this.imaginary * number.imaginary, "i");
     }
 
+    /**
+     * This function scales a Complex number with a double
+     *
+     * @param lambda A double number that scales a Complex numbers
+     * @return a new scaled Complex number.
+     */
+    public Complex scalar(double lambda) {return new Complex(this.real * lambda, this.imaginary * lambda, this.getIStringPart());}
 
     /**
      * Formatting Complex parts to look how a real Complex numbers
