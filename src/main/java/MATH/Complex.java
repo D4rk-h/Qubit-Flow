@@ -66,9 +66,7 @@ public class Complex {
     public Complex subtract(Complex number){
         double realSubtraction = this.getRealPart() - number.getRealPart();
         double imaginarySubtraction = this.getImaginaryPart() - number.getImaginaryPart();
-        if (imaginarySubtraction == 0) return new Complex(realSubtraction, imaginarySubtraction, "");
-        if (number.getIStringPart().isEmpty()) return new Complex(realSubtraction, imaginarySubtraction, this.getIStringPart());
-        return new Complex(realSubtraction, imaginarySubtraction, number.getIStringPart());
+        return new Complex(realSubtraction, imaginarySubtraction);
     }
 
 
