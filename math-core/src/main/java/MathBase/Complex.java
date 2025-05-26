@@ -1,4 +1,4 @@
-package MATH;
+package MathBase;
 
 public class Complex {
     private double real;
@@ -35,7 +35,7 @@ public class Complex {
      *
      * @return a double number that corresponds to the magnitude of that complex number.
      */
-    public double magnitude() {return Math.hypot(real, imaginary);}
+    public double magnitude() {return Math.round(Math.hypot(real, imaginary));}
 
     /**
      * Addition of Complex Numbers:

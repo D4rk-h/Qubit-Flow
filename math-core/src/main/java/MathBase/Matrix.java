@@ -1,4 +1,4 @@
-package MATH;
+package MathBase;
 
 public class Matrix {
     private final double[][] data;
