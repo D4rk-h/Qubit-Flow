@@ -1,4 +1,4 @@
-package MathBase;
+package MathCore;
 
 public class Matrix {
     private final double[][] data;
@@ -170,23 +170,22 @@ public class Matrix {
     }
 
 
-//    /**
-//     * Todo FUTURE CHANGES BASING ON COMPLEX CLASS DEVELOP
-//     * Multiplies a Matrix by a scalar number
-//     *
-//     * @param lambda: A Complex number that multiplies a Matrix
-//     * @return a Matrix result of the multiplication of the Matrix by a scalar
-//     */
-//    public Matrix multiply(Complex lambda){
-//        Matrix result = new Matrix(rows, cols);
-//        int i;
-//        for (i=0;i<rows;i++) {
-//            for (int j=0;j<cols;j++) {
-//                result.complexData[i][j] = lambda[i] * this.data[i][j] ;
-//            }
-//
-//        return result;
-//    }
+    /**
+     * Multiplies a Matrix by a scalar number
+     *
+     * @param lambda: A Complex number that multiplies a Matrix
+     * @return a Matrix result of the multiplication of the Matrix by a Complex scalar number
+     */
+    public Matrix multiply(Complex lambda) {
+        Matrix result = new Matrix(rows, cols);
+        int i;
+        for (i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.complexData[i][j] = new Complex(lambda.getRealPart() * this.data[i][j], lambda.getImaginaryPart() * this.data[i][j]);
+            }
+        }
+        return result;
+    }
 
 
     /**
@@ -336,5 +335,4 @@ public class Matrix {
         }
         return new Matrix(inverseData);
     }
-
 }

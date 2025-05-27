@@ -1,4 +1,4 @@
-package MathBase;
+package MathCore;
 
 public class Complex {
     private double real;
@@ -36,6 +36,15 @@ public class Complex {
      * @return a double number that corresponds to the magnitude of that complex number.
      */
     public double magnitude() {return Math.round(Math.hypot(real, imaginary));}
+
+    /**
+    * Finds the angle in the Complex plane given a complex number
+    *
+    * @return z / |z| that is the phase operation which finds the angle that the complex number in the complex plane.
+     **/
+    public double phase() {
+        return Math.atan2(imaginary, real);
+    }
 
     /**
      * Addition of Complex Numbers:
