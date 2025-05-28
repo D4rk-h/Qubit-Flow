@@ -35,7 +35,14 @@ public class Complex {
      *
      * @return a double number that corresponds to the magnitude of that complex number.
      */
-    public double magnitude() {return Math.round(Math.hypot(real, imaginary));}
+    public double magnitude() {return Math.hypot(real, imaginary);}
+
+    /**
+     * Divides a Complex number by its magnitude to obtain a complex number of magnitude 1 but towards same direction.
+     *
+     * @return a new Complex number after the operation
+     */
+    public Complex normalize() {return new Complex(this.real/this.magnitude(), this.imaginary/this.magnitude());}
 
     /**
     * Finds the angle in the Complex plane given a complex number
