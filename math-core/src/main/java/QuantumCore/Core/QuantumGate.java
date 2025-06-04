@@ -1,4 +1,4 @@
-package QuantumCore;
+package QuantumCore.Core;
 
 import MathCore.Matrix;
 import MathCore.Complex;

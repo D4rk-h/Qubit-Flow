@@ -1,5 +1,5 @@
 package QuantumCore.QuantumPorts;
-import QuantumCore.State;
+import QuantumCore.Core.State;
 
 public interface QuantumGatePort {
     State apply(State qubit);

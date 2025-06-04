@@ -2,7 +2,7 @@ package QuantumCore.QuantumGates.ControlledGate;
 
 import MathCore.Complex;
 import MathCore.Matrix;
-import QuantumCore.QuantumGate;
+import QuantumCore.Core.QuantumGate;
 
 public abstract class ControlledXGate extends QuantumGate {
     public ControlledXGate() {

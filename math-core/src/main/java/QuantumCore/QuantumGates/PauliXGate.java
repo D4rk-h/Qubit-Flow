@@ -2,7 +2,7 @@ package QuantumCore.QuantumGates;
 
 import MathCore.Complex;
 import MathCore.Matrix;
-import QuantumCore.QuantumGate;
+import QuantumCore.Core.QuantumGate;
 
 public abstract class PauliXGate extends QuantumGate {
     public PauliXGate() {

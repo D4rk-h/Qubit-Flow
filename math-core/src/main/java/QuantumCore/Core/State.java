@@ -1,4 +1,4 @@
-package QuantumCore;
+package QuantumCore.Core;
 import MathCore.Complex;
 
 
@@ -17,7 +17,21 @@ public class State {
 
     public State(Complex[] amplitudes, int nQubits) {
         this.nQubits = nQubits;
+        if (amplitudes.length != Math.pow(2, nQubits)){
+            throw new IllegalArgumentException("Incorrect number of amplitudes");
+        }
+        if (!isNormalized(amplitudes)) {
+            throw new IllegalArgumentException("Unnormalized state");
+        }
         this.amplitudes = amplitudes;
+    }
+
+    private boolean isNormalized(Complex[] amplitudes) {
+        double sum = 0.0;
+        for (Complex amplitude : amplitudes) {
+            sum += amplitude.magnitude();
+        }
+        return Math.abs(sum - 1.0) < 1e-10;
     }
 
     public State(Complex alpha, Complex beta) {

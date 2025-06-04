@@ -1,6 +1,6 @@
 package QuantumCore.QuantumPorts;
-import QuantumCore.QuantumGate;
-import QuantumCore.State;
+import QuantumCore.Core.QuantumGate;
+import QuantumCore.Core.State;
 
 public interface QubitPort {
     int measure();
