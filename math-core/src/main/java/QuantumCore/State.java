@@ -1,25 +1,51 @@
 package QuantumCore;
 import MathCore.Complex;
 
+
 public class State {
-    private Complex alpha;
-    private Complex beta;
+    private Complex[] amplitudes;
+    private int nQubits;
+
+    public State(int nQubits) {
+        this.nQubits = nQubits;
+        this.amplitudes = new Complex[(int) Math.pow(2, nQubits)];
+        amplitudes[0] = new Complex(1.0, 0.0);
+        for (int i = 1; i<amplitudes.length;i++) {
+            amplitudes[i] = new Complex(0.0, 0.0);
+        }
+    }
+
+    public State(Complex[] amplitudes, int nQubits) {
+        this.nQubits = nQubits;
+        this.amplitudes = amplitudes;
+    }
 
     public State(Complex alpha, Complex beta) {
-        this.alpha = alpha;
-        this.beta = beta;
+        this(1);
+        amplitudes[0] = alpha;
+        amplitudes[1] = beta;
     }
 
     public Complex beta() {
-        return this.beta;
+        return amplitudes[0];
     }
     public Complex alpha() {
-        return this.alpha;
+        return amplitudes[1];
     }
-    public void setBeta(Complex beta) {
-        this.beta = beta;
+
+    public Complex[] getAmplitudes() {
+        return amplitudes;
     }
-    public void setAlpha(Complex alpha) {
-        this.alpha = alpha;
+
+    public void setAmplitudes(Complex[] amplitudes) {
+        this.amplitudes = amplitudes;
+    }
+
+    public int getNQubits() {
+        return nQubits;
+    }
+
+    public void setNQubits(int nQubits) {
+        this.nQubits = nQubits;
     }
 }

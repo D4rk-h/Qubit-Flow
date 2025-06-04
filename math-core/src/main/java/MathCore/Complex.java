@@ -95,7 +95,9 @@ public class Complex {
      * @throws IllegalArgumentException when number is null
      */
     public Complex multiply(Complex number){
-        return new Complex(this.real * number.real, this.imaginary * number.imaginary);
+        double real = this.real * number.real - this.imaginary * number.imaginary;
+        double imag = this.real * number.imaginary + this.imaginary * number.real;
+        return new Complex(real, imag);
     }
 
     /**
@@ -112,5 +114,9 @@ public class Complex {
      * @return formatted numbers given certain conditions.
      */
     public String toString() {if (real == 0) return imaginary + "i"; if (imaginary == 0) return real + ""; if (imaginary <  0) return real + " - " + (-imaginary) + "i";return real + " + " + imaginary + "i";
+    }
+
+    public static Complex exponential(double theta) {
+        return new Complex(Math.cos(theta), Math.sin(theta));
     }
 }

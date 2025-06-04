@@ -26,24 +26,18 @@ public class Qubit implements QubitPort {
         state = gate.apply(this.state);
     }
 
-    public State measure() {
+    public int measure() {
         Random random = new Random();
-        double pAlpha = state.alpha().magnitude() * state.alpha().magnitude();
+        double P0 = state.alpha().magnitude() * state.alpha().magnitude();
         double random_double = random.nextDouble(0.0, 1.0);
-        if (random_double < pAlpha) {
-            state.setAlpha(new Complex(1.0, 0.0));
-            state.setBeta(new Complex(0.0, 0.0));
+        if (random_double < P0) {
+            state = new State(new Complex(1.0, 0.0), new Complex(1.0, 0.0));
+            return 0;
         } else {
-            state.setAlpha(new Complex(0.0, 0.0));
-            state.setBeta(new Complex(1.0, 0.0));
+            state = new State(new Complex(0.0, 0.0), new Complex(1.0, 0.0));
+            return 1;
         }
-        return state;
     }
 
-    public String collapse() {
-        if (state.alpha().getRealPart() == 1.0) return "|0⟩";
-        if (state.beta().getRealPart() == 1.0) return "|1⟩";
-        return null;
-    }
 
 }

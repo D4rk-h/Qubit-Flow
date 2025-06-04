@@ -1,11 +1,9 @@
 package QuantumCore.QuantumPorts;
-
 import QuantumCore.QuantumGate;
 import QuantumCore.State;
 
 public interface QubitPort {
-    State measure();
-    String collapse();
+    int measure();
     void applyGate(QuantumGate gate);
     State getState();
 }

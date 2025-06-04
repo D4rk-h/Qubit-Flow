@@ -1,17 +1,20 @@
 package MathCore;
 
 public class Matrix {
-    private final double[][] data;
+    private double[][] data;
     private final int rows;
     private static final double EPSILON = 1e-10;
     private final int cols;
     private Complex[][] complexData;
-    /**
-     * Constructs a new matrix object with a given number of rows and columns, initialized to 0
-    * @param rows: The number of rows that matrix has
-    * @param cols: The number of columns that matrix has
-    * @throws IllegalArgumentException When rows or cols have negative values
-    **/
+    private boolean isComplex = false;
+
+    public Matrix(Complex[][] data){
+        this.complexData = data;
+        this.isComplex = true;
+        this.rows = data.length;
+        this.cols = data[0].length;
+    }
+
     public Matrix(int rows, int cols){
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("The matrix dimension cannot be built by negative numbers or 0");
@@ -136,14 +139,14 @@ public class Matrix {
      * @return a Matrix object result of the multiplication
      */
     public Matrix multiply(Matrix other) {
-        if (this.rows != other.rows || this.cols != other.cols){
+        if (this.cols != other.rows){
             throw new IllegalArgumentException("Cannot Subtract Matrices of distinct dimensions");
         }
         Matrix result = new Matrix(rows, cols);
         for (int i=0;i<this.rows;i++){
             for (int j=0;j<other.cols;j++){
                 double sum = 0;
-                for (int k=0;k<this.cols;i++) {
+                for (int k=0;k<this.cols;k++) {
                     sum += data[i][k] * other.data[k][j];
                 }
                 result.data[i][j] = sum;
@@ -152,6 +155,15 @@ public class Matrix {
         return result;
     }
 
+    public Complex[] multiplyVector(Complex[] vector) {
+        Complex[] result = new Complex[rows];
+        for (int i=0;i<rows;i++) {
+            for (int j=0;j<cols;j++) {
+                result[i] = result[i].add(complexData[i][j].multiply(vector[j]));
+            }
+        }
+        return result;
+    }
     /**
      * Multiplies a Matrix by a scalar number
      *
