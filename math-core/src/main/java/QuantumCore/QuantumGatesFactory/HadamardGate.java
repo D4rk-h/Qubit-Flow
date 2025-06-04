@@ -1,4 +1,4 @@
-package QuantumCore.QuantumGates;
+package QuantumCore.QuantumGatesFactory;
 
 import MathCore.Complex;
 import MathCore.Matrix;

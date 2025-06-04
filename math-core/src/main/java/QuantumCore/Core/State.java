@@ -29,7 +29,7 @@ public class State {
     private boolean isNormalized(Complex[] amplitudes) {
         double sum = 0.0;
         for (Complex amplitude : amplitudes) {
-            sum += amplitude.magnitude();
+            sum += amplitude.magnitude() * amplitude.magnitude();
         }
         return Math.abs(sum - 1.0) < 1e-10;
     }

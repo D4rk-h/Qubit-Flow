@@ -107,6 +107,7 @@ public class Matrix {
     public Complex[] multiplyVector(Complex[] vector) {
         Complex[] result = new Complex[rows];
         for (int i=0;i<rows;i++) {
+            result[i] = new Complex(0, 0);
             for (int j=0;j<cols;j++) {
                 result[i] = result[i].add(complexData[i][j].multiply(vector[j]));
             }
