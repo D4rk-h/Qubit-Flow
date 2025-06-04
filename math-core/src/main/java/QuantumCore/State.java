@@ -26,10 +26,10 @@ public class State {
         amplitudes[1] = beta;
     }
 
-    public Complex beta() {
+    public Complex alpha() {
         return amplitudes[0];
     }
-    public Complex alpha() {
+    public Complex beta() {
         return amplitudes[1];
     }
 
