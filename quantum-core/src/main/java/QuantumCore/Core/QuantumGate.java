@@ -1,7 +1,7 @@
 package QuantumCore.Core;
 
-import MathCore.Matrix;
 import MathCore.Complex;
+import MathCore.Matrix;
 import QuantumCore.QuantumPorts.QuantumGatePort;
 
 public abstract class QuantumGate implements QuantumGatePort {
@@ -16,7 +16,7 @@ public abstract class QuantumGate implements QuantumGatePort {
         this.name = name;
     }
 
-    public State apply(State state) {
+    public State applyTo(State state) {
         Complex[] newAmplitudes = matrix.multiplyVector(state.getAmplitudes());
         return new State(newAmplitudes, state.getNQubits());
     }
