@@ -20,9 +20,7 @@ public class State {
         if (amplitudes.length != Math.pow(2, nQubits)){
             throw new IllegalArgumentException("Incorrect number of amplitudes");
         }
-        if (!isNormalized(amplitudes)) {
-            throw new IllegalArgumentException("Unnormalized state");
-        }
+        if (isNormalized(amplitudes)) {throw new IllegalArgumentException("Unnormalized state");}
         this.amplitudes = amplitudes;
     }
 
@@ -31,7 +29,7 @@ public class State {
         for (Complex amplitude : amplitudes) {
             sum += amplitude.magnitude() * amplitude.magnitude();
         }
-        return Math.abs(sum - 1.0) < 1e-10;
+        return Math.abs(sum - 1.0) > 1e-10;
     }
 
     public State(Complex alpha, Complex beta) {
