@@ -6,6 +6,10 @@ import QuantumCore.Core.QuantumGate;
 
 public abstract class ControlledPhaseGate extends QuantumGate {
     public ControlledPhaseGate() {
+        super(buildControlledPhase(), 2, "Controlled-Phase");
+    }
+
+    private static Matrix buildControlledPhase() {
         Complex[][] cPhase = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -16,7 +20,6 @@ public abstract class ControlledPhaseGate extends QuantumGate {
         cPhase[1][1] = new Complex(1, 0);
         cPhase[2][2] = new Complex(1, 0);
         cPhase[3][3] = new Complex(0, 1);
-        super(new Matrix(cPhase), 2, "Controlled-Phase");
-
+        return new Matrix(cPhase);
     }
 }
