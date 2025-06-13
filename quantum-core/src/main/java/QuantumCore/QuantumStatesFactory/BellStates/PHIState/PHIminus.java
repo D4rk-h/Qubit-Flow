@@ -1,7 +1,7 @@
-package QuantumCore.QuantumStateFactory.BellStates.PHIState;
+package QuantumCore.QuantumStatesFactory.BellStates.PHIState;
 
 import MathCore.Complex;
-import QuantumCore.QuantumStateFactory.BellStates.BellState;
+import QuantumCore.QuantumStatesFactory.BellStates.BellState;
 
 public class PHIminus extends BellState {
     public PHIminus() {

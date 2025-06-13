@@ -1,7 +1,7 @@
-package QuantumCore.QuantumStateFactory.BellStates.PSIState;
+package QuantumCore.QuantumStatesFactory.BellStates.PSIState;
 
 import MathCore.Complex;
-import QuantumCore.QuantumStateFactory.BellStates.BellState;
+import QuantumCore.QuantumStatesFactory.BellStates.BellState;
 
 public class PSIplus extends BellState {
     public PSIplus() {

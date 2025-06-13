@@ -1,4 +1,4 @@
-package QuantumCore.QuantumStateFactory.GreenbergHorneZeilinger;
+package QuantumCore.QuantumStatesFactory.GreenbergHorneZeilinger;
 
 import MathCore.Complex;
 import QuantumCore.Core.State;

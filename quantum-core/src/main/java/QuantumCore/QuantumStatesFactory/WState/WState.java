@@ -1,4 +1,4 @@
-package QuantumCore.QuantumStateFactory.WState;
+package QuantumCore.QuantumStatesFactory.WState;
 
 import MathCore.Complex;
 import QuantumCore.Core.State;

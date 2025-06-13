@@ -1,4 +1,4 @@
-package QuantumCore.QuantumStateFactory.BellStates;
+package QuantumCore.QuantumStatesFactory.BellStates;
 
 import QuantumCore.Core.State;
 import MathCore.Complex;

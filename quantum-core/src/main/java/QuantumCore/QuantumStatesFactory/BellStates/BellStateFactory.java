@@ -1,8 +1,8 @@
-package QuantumCore.QuantumStateFactory.BellStates;
-import QuantumCore.QuantumStateFactory.BellStates.PHIState.PHIminus;
-import QuantumCore.QuantumStateFactory.BellStates.PHIState.PHIplus;
-import QuantumCore.QuantumStateFactory.BellStates.PSIState.PSIminus;
-import QuantumCore.QuantumStateFactory.BellStates.PSIState.PSIplus;
+package QuantumCore.QuantumStatesFactory.BellStates;
+import QuantumCore.QuantumStatesFactory.BellStates.PHIState.PHIminus;
+import QuantumCore.QuantumStatesFactory.BellStates.PHIState.PHIplus;
+import QuantumCore.QuantumStatesFactory.BellStates.PSIState.PSIminus;
+import QuantumCore.QuantumStatesFactory.BellStates.PSIState.PSIplus;
 
 public class BellStateFactory {
     private enum BellStateType {
