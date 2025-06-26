@@ -39,11 +39,10 @@ public class QuantumCircuit implements QuantumCircuitPort {
 
     @Override
     public void addControlled(ControlledGate controlledGate, int i, int j) {
-        if (i < 0 || j < 0){
-            throw new IllegalArgumentException("Index out of bounds");
-        }
-        circuit.get(i).set(j, controlledGate.getControlQubit());
-        circuit.get(i + 1).set(j, controlledGate.getGate());
+        QuantumCircuitUtil util = new QuantumCircuitUtil();
+        if (i < 0 || j < 0 || i > (circuit.get(i).size() + 2) || j > (circuit.get(i).size() + 2)){throw new IllegalArgumentException("Index out of bounds");}
+        if (i>circuit.size() || j>circuit.get(i).size()){util.extend(circuit, i, j);}
+        util.seekControlled(controlledGate, i, j, circuit);
     }
 
     @Override

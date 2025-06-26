@@ -19,6 +19,6 @@ public class SwapGate extends ControlledGate {
         swapG[1][2] = new Complex(1, 0);
         swapG[2][1] = new Complex(1, 0);
         swapG[3][3] = new Complex(1, 0);
-        return new QuantumGate(new Matrix(swapG), 2, "Swap Controlled");
+        return new QuantumGate(new Matrix(swapG), 2, "Swap");
     }
 }
