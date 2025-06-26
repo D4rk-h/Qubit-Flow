@@ -3,13 +3,12 @@ package QuantumCore.model.QuantumGates.ControlledGate;
 import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.model.QuantumGate;
+import QuantumCore.model.Qubit;
 
-public class SwapGate extends QuantumGate {
-    public SwapGate() {
-        super(buildSwap(), 2, "Swap Controlled");
-    }
+public class SwapGate extends ControlledGate {
+    public SwapGate() {super(new Qubit[1], new Qubit[1], buildSwapGate());}
 
-    private static Matrix buildSwap() {
+    private static QuantumGate buildSwapGate() {
         Complex[][] swapG = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -20,6 +19,6 @@ public class SwapGate extends QuantumGate {
         swapG[1][2] = new Complex(1, 0);
         swapG[2][1] = new Complex(1, 0);
         swapG[3][3] = new Complex(1, 0);
-        return new Matrix(swapG);
+        return new QuantumGate(new Matrix(swapG), 2, "Swap Controlled");
     }
 }

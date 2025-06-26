@@ -3,14 +3,12 @@ package QuantumCore.model.QuantumGates.ControlledGate;
 import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.model.QuantumGate;
+import QuantumCore.model.Qubit;
 
-public class ControlledXGate extends QuantumGate {
-    public ControlledXGate() {
-        super(buildControlledX(), 2, "Controlled-X");
-    }
-    // TODO EXTEND CONTROLLEDGATE
+public class ControlledXGate extends ControlledGate {
+    public ControlledXGate() {super(new Qubit[1], new Qubit[1], buildControlledXGate());}
 
-    private static Matrix buildControlledX(){
+    private static QuantumGate buildControlledXGate(){
         Complex[][] controlledX = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -21,6 +19,6 @@ public class ControlledXGate extends QuantumGate {
         controlledX[1][1] = new Complex(1, 0);
         controlledX[2][3] = new Complex(1, 0);
         controlledX[3][2] = new Complex(1, 0);
-        return new Matrix(controlledX);
+        return new QuantumGate(new Matrix(controlledX), 2, "Controlled-X");
     }
 }

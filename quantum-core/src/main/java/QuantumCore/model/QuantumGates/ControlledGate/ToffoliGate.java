@@ -3,13 +3,12 @@ package QuantumCore.model.QuantumGates.ControlledGate;
 import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.model.QuantumGate;
+import QuantumCore.model.Qubit;
 
-public class ToffoliGate extends QuantumGate {
-    public ToffoliGate() {
-        super(buildToffoli(), 3, "Toffoli Controlled");
-    }
+public class ToffoliGate extends ControlledGate {
+    public ToffoliGate() {super(new Qubit[2], new Qubit[1], buildToffoliGate());}
 
-    private static Matrix buildToffoli() {
+    private static QuantumGate buildToffoliGate() {
         Complex[][] toffoliG = new Complex[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -24,6 +23,6 @@ public class ToffoliGate extends QuantumGate {
         toffoliG[5][5] = new Complex(1, 0);
         toffoliG[6][7] = new Complex(1, 0);
         toffoliG[7][6] = new Complex(1, 0);
-        return new Matrix(toffoliG);
+        return new QuantumGate(new Matrix(toffoliG), 3, "Toffoli Controlled");
     }
 }

@@ -3,13 +3,15 @@ package QuantumCore.model.QuantumGates.ControlledGate;
 import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.model.QuantumGate;
+import QuantumCore.model.Qubit;
 
-public class ControlledPhaseGate extends QuantumGate {
-    public ControlledPhaseGate() {
-        super(buildControlledPhase(), 2, "Controlled-Phase");
-    }
+import java.util.Arrays;
+import java.util.List;
 
-    private static Matrix buildControlledPhase() {
+public class ControlledPhaseGate extends ControlledGate {
+    public ControlledPhaseGate() {super(new Qubit[1], new Qubit[1], buildControlledPhaseGate());}
+
+    private static QuantumGate buildControlledPhaseGate() {
         Complex[][] cPhase = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -20,6 +22,6 @@ public class ControlledPhaseGate extends QuantumGate {
         cPhase[1][1] = new Complex(1, 0);
         cPhase[2][2] = new Complex(1, 0);
         cPhase[3][3] = new Complex(0, 1);
-        return new Matrix(cPhase);
+        return new QuantumGate(new Matrix(cPhase), 2, "Controlled-Phase");
     }
 }
