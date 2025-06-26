@@ -4,9 +4,9 @@ import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.Core.QuantumGate;
 
-public abstract class ToffoliGate extends QuantumGate {
+public class ToffoliGate extends QuantumGate {
     public ToffoliGate() {
-        super(buildToffoli(), 3, "Toffoli");
+        super(buildToffoli(), 3, "Toffoli Controlled");
     }
 
     private static Matrix buildToffoli() {

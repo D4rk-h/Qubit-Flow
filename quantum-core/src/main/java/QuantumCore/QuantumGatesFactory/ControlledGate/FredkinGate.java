@@ -4,7 +4,7 @@ import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.Core.QuantumGate;
 
-public abstract class FredkinGate extends QuantumGate {
+public class FredkinGate extends QuantumGate {
     public FredkinGate() {
         super(buildFredkin(), 3, "Fredkin (Controlled-swap)");
     }

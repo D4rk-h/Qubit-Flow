@@ -4,9 +4,9 @@ import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.Core.QuantumGate;
 
-public abstract class SwapGate extends QuantumGate {
+public class SwapGate extends QuantumGate {
     public SwapGate() {
-        super(buildSwap(), 2, "Swap");
+        super(buildSwap(), 2, "Swap Controlled");
     }
 
     private static Matrix buildSwap() {

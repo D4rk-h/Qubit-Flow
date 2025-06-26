@@ -4,7 +4,7 @@ import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.Core.QuantumGate;
 
-public abstract class ControlledZGate extends QuantumGate {
+public class ControlledZGate extends QuantumGate {
     public ControlledZGate() {
         super(buildControlledZ(), 2, "Controlled-Z");
     }

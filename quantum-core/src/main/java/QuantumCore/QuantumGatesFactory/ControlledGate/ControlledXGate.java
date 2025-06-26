@@ -4,10 +4,11 @@ import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.Core.QuantumGate;
 
-public abstract class ControlledXGate extends QuantumGate {
+public class ControlledXGate extends QuantumGate {
     public ControlledXGate() {
         super(buildControlledX(), 2, "Controlled-X");
     }
+    // TODO EXTEND CONTROLLEDGATE
 
     private static Matrix buildControlledX(){
         Complex[][] controlledX = new Complex[4][4];

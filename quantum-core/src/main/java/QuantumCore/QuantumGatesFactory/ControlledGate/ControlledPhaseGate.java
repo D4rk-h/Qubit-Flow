@@ -4,7 +4,7 @@ import MathCore.Complex;
 import MathCore.Matrix;
 import QuantumCore.Core.QuantumGate;
 
-public abstract class ControlledPhaseGate extends QuantumGate {
+public class ControlledPhaseGate extends QuantumGate {
     public ControlledPhaseGate() {
         super(buildControlledPhase(), 2, "Controlled-Phase");
     }
