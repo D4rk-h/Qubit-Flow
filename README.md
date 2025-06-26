@@ -2,10 +2,10 @@
 
 A Java-based quantum computing simulation library for understanding quantum mechanics through hands-on implementation
 
-🎯 Purpose
+## 🎯 Purpose
 This project is my journey from data science into quantum computing. As a self-taught quantum enthusiast, I'm building this library to understand and demonstrate quantum properties and algorithms behavior through interactive experimentation rather than abstract mathematics alone.
 
-📚 Educational Foundation
+## 📚 Educational Foundation
 This implementation is primarily based on concepts from:
 
 "Quantum Computation and Quantum Information" by Nielsen & Chuang - The foundational textbook that guided this project's theoretical framework
