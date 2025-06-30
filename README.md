@@ -1,5 +1,5 @@
  <h1>
-  <img src="logo.png" alt="Qubit-Flow Logo" width="38" style="vertical-align: middle;">
+  <img src="logo.png" alt="Qubit-Flow Logo" width="38" style="vertical-align: sub;">
   Qubit-Flow
 </h1>
 
