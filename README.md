@@ -1,4 +1,8 @@
-# Quantum Properties and Algorithms Behavior
+<h1>
+  <img src="logo.png" alt="Qubit-Flow Logo" width="38" style="vertical-align: middle;">
+  Qubit-Flow
+</h1>
+## Quantum Properties and Algorithms Behavior
 
 A Java-based quantum computing simulation library for understanding quantum mechanics through hands-on implementation
 
