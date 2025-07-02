@@ -1,17 +1,17 @@
 package model.quantumModel.BlochSphere;
 
 import model.quantumModel.MeasurementReport;
-import model.quantumModel.State;
+import model.quantumModel.QuantumState;
 
 public class BlochSphere {
     private final BlochSpace center;
     private final double radius;
-    private State currentState;
+    private QuantumState currentState;
     private VisualConfig visualConfig;
-    private State nextState = null;
+    private QuantumState nextState = null;
     private MeasurementReport measurementReport;
 
-    public BlochSphere(BlochSpace center, double radius, State currentState, State nextState, VisualConfig visualConfig, MeasurementReport measurementReport) {
+    public BlochSphere(BlochSpace center, double radius, QuantumState currentState, QuantumState nextState, VisualConfig visualConfig, MeasurementReport measurementReport) {
         this.center = center;
         this.radius = radius;
         this.currentState = currentState;
@@ -28,19 +28,19 @@ public class BlochSphere {
         return radius;
     }
 
-    public State getCurrentState() {
+    public QuantumState getCurrentState() {
         return currentState;
     }
 
-    public void setCurrentState(State currentState) {
+    public void setCurrentState(QuantumState currentState) {
         this.currentState = currentState;
     }
 
-    public State getNextState() {
+    public QuantumState getNextState() {
         return nextState;
     }
 
-    public void setNextState(State nextState) {
+    public void setNextState(QuantumState nextState) {
         this.nextState = nextState;
     }
 

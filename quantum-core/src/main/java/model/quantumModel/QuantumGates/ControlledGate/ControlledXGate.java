@@ -3,12 +3,11 @@ package model.quantumModel.QuantumGates.ControlledGate;
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.Qubit;
 
-public class ControlledXGate extends ControlledGate {
-    public ControlledXGate() {super(new Qubit[1], new Qubit[1], buildControlledXGate());}
+public class ControlledXGate extends QuantumGate {
+    public ControlledXGate() {super(buildControlledXMatrix(), 2, "Controlled-X");}
 
-    private static QuantumGate buildControlledXGate(){
+    private static Matrix buildControlledXMatrix(){
         Complex[][] controlledX = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -19,6 +18,7 @@ public class ControlledXGate extends ControlledGate {
         controlledX[1][1] = new Complex(1, 0);
         controlledX[2][3] = new Complex(1, 0);
         controlledX[3][2] = new Complex(1, 0);
-        return new QuantumGate(new Matrix(controlledX), 2, "Controlled-X");
+        return new Matrix(controlledX);
     }
+
 }

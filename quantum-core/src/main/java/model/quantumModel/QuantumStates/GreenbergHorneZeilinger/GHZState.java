@@ -1,9 +1,9 @@
 package model.quantumModel.QuantumStates.GreenbergHorneZeilinger;
 
 import model.mathModel.Complex;
-import model.quantumModel.State;
+import model.quantumModel.QuantumState;
 
-public class GHZState extends State {
+public class GHZState extends QuantumState {
 
     public GHZState(int nQubits) {
         super(createGHZAmplitudes(nQubits), nQubits);

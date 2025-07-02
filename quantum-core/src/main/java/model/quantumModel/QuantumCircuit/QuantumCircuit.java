@@ -2,9 +2,9 @@ package model.quantumModel.QuantumCircuit;
 
 import model.quantumModel.BlochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.Qubit;
 import model.quantumModel.QuantumGates.ControlledGate.ControlledGate;
 import model.quantumModel.QuantumPorts.QuantumCircuitPort;
+import model.quantumModel.QuantumState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,12 +28,13 @@ public class QuantumCircuit implements QuantumCircuitPort {
     }
 
     public QuantumCircuit(int nQubits) {
-        this(nQubits, 50);
+        this(nQubits, 25);
     }
 
     @Override
     public void add(QuantumGate gate, int i, int j) {
         if (i < 0 || i >= nQubits || j < 0 || j >= circuit.get(0).size()) {throw new IndexOutOfBoundsException("Index out of bounds");}
+        if (circuit.get(i - 1).get(j) instanceof ControlledGate){((ControlledGate) circuit.get(i-1).get(j)).addTarget(gate);}
         circuit.get(i).set(j, gate);
     }
 
@@ -42,7 +43,7 @@ public class QuantumCircuit implements QuantumCircuitPort {
         QuantumCircuitUtil util = new QuantumCircuitUtil();
         if (i < 0 || j < 0 || i > (circuit.get(i).size() + 2) || j > (circuit.get(i).size() + 2)){throw new IllegalArgumentException("Index out of bounds");}
         if (i>circuit.size() || j>circuit.get(i).size()){util.extend(circuit, i, j);}
-        util.seekControlled(controlledGate, i, j, circuit);
+        circuit.get(i).set(j, controlledGate);
     }
 
     @Override
@@ -52,9 +53,9 @@ public class QuantumCircuit implements QuantumCircuitPort {
     }
 
     @Override
-    public void add(Qubit qubit, int i) {
+    public void add(QuantumState state, int i) {
         if (i < 0 || i >= nQubits) {throw new IndexOutOfBoundsException("Index out of bounds");}
-        circuit.get(i).set(0, qubit);
+        circuit.get(i).set(0, state);
     }
 
     public int getnQubits() {return nQubits;}

@@ -1,9 +1,9 @@
 package model.quantumModel.QuantumStates.WState;
 
 import model.mathModel.Complex;
-import model.quantumModel.State;
+import model.quantumModel.QuantumState;
 
-public class WState extends State {
+public class WState extends QuantumState {
 
     public WState(int nQubits) {
         super(createWStateAmplitudes(nQubits), nQubits);

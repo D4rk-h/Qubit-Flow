@@ -1,47 +1,51 @@
 package model.quantumModel.QuantumGates.ControlledGate;
 
-import model.quantumModel.QuantumGate;
-import model.quantumModel.Qubit;
+import model.quantumModel.QuantumState;
 
 public class ControlledGate {
-    private Object[] controlledGate = new Object[3];
-    private Qubit[] controlQubit;
-    private Qubit[] objetiveQubit;
-    private QuantumGate gate;
+    private QuantumState[] control;
+    private int controlQubits;
+    private Object[] target;
 
-    public ControlledGate(Qubit[] controlQubit, Qubit[] objetiveQubit, QuantumGate gate){
-        Object[] conjugate = new Object[2];
-        conjugate[0] = controlQubit;
-        conjugate[1] = objetiveQubit;
-        conjugate[2] = gate;
-        setControlledGate(conjugate);
+    public ControlledGate(QuantumState[] control, int controlQubits, Object[] target) {
+        this.control = control;
+        this.controlQubits = controlQubits;
+        this.target = target;
     }
 
-    public Qubit[] getObjetiveQubit() {return objetiveQubit;}
-
-    public void setObjetiveQubit(Qubit[] objetiveQubit) {this.objetiveQubit = objetiveQubit;}
-
-    public Object[] getControlledGate() {
-        return controlledGate;
+    public void addTarget(Object newTarget){
+        setTarget(new Object[]{target, newTarget});
     }
 
-    public void setControlledGate(Object[] controlledGate) {
-        this.controlledGate = controlledGate;
+    public QuantumState[] getControl() {
+        return control;
     }
 
-    public Qubit[] getControlQubit() {
-        return controlQubit;
+    public QuantumState getControlIndex(int index) {
+        return control[index];
     }
 
-    public void setControlQubit(Qubit[] controlQubit) {
-        this.controlQubit = controlQubit;
+    public void setControl(QuantumState[] control) {
+        this.control = control;
     }
 
-    public QuantumGate getGate() {
-        return gate;
+    public Object[] getTarget() {
+        return target;
     }
 
-    public void setGate(QuantumGate gate) {
-        this.gate = gate;
+    public Object getTargetIndex(int index) {
+        return target[index];
+    }
+
+    public void setTarget(Object[] target) {
+        this.target = target;
+    }
+
+    public int getControlQubits() {
+        return controlQubits;
+    }
+
+    public void setControlQubits(int controlQubits) {
+        this.controlQubits = controlQubits;
     }
 }

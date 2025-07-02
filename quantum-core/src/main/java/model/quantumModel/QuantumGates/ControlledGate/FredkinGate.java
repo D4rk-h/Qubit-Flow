@@ -3,14 +3,13 @@ package model.quantumModel.QuantumGates.ControlledGate;
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.Qubit;
 
-public class FredkinGate extends ControlledGate {
+public class FredkinGate extends QuantumGate {
     public FredkinGate() {
-        super(new Qubit[1], new Qubit[2], buildFredkinGate());
+        super(buildFredkinMatrix(), 3, "Fredkin (Controlled-swap)");
     }
 
-    private static QuantumGate buildFredkinGate() {
+    private static Matrix buildFredkinMatrix() {
         Complex[][] fredkinG = new Complex[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {fredkinG[i][j] = new Complex(0, 0);}
@@ -23,6 +22,6 @@ public class FredkinGate extends ControlledGate {
         fredkinG[5][6] = new Complex(1, 0);
         fredkinG[6][5] = new Complex(1, 0);
         fredkinG[7][7] = new Complex(1, 0);
-        return new QuantumGate(new Matrix(fredkinG), 3, "Fredkin (Controlled-swap)");
+        return new Matrix(fredkinG);
     }
 }

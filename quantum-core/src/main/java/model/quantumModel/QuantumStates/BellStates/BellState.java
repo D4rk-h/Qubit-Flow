@@ -1,9 +1,9 @@
 package model.quantumModel.QuantumStates.BellStates;
 
-import model.quantumModel.State;
+import model.quantumModel.QuantumState;
 import model.mathModel.Complex;
 
-public class BellState extends State {
+public class BellState extends QuantumState {
     public BellState(Complex[] amplitudes) {
         super(amplitudes, 2);
     }
