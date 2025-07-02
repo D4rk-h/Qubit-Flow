@@ -1,6 +1,7 @@
 package model.quantumModel.QuantumPorts;
-import model.quantumModel.State;
+
+import model.quantumModel.QuantumState;
 
 public interface QuantumGatePort {
-    State apply(State qubit);
+    QuantumState apply(QuantumState state);
 }

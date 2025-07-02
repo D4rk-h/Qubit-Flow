@@ -1,6 +1,5 @@
 package model.quantumModel;
 
-import model.mathModel.Complex;
 import model.mathModel.Matrix;
 import model.quantumModel.QuantumPorts.QuantumGatePort;
 
@@ -14,36 +13,24 @@ public class QuantumGate implements QuantumGatePort {
         this.matrix = matrix;
         this.numQubits = numQubits;
         this.name = name;
+        int expectedSize = (int) Math.pow(2, numQubits);
+        if (matrix.getRows() != expectedSize || matrix.getCols() != expectedSize) {
+            throw new IllegalArgumentException("Matrix size must be " + expectedSize + "x" + expectedSize);
+        }
+    }
+
+    @Override
+    public QuantumState apply(QuantumState state) {
+        return state.applyGate(this);
     }
 
     public Matrix getMatrix() {
         return matrix;
     }
-
     public String getName() {
         return name;
     }
-
     public int getNumQubits() {
         return numQubits;
-    }
-
-    @Override
-    public State apply(State state) {
-        Complex[] newAmplitudes = matrix.multiplyVector(state.getAmplitudes());
-        for (int i=0;i<newAmplitudes.length;i++){
-            newAmplitudes[i] = new Complex(newAmplitudes[i].getRealPart() / findTotalNorm(newAmplitudes),
-                    newAmplitudes[i].getImaginaryPart() / findTotalNorm(newAmplitudes));
-        }
-        return new State(newAmplitudes, state.getNQubits());
-    }
-
-    private static double findTotalNorm(Complex[] amplitudes) {
-        double totalNorm = 0.0;
-        for (Complex amplitude : amplitudes) {
-            totalNorm += amplitude.magnitude() * amplitude.magnitude();
-        }
-        totalNorm = Math.sqrt(totalNorm);
-        return totalNorm;
     }
 }
