@@ -47,6 +47,9 @@ public class Matrix {
         return rows;
     }
 
+    public double[][] getData(){return this.data;}
+    public Complex[][] getComplexData(){return this.complexData;}
+
     public void set(int row, int col, double newValue){
         if (row < 0 || row >= rows || col < 0 || col>= cols){
             throw new IndexOutOfBoundsException("Index out of bounds");
@@ -54,11 +57,19 @@ public class Matrix {
         data[row][col] = newValue;
     }
 
-    public double get(int row, int col){
+    public Object get(int row, int col, boolean isComplex){
         if (row < 0 || row >= rows || col < 0 || col>= cols){
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
+        if (isComplex){return complexData[row][col];}
         return data[row][col];
+    }
+
+    public void set(int row, int col, Complex newValue){
+        if (row < 0 || row >= rows || col < 0 || col>= cols){
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        complexData[row][col] = newValue;
     }
 
     public Matrix add(Matrix other) {
@@ -91,7 +102,7 @@ public class Matrix {
         if (this.cols != other.rows){
             throw new IllegalArgumentException("Cannot Subtract Matrices of distinct dimensions");
         }
-        Matrix result = new Matrix(rows, cols);
+        Matrix result = new Matrix(this.rows, other.cols);
         for (int i=0;i<this.rows;i++){
             for (int j=0;j<other.cols;j++){
                 double sum = 0;
@@ -105,20 +116,26 @@ public class Matrix {
     }
 
     public Complex[] multiplyVector(Complex[] vector) {
-        Complex[] result = new Complex[rows];
-        for (int i=0;i<rows;i++) {
-            result[i] = new Complex(0, 0);
-            for (int j=0;j<cols;j++) {
-                result[i] = result[i].add(complexData[i][j].multiply(vector[j]));
+        if (isComplex) {
+            if (vector.length != cols) {
+                throw new IllegalArgumentException("Vector length must match matrix columns");
             }
+            Complex[] result = new Complex[rows];
+            for (int i=0;i<rows;i++) {
+                result[i] = new Complex(0, 0);
+                for (int j=0;j<cols;j++) {
+                    result[i] = result[i].add(complexData[i][j].multiply(vector[j]));
+                }
+            }
+            return result;
+        } else {
+            throw new IllegalStateException("Cannot multiply complex vector with real matrix");
         }
-        return result;
     }
 
     public Matrix multiply(double lambda){
         Matrix result = new Matrix(rows, cols);
-        int i;
-        for (i=0;i<rows;i++) {
+        for (int i=0;i<rows;i++) {
             for (int j=0;j<cols;j++) {
                 result.data[i][j] = lambda * this.data[i][j];
             }
@@ -128,8 +145,7 @@ public class Matrix {
 
     public Matrix multiply(Complex lambda) {
         Matrix result = new Matrix(rows, cols);
-        int i;
-        for (i = 0; i < rows; i++) {
+        for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 result.complexData[i][j] = new Complex(lambda.getRealPart() * this.data[i][j], lambda.getImaginaryPart() * this.data[i][j]);
             }
@@ -141,11 +157,9 @@ public class Matrix {
         if (this.rows <= 0 || this.cols <= 0) {
             throw new IllegalArgumentException("MathCore.model.Matrix is empty...");
         }
-        int i;
-        int j;
         Matrix result = new Matrix(rows, cols);
-        for (i=0;i<this.rows;i++) {
-            for (j=0;j<this.cols;j++){
+        for (int i=0;i<this.rows;i++) {
+            for (int j=0;j<this.cols;j++){
                 result.data[j][i] = this.data[i][j];
             }
         }
@@ -176,7 +190,6 @@ public class Matrix {
             double cofactor = Math.pow(-1, j) * matrixData[0][j] * calculateDeterminant(submatrix);
             det += cofactor;
         }
-
         return det;
     }
 
