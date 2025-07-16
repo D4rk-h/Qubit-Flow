@@ -27,6 +27,10 @@ public class Complex {
 
     public double magnitude() {return Math.hypot(real, imaginary);}
 
+    public Complex conjugate() {
+        return new Complex(real, -imaginary);
+    }
+
     public Complex normalize() {return new Complex(this.real/this.magnitude(), this.imaginary/this.magnitude());}
 
     public double phase() {
