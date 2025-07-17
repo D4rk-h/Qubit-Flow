@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 public class QuantumState {
     private Complex[] amplitudes;
     private int numQubits;
-    private static QuantumStateUtils utils;
+    private final static QuantumStateUtils utils = new QuantumStateUtils();
     private static final double EPSILON = 1e-10;
 
     public QuantumState(int numQubits) {
@@ -28,14 +28,13 @@ public class QuantumState {
         if (amplitudes.length != expectedSize){
             throw new IllegalArgumentException("Incorrect number of amplitudes");
         }
-        if (!utils.isNormalized(amplitudes, this)) {throw new IllegalArgumentException("Unnormalized state");}
         this.amplitudes = amplitudes.clone();
+        utils.validateNormalization(amplitudes, this);
     }
 
     public QuantumState(Complex alpha, Complex beta) {
         this.numQubits = 1;
         this.amplitudes = new Complex[]{alpha, beta};
-        if (!utils.isNormalized(amplitudes, this)) {throw new IllegalArgumentException("Unnormalized state");}
     }
 
     public QuantumState applyGate(QuantumGate gate) {
