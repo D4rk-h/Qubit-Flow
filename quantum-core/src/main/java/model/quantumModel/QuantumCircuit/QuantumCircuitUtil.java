@@ -1,20 +1,23 @@
 package model.quantumModel.QuantumCircuit;
 
+import model.quantumModel.QuantumGate;
 import model.quantumModel.QuantumGates.ControlledGate.ControlledGate;
+import model.quantumModel.QuantumGates.HadamardGate;
+import model.quantumModel.QuantumGates.PauliXGate;
+import model.quantumModel.QuantumGates.PauliYGate;
+import model.quantumModel.QuantumGates.PauliZGate;
+import model.quantumModel.QuantumState;
+import model.quantumModel.QuantumStates.BellStates.PHIState.PHIminus;
+import model.quantumModel.QuantumStates.BellStates.PHIState.PHIplus;
+import model.quantumModel.QuantumStates.BellStates.PSIState.PSIminus;
+import model.quantumModel.QuantumStates.BellStates.PSIState.PSIplus;
+import model.quantumModel.QuantumStates.GreenbergHorneZeilinger.GHZState;
+import model.quantumModel.QuantumStates.WState.WState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class QuantumCircuitUtil {
-    public String formatCircuit(List<List<Object>> circuit) {
-        return circuit.stream()
-                .map(row -> "[" + row.stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(",")) + "]")
-                .collect(Collectors.joining(",\n  ", "[\n  ", "\n]"));
-    }
-
     public void extend(List<List<Object>> circuit, int i, int j) {
         while (circuit.size() <= i) {
             circuit.add(new ArrayList<>());
@@ -22,5 +25,52 @@ public class QuantumCircuitUtil {
         while (circuit.get(i).size() <= j) {
             circuit.get(i).add(null);
         }
+    }
+
+    public void seekToMergeZ(List<Object> wire) {
+        for (int i=0; i<wire.size();i++) {
+            if (wire.get(i) instanceof QuantumGate){
+                if (wire.get(i) instanceof HadamardGate && wire.get(i + 1) instanceof PauliXGate && wire.get(i + 2) instanceof HadamardGate) {
+                    wire.set(i, new PauliZGate());
+                    wire.set(i + 1, null);
+                    wire.set(i + 2, null);
+                }
+            }
+        }
+    }
+
+    public void seekToMergeMinusY(List<Object> wire) {
+        for (int i=0; i<wire.size();i++) {
+            if (wire.get(i) instanceof QuantumGate){
+                if (wire.get(i) instanceof HadamardGate && wire.get(i + 1) instanceof PauliYGate && wire.get(i + 2) instanceof HadamardGate) {
+                    wire.set(i, new PauliYGate().getMatrix().multiply(-1));
+                    wire.set(i + 1, null);
+                    wire.set(i + 2, null);
+                }
+            }
+        }
+    }
+
+    public void seekToMergeX(List<Object> wire) {
+        for (int i=0; i<wire.size();i++) {
+            if (wire.get(i) instanceof QuantumGate){
+                if (wire.get(i) instanceof HadamardGate && wire.get(i + 1) instanceof PauliZGate && wire.get(i + 2) instanceof HadamardGate) {
+                    wire.set(i, new PauliXGate());
+                    wire.set(i + 1, null);
+                    wire.set(i + 2, null);
+                }
+            }
+        }
+    }
+
+    public String getStateLabel(QuantumState state) {
+        if (state instanceof PHIplus) return "|Φ+⟩";
+        if (state instanceof PHIminus) return "|Φ-⟩";
+        if (state instanceof PSIplus) return "|Ψ+⟩";
+        if (state instanceof PSIminus) return "|Ψ-⟩";
+        if (state instanceof GHZState) return "|GHZ⟩";
+        if (state instanceof WState) return "|W⟩";
+        if (state.getNumQubits() == 1) return "|" + state + "⟩";
+        return "|ψ⟩";
     }
 }
