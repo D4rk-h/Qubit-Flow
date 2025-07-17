@@ -115,6 +115,16 @@ public class Matrix {
         return result;
     }
 
+    public Matrix adjoint() {
+        Matrix transposed = this.transpose();
+        for (int i=0; i<transposed.getComplexData().length;i++) {
+            for (int j=0; j<transposed.getComplexData()[i].length; j++) {
+                transposed.set(i, j, transposed.getComplexData()[i][j].conjugate());
+            }
+        }
+        return transposed;
+    }
+
     public Complex[] multiplyVector(Complex[] vector) {
         if (isComplex) {
             if (vector.length != cols) {
@@ -164,6 +174,17 @@ public class Matrix {
             }
         }
         return result;
+    }
+
+    public Matrix conjugate() {
+        if (this.complexData.length > 0){
+            for (int i=0;i<this.complexData.length;i++) {
+                for (int j=0;j<this.complexData[i].length;j++) {
+                    this.complexData[i][j] = this.complexData[i][j].conjugate();
+                }
+            }
+        }
+        return this;
     }
 
     public double determinant() {
