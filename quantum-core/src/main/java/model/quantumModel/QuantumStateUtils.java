@@ -25,4 +25,10 @@ public class QuantumStateUtils {
         }
         return new QuantumState(newAmplitudes, newNumQubits);
     }
+
+    public void validateNormalization(Complex[] amplitudes,  QuantumState quantumState) {
+        if (!isNormalized(amplitudes, quantumState)) {
+            throw new IllegalArgumentException("State is not normalized");
+        }
+    }
 }
