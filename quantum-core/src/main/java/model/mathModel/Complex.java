@@ -27,6 +27,8 @@ public class Complex {
 
     public double magnitude() {return Math.hypot(real, imaginary);}
 
+    public double magnitudeSquared() {return real * real + imaginary * imaginary;}
+
     public Complex conjugate() {
         return new Complex(real, -imaginary);
     }
