@@ -1,7 +1,7 @@
 package control.commands;
 
 public interface QuantumCommand {
-    CommandResult execute();
+    void execute();
     void undo();
     boolean canUndo();
     String getDescription();
