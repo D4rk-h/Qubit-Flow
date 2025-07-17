@@ -1,6 +1,8 @@
 package model.quantumModel;
 import model.mathModel.Complex;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -46,29 +48,71 @@ public class QuantumState {
     }
 
     private int measure() {
+        validateStateNormalization();
         Random random = new Random();
         double randomValue = random.nextDouble();
         double cumulativeProbability = 0.0;
         for (int i=0;i<amplitudes.length;i++){
-            double probability = amplitudes[i].magnitude() * amplitudes[i].magnitude();
+            double probability = amplitudes[i].magnitudeSquared();
             cumulativeProbability += probability;
             if (randomValue < cumulativeProbability) {
-                collapse(i);
                 return i;
             }
         }
-        collapse(amplitudes.length - 1);
         return amplitudes.length - 1;
     }
 
+    public int measureAndCollapse() {
+        int result = measure();
+        collapse(result);
+        return result;
+    }
+
     private void collapse(int measuredState) {
-        for (int i=0;i<amplitudes.length;i++){
-            if (i == measuredState) {
-                amplitudes[i] = new Complex(1.0, 0.0);
-            } else {
-                amplitudes[i] = new Complex(0.0, 0.0);
-            }
+        if (measuredState < 0 || measuredState >= amplitudes.length) {
+            throw new IllegalArgumentException("Invalid measured state: " + measuredState);
         }
+        for (int i = 0; i < amplitudes.length; i++) {
+            amplitudes[i] = (i == measuredState) ?
+                    new Complex(1.0, 0.0) :
+                    new Complex(0.0, 0.0);
+        }
+    }
+
+    private void collapseOptimized(int measuredState) {
+        if (measuredState < 0 || measuredState >= amplitudes.length) {
+            throw new IllegalArgumentException("Invalid measured state: " + measuredState);
+        }
+        Complex one = new Complex(1.0, 0.0);
+        Complex zero = new Complex(0.0, 0.0);
+        for (int i = 0; i < amplitudes.length; i++) {
+            amplitudes[i] = (i == measuredState) ? one : zero;
+        }
+    }
+
+    public double[] getProbabilities() {
+        double[] probabilities = new double[amplitudes.length];
+        for (int i = 0; i < amplitudes.length; i++) {
+            probabilities[i] = amplitudes[i].magnitudeSquared();
+        }
+        return probabilities;
+    }
+
+    private void validateStateNormalization() {
+        if (!utils.isNormalized(amplitudes, this)) {
+            throw new IllegalStateException("Cannot measure non-normalized quantum state");
+        }
+    }
+
+    public Map<Integer, Integer> measureMultiple(int numMeasurements) {
+        Map<Integer, Integer> results = new HashMap<>();
+        QuantumState originalState = new QuantumState(this.amplitudes.clone(), this.numQubits);
+        for (int i = 0; i < numMeasurements; i++) {
+            this.amplitudes = originalState.amplitudes.clone();
+            int result = measureAndCollapse();
+            results.put(result, results.getOrDefault(result, 0) + 1);
+        }
+        return results;
     }
 
     public Complex getAlpha() {
