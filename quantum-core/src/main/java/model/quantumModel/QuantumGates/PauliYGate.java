@@ -6,7 +6,7 @@ import model.quantumModel.QuantumGate;
 
 public class PauliYGate extends QuantumGate {
     public PauliYGate() {
-        super(buildPauliY(), 1, "Pauli-Y");
+        super(buildPauliY(), 1, "YPauli-Y");
     }
     private static Matrix buildPauliY(){
         Complex[][] pauliY = new Complex[2][2];

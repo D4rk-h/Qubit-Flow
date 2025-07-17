@@ -6,7 +6,7 @@ import model.quantumModel.QuantumGate;
 
 public class PauliXGate extends QuantumGate {
     public PauliXGate() {
-        super(buildPauliX(), 1, "Pauli-X");
+        super(buildPauliX(), 1, "XPauli-X");
     }
 
     private static Matrix buildPauliX() {
