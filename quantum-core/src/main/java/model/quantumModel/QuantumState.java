@@ -1,3 +1,17 @@
+// Copyright 2025 D4rk-h
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package model.quantumModel;
 import model.mathModel.Complex;
 
@@ -48,7 +62,7 @@ public class QuantumState {
         return new QuantumState(newAmplitudes, this.numQubits);
     }
 
-    private int measure() {
+    public int measure() {
         validateStateNormalization();
         double randomValue = random.nextDouble();
         double cumulativeProbability = 0.0;
@@ -62,12 +76,6 @@ public class QuantumState {
         return amplitudes.length - 1;
     }
 
-    public int measureAndCollapse() {
-        int result = measure();
-        collapse(result);
-        return result;
-    }
-
     private void collapse(int measuredState) {
         if (measuredState < 0 || measuredState >= amplitudes.length) {
             throw new IllegalArgumentException("Invalid measured state: " + measuredState);
@@ -77,6 +85,12 @@ public class QuantumState {
                     new Complex(1.0, 0.0) :
                     new Complex(0.0, 0.0);
         }
+    }
+
+    public int measureAndCollapse() {
+        int result = measure();
+        collapse(result);
+        return result;
     }
 
     private void collapseOptimized(int measuredState) {
