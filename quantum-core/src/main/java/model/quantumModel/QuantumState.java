@@ -12,6 +12,7 @@ public class QuantumState {
     private int numQubits;
     private final static QuantumStateUtils utils = new QuantumStateUtils();
     private static final double EPSILON = 1e-10;
+    private static final Random random = new Random();
 
     public QuantumState(int numQubits) {
         if (numQubits <= 0) {throw new IllegalArgumentException("Number of qubits must be positive");}
@@ -24,9 +25,9 @@ public class QuantumState {
         }
     }
 
-    public QuantumState(Complex[] amplitudes, int NumQubits) {
-        this.numQubits = NumQubits;
-        int expectedSize = (int) Math.pow(2, NumQubits);
+    public QuantumState(Complex[] amplitudes, int numQubits) {
+        this.numQubits = numQubits;
+        int expectedSize = (int) Math.pow(2, numQubits);
         if (amplitudes.length != expectedSize){
             throw new IllegalArgumentException("Incorrect number of amplitudes");
         }
@@ -49,7 +50,6 @@ public class QuantumState {
 
     private int measure() {
         validateStateNormalization();
-        Random random = new Random();
         double randomValue = random.nextDouble();
         double cumulativeProbability = 0.0;
         for (int i=0;i<amplitudes.length;i++){
@@ -113,6 +113,146 @@ public class QuantumState {
             results.put(result, results.getOrDefault(result, 0) + 1);
         }
         return results;
+    }
+
+    public static QuantumState createUniformSuperposition(int numQubits) {
+        if (numQubits <= 0) {
+            throw new IllegalArgumentException("Number of qubits cannot be negative");
+        }
+        int numStates = (int) Math.pow(2, numQubits);
+        Complex[] amplitudes = new Complex[numStates];
+        double amplitude = 1.0/Math.sqrt(numStates);
+        for (int i=0;i<numStates;i++) {
+            amplitudes[i] = new Complex(amplitude, 0.0);
+        }
+        return new QuantumState(amplitudes, numQubits);
+    }
+
+    public static QuantumState createCustomSuperposition(int numQubits, int[] states, Complex[] amplitudes) {
+        if (states.length != amplitudes.length) {
+            throw new IllegalArgumentException("States and amplitude length must be equal");
+        }
+        int numStates = (int) Math.pow(2, numQubits);
+        Complex[] stateAmplitudes = new Complex[numStates];
+        for (int i = 0; i < numStates; i++) {
+            stateAmplitudes[i] = new Complex(0.0, 0.0);
+        }
+        for (int i = 0; i < states.length; i++) {
+            if (states[i] < 0 || states[i] >= numStates) {
+                throw new IllegalArgumentException("Invalid state index: " + states[i]);
+            }
+            stateAmplitudes[states[i]] = amplitudes[i];
+        }
+        return new QuantumState(stateAmplitudes, numQubits);
+    }
+
+    private QuantumState applyBitFlip(int targetQubit) {
+        Complex[] newAmplitudes = new Complex[amplitudes.length];
+        for (int i = 0; i < amplitudes.length; i++) {
+            int flippedState = i ^ (1 << targetQubit);
+            newAmplitudes[flippedState] = amplitudes[i];
+        }
+        return new QuantumState(newAmplitudes, this.numQubits);
+    }
+
+    private QuantumState applyPhaseFlip(int targetQubit) {
+        Complex[] newAmplitudes = new Complex[amplitudes.length];
+        for (int i = 0; i < amplitudes.length; i++) {
+            boolean targetQubitIsOne = (i & (1 << targetQubit)) != 0;
+            if (targetQubitIsOne) {
+                newAmplitudes[i] = amplitudes[i].multiply(new Complex(-1.0, 0.0));
+            } else {
+                newAmplitudes[i] = amplitudes[i];
+            }
+        }
+        return new QuantumState(newAmplitudes, this.numQubits);
+    }
+
+    public QuantumState applyDepolarizingNoise(double probability) {
+        if (probability < 0.0 || probability > 1.0) {
+            throw new IllegalArgumentException("Noise probability must be between 0 and 1");
+        }
+        if (random.nextDouble() < probability) {
+            return createUniformSuperposition(this.numQubits);
+        }
+        return new QuantumState(this.amplitudes.clone(), this.numQubits);
+    }
+
+    public QuantumState applyAmplitudeDamping(double gamma) {
+        if (gamma < 0.0 || gamma > 1.0) {
+            throw new IllegalArgumentException("Damping parameter must be between 0 and 1");
+        }
+        Complex[] newAmplitudes = new Complex[amplitudes.length];
+        for (int i = 0; i < amplitudes.length; i++) {
+            int excitedStates = Integer.bitCount(i);
+            double dampingFactor = Math.pow(1.0 - gamma, excitedStates);
+            newAmplitudes[i] = amplitudes[i].multiply(new Complex(Math.sqrt(dampingFactor), 0.0));
+        }
+        return normalizeState(newAmplitudes);
+    }
+
+    public QuantumState applyPhaseFlipNoise(double probability) {
+        if (probability < 0.0 || probability > 1.0) {
+            throw new IllegalArgumentException("Noise probability must be between 0 and 1");
+        }
+        QuantumState noisyState = new QuantumState(this.amplitudes.clone(), this.numQubits);
+        for (int qubit = 0; qubit < numQubits; qubit++) {
+            if (random.nextDouble() < probability) {
+                noisyState = noisyState.applyPhaseFlip(qubit);
+            }
+        }
+        return noisyState;
+    }
+
+    public QuantumState applyBitFlipNoise(double probability) {
+        if (probability < 0.0 || probability > 1.0) {
+            throw new IllegalArgumentException("Noise probability must be between 0 and 1");
+        }
+        QuantumState noisyState = new QuantumState(this.amplitudes.clone(), this.numQubits);
+        for (int qubit = 0; qubit < numQubits; qubit++) {
+            if (random.nextDouble() < probability) {
+                noisyState = noisyState.applyBitFlip(qubit);
+            }
+        }
+        return noisyState;
+    }
+
+    public QuantumState applyPhaseDamping(double gamma) {
+        if (gamma < 0.0 || gamma > 1.0) {
+            throw new IllegalArgumentException("Dephasing parameter must be between 0 and 1");
+        }
+        Complex[] newAmplitudes = new Complex[amplitudes.length];
+        for (int i = 0; i < amplitudes.length; i++) {
+            if (random.nextDouble() < gamma) {
+                double randomPhase = random.nextDouble() * 2 * Math.PI;
+                Complex phaseShift = new Complex(Math.cos(randomPhase), Math.sin(randomPhase));
+                newAmplitudes[i] = amplitudes[i].multiply(phaseShift);
+            } else {
+                newAmplitudes[i] = amplitudes[i];
+            }
+        }
+        return new QuantumState(newAmplitudes, this.numQubits);
+    }
+
+    public QuantumState applyBitPhaseFlipNoise(double bitFlipProb, double phaseFlipProb) {
+        return this.applyBitFlipNoise(bitFlipProb)
+                .applyPhaseFlipNoise(phaseFlipProb);
+    }
+
+    private QuantumState normalizeState(Complex[] amplitudes) {
+        double norm = 0.0;
+        for (Complex amp : amplitudes) {
+            norm += amp.magnitudeSquared();
+        }
+        if (norm == 0.0) {
+            throw new IllegalStateException("Cannot normalize zero state");
+        }
+        double normalizationFactor = 1.0 / Math.sqrt(norm);
+        Complex[] normalizedAmplitudes = new Complex[amplitudes.length];
+        for (int i = 0; i < amplitudes.length; i++) {
+            normalizedAmplitudes[i] = amplitudes[i].multiply(new Complex(normalizationFactor, 0.0));
+        }
+        return new QuantumState(normalizedAmplitudes, this.numQubits);
     }
 
     public Complex getAlpha() {
