@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+//Todo: Implementation of all kind of Measurement displays and optimize seek methods
+
 public class QuantumCircuit implements QuantumCircuitPort {
     private int nQubits;
     private int depth;
