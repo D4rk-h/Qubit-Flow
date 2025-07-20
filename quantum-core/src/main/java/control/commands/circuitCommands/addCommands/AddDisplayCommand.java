@@ -14,6 +14,6 @@ public class AddDisplayCommand extends AddCommand implements AddCommandPort {
 
     @Override
     public void addToCircuit() {
-
+        location.circuit().add(display);
     }
 }
