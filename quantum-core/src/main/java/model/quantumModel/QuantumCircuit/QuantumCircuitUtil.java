@@ -14,6 +14,7 @@
 
 package model.quantumModel.QuantumCircuit;
 
+import model.commandsModel.Display;
 import model.quantumModel.QuantumGate;
 import model.quantumModel.QuantumGates.HadamardGate;
 import model.quantumModel.QuantumGates.PauliXGate;
@@ -74,6 +75,10 @@ public class QuantumCircuitUtil {
                 }
             }
         }
+    }
+
+    public void seekAndExtend(List<List<Object>> circuit, Display display) {
+        // Todo develop a method that pushes all 1 column to right when adding something on a position were is already something
     }
 
     public String getStateLabel(QuantumState state) {

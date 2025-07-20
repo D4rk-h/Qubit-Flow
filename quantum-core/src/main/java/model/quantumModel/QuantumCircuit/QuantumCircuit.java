@@ -14,6 +14,7 @@
 
 package model.quantumModel.QuantumCircuit;
 
+import model.commandsModel.Display;
 import model.quantumModel.BlochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
 import model.quantumModel.QuantumGates.ControlledGate.ControlledGate;
@@ -53,6 +54,12 @@ public class QuantumCircuit implements QuantumCircuitPort {
         if (i < 0 || i >= nQubits || j < 0 || j >= circuit.get(0).size()) {throw new IndexOutOfBoundsException("Index out of bounds");}
         if (i > 0 && circuit.get(i - 1).get(j) instanceof ControlledGate){((ControlledGate) circuit.get(i-1).get(j)).addTarget(gate);}
         circuit.get(i).set(j, gate);
+    }
+
+    @Override
+    public void add(Display display) {
+        if (display.fromWire() < 0 || display.toWire() >= nQubits || display.fromDepth() < 0 || display.toDepth() >= circuit.get(0).size()) {throw new IndexOutOfBoundsException("Index out of bounds");}
+        // Todo implement here after develop seekAndExtend method
     }
 
     @Override
