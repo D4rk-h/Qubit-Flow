@@ -14,7 +14,7 @@
 
 package model.quantumModel.QuantumCircuit;
 
-import model.quantumModel.BlochSphere.BlochSphere;
+import model.quantumModel.QuantumMeasurementDisplays.BlochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
 import model.quantumModel.QuantumGates.ControlledGate.ControlledGate;
 import model.quantumModel.QuantumState;

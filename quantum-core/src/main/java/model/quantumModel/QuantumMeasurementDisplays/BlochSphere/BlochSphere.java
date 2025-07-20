@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.BlochSphere;
+package model.quantumModel.QuantumMeasurementDisplays.BlochSphere;
 
 import model.quantumModel.MeasurementReport;
 import model.quantumModel.QuantumState;

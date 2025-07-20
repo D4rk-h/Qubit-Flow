@@ -8,3 +8,4 @@ public record Display(
         int toDepth
 )
 {}
+//Todo create Amplitude, Chance, and Density model classes as Display son classes.
