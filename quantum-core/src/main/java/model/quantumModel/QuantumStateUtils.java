@@ -45,4 +45,33 @@ public class QuantumStateUtils {
             throw new IllegalArgumentException("State is not normalized");
         }
     }
+
+    public static QuantumState createCustomSuperposition(int numQubits, int[] states, Complex[] amplitudes) {
+        if (states.length != amplitudes.length) {
+            throw new IllegalArgumentException("States and amplitude length must be equal");
+        }
+        int numStates = (int) Math.pow(2, numQubits);
+        Complex[] stateAmplitudes = new Complex[numStates];
+        for (int i = 0; i < numStates; i++) {
+            stateAmplitudes[i] = new Complex(0.0, 0.0);
+        }
+        for (int i = 0; i < states.length; i++) {
+            if (states[i] < 0 || states[i] >= numStates) {
+                throw new IllegalArgumentException("Invalid state index: " + states[i]);
+            }
+            stateAmplitudes[states[i]] = amplitudes[i];
+        }
+        return new QuantumState(stateAmplitudes, numQubits);
+    }
+
+    private void collapseOptimized(int measuredState, Complex[] amplitudes) {
+        if (measuredState < 0 || measuredState >= amplitudes.length) {
+            throw new IllegalArgumentException("Invalid measured state: " + measuredState);
+        }
+        Complex one = new Complex(1.0, 0.0);
+        Complex zero = new Complex(0.0, 0.0);
+        for (int i = 0; i < amplitudes.length; i++) {
+            amplitudes[i] = (i == measuredState) ? one : zero;
+        }
+    }
 }
