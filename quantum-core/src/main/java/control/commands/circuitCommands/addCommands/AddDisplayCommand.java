@@ -1,6 +1,6 @@
 package control.commands.circuitCommands.addCommands;
 
-import model.commandsModel.Display;
+import model.commandsModel.display.Display;
 import model.commandsModel.Location;
 import model.quantumModel.QuantumCircuit.QuantumCircuit;
 

@@ -1,7 +1,7 @@
 package control.commands.circuitCommands.addCommands;
 
 import control.commands.QuantumCommand;
-import model.commandsModel.Display;
+import model.commandsModel.display.Display;
 import model.commandsModel.Location;
 import model.quantumModel.QuantumGate;
 import model.quantumModel.QuantumState;
@@ -26,9 +26,9 @@ public class AddCommand implements QuantumCommand {
         } else if (elementToAdd instanceof Display) {
             AddDisplayCommand add = new AddDisplayCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
             add.addToCircuit();
-            add.addToCircuit();
+        } else {
+            throw new IllegalArgumentException("Cannot create AddCommand objects with elementToAdd being instance of " + elementToAdd.getClass());
         }
-
     }
 
     @Override

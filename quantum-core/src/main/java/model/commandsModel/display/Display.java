@@ -1,4 +1,4 @@
-package model.commandsModel;
+package model.commandsModel.display;
 
 public record Display(
         Object display,
@@ -8,4 +8,4 @@ public record Display(
         int toDepth
 )
 {}
-//Todo create Amplitude, Chance, and Density model classes as Display son classes.
+//Todo: create Amplitude, Chance, and Density model classes as Display son classes.
