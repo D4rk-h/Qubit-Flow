@@ -14,7 +14,6 @@
 
 package model.quantumModel.QuantumCircuit;
 
-import model.commandsModel.Display;
 import model.quantumModel.QuantumGate;
 import model.quantumModel.QuantumGates.HadamardGate;
 import model.quantumModel.QuantumGates.PauliXGate;
@@ -77,8 +76,31 @@ public class QuantumCircuitUtil {
         }
     }
 
-    public void seekAndExtend(List<List<Object>> circuit, Display display) {
-        // Todo develop a method that pushes all 1 column to right when adding something on a position were is already something
+    public List<List<Object>> shiftColumnsRight(List<List<Object>> circuit, int fromColumnIndex, int shiftAmount) {
+        if (circuit.isEmpty()){throw new IllegalArgumentException("Empty circuit!");}
+        if (fromColumnIndex < 0 || shiftAmount < 0) {throw new IllegalArgumentException("index out of bounds");}
+        List<List<Object>> result = new ArrayList<>();
+        for (int i = 0; i < circuit.size(); i++) {
+            List<Object> row = new ArrayList<>();
+            for (int j = 0; j < circuit.get(i).size(); j++) {
+                row.add(null);
+            }
+            result.add(row);
+        }
+        for (int i=0;i<result.size();i++) {
+            for (int j=0;j<fromColumnIndex;j++) {
+                result.get(i).set(j, circuit.get(i).get(j));
+            }
+        }
+        for (int i=0;i<result.size();i++) {
+            if (result.get(i).size() < result.get(i).size() + shiftAmount) {
+                extend(result, 0, shiftAmount);
+            }
+            for (int j=fromColumnIndex+shiftAmount;j < result.get(i).size() + shiftAmount;j++) {
+                result.get(i).set(j, circuit.get(i).get(j));
+            }
+        }
+        return result;
     }
 
     public String getStateLabel(QuantumState state) {
