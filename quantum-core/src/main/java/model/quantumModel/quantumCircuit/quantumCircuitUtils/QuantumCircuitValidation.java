@@ -3,7 +3,7 @@ package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGates.ControlledGate.ControlledGate;
+import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
 
 import java.util.ArrayList;
 import java.util.List;

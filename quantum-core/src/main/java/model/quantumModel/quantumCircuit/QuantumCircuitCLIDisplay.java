@@ -16,9 +16,9 @@ package model.quantumModel.quantumCircuit;
 
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGates.ControlledGate.ControlledGate;
+import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
 import model.quantumModel.QuantumState;
-import model.quantumModel.quantumStates.BasicQuantumState;
+import model.quantumModel.quantumState.BasicQuantumState;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -16,12 +16,12 @@ package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 
 import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.QuantumState;
-import model.quantumModel.quantumStates.BellStates.PHIState.PHIminus;
-import model.quantumModel.quantumStates.BellStates.PHIState.PHIplus;
-import model.quantumModel.quantumStates.BellStates.PSIState.PSIminus;
-import model.quantumModel.quantumStates.BellStates.PSIState.PSIplus;
-import model.quantumModel.quantumStates.GreenbergHorneZeilinger.GHZState;
-import model.quantumModel.quantumStates.WState.WState;
+import model.quantumModel.quantumState.BellStates.PHIState.PHIminus;
+import model.quantumModel.quantumState.BellStates.PHIState.PHIplus;
+import model.quantumModel.quantumState.BellStates.PSIState.PSIminus;
+import model.quantumModel.quantumState.BellStates.PSIState.PSIplus;
+import model.quantumModel.quantumState.GreenbergHorneZeilinger.GHZState;
+import model.quantumModel.quantumState.WState.WState;
 
 import java.util.ArrayList;
 import java.util.Collections;

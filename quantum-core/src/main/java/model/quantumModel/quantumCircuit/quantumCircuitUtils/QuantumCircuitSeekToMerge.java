@@ -1,10 +1,10 @@
 package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 
 import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGates.HadamardGate;
-import model.quantumModel.quantumGates.PauliXGate;
-import model.quantumModel.quantumGates.PauliYGate;
-import model.quantumModel.quantumGates.PauliZGate;
+import model.quantumModel.quantumGate.HadamardGate;
+import model.quantumModel.quantumGate.PauliXGate;
+import model.quantumModel.quantumGate.PauliYGate;
+import model.quantumModel.quantumGate.PauliZGate;
 
 import java.util.List;
 
