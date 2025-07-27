@@ -15,7 +15,7 @@
 package model.quantumModel;
 
 import model.mathModel.Matrix;
-import model.quantumModel.QuantumPorts.QuantumGatePort;
+import model.quantumModel.quantumPorts.QuantumGatePort;
 
 public class QuantumGate implements QuantumGatePort {
     private final Matrix matrix;

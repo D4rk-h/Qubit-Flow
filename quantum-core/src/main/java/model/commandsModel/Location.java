@@ -1,6 +1,6 @@
 package model.commandsModel;
 
-import model.quantumModel.QuantumCircuit.QuantumCircuit;
+import model.quantumModel.quantumCircuit.QuantumCircuit;
 
 public record Location (
         QuantumCircuit circuit,

@@ -1,8 +1,8 @@
 package control.commands.circuitCommands.addCommands;
 
-import model.commandsModel.display.Display;
+import model.quantumModel.measurementDisplay.Display;
 import model.commandsModel.Location;
-import model.quantumModel.QuantumCircuit.QuantumCircuit;
+import model.quantumModel.quantumCircuit.QuantumCircuit;
 
 public class AddDisplayCommand extends AddCommand implements AddCommandPort {
     private final Display display;

@@ -1,7 +1,7 @@
 package control.commands.circuitCommands.addCommands;
 
 import model.commandsModel.Location;
-import model.quantumModel.QuantumCircuit.QuantumCircuit;
+import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.QuantumState;
 
 public class AddQubitCommand extends AddCommand implements AddCommandPort {
