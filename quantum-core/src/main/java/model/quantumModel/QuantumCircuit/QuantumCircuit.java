@@ -15,6 +15,9 @@
 package model.quantumModel.QuantumCircuit;
 
 import model.commandsModel.display.Display;
+import model.quantumModel.QuantumCircuit.quantumCircuitUtils.QuantumCircuitSeekToMerge;
+import model.quantumModel.QuantumCircuit.quantumCircuitUtils.QuantumCircuitDisplayShift;
+import model.quantumModel.QuantumCircuit.quantumCircuitUtils.QuantumCircuitValidation;
 import model.quantumModel.QuantumMeasurementDisplays.BlochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
 import model.quantumModel.QuantumGates.ControlledGate.ControlledGate;
@@ -34,8 +37,10 @@ public class QuantumCircuit implements QuantumCircuitPort {
     private int nQubits;
     private int depth;
     private List<List<Object>> circuit;
-    private final static QuantumCircuitUtil utils = new QuantumCircuitUtil();
+    private final static QuantumCircuitDisplayShift displayShifter = new QuantumCircuitDisplayShift();
+    private final static QuantumCircuitValidation validate = new QuantumCircuitValidation();
     private final static QuantumCircuitCLIDisplay displayUtil = new QuantumCircuitCLIDisplay();
+    private final static QuantumCircuitSeekToMerge seekToMerge = new QuantumCircuitSeekToMerge();
 
     public QuantumCircuit(int nQubits, int depth) {
         if (nQubits <= 0) {throw new IllegalArgumentException("At least 1 qubit is required");}
@@ -52,42 +57,44 @@ public class QuantumCircuit implements QuantumCircuitPort {
     }
 
     @Override
-    public void add(QuantumGate gate, int i, int j) {
-        if (i < 0 || i >= nQubits || j < 0 || j >= circuit.get(0).size()) {throw new IndexOutOfBoundsException("Index out of bounds");}
-        if (i > 0 && circuit.get(i - 1).get(j) instanceof ControlledGate){((ControlledGate) circuit.get(i-1).get(j)).addTarget(gate);}
-        circuit.get(i).set(j, gate);
+    public void add(QuantumGate gate, int wire, int depth) {
+        validate.validateQuantumGateBounds(this, wire, depth, gate);
+        circuit.get(wire).set(depth, gate);
     }
 
     @Override
     public void add(Display display) {
-        if (display.fromWire() < 0 || display.toWire() >= nQubits || display.fromDepth() < 0 || display.toDepth() >= circuit.get(0).size()) {throw new IndexOutOfBoundsException("Index out of bounds");}
-        // Todo implement here after develop seekAndExtend method
+        validate.validateDisplayBounds(display, this);
+        if (displayShifter.needsShift(display, circuit)) {
+            int shiftAmount = displayShifter.calculateRequiredShiftAmount(display, circuit);
+            this.circuit = displayShifter.shiftColumnsRight(circuit, display.fromDepth(), shiftAmount);
+        }
+        displayShifter.placeDisplay(display, this.circuit);
     }
 
     @Override
     public void addControlled(ControlledGate controlledGate, int i, int j) {
-        if (i < 0 || j < 0 || i > (circuit.get(i).size() + 2) || j > (circuit.get(i).size() + 2)){throw new IllegalArgumentException("Index out of bounds");}
-        if (i>circuit.size() || j>circuit.get(i).size()){utils.extend(circuit, i, j);}
+        validate.validateControlledGateBounds(controlledGate, this, i, j);
         circuit.get(i).set(j, controlledGate);
     }
 
     @Override
     public void add(BlochSphere sphere, int i, int j) {
-        if (i < 0 || i >= nQubits || j < 0 || j >= circuit.get(0).size()) {throw new IndexOutOfBoundsException("Index out of bounds");}
+        validate.validateBlochSphereBounds(this, i, j);
         circuit.get(i).set(j, sphere);
     }
 
     @Override
-    public void add(QuantumState state, int i) {
-        if (i < 0 || i >= nQubits) {throw new IndexOutOfBoundsException("Index out of bounds");}
-        circuit.get(i).set(0, state);
+    public void add(QuantumState state, int wire) {
+        validate.validateQuantumStateBounds(this, wire);
+        circuit.get(wire).set(0, state);
     }
 
     public void mergeGates() {
         for (List<Object> wire : circuit) {
-            utils.seekToMergeMinusY(wire);
-            utils.seekToMergeX(wire);
-            utils.seekToMergeZ(wire);
+            seekToMerge.seekToMergeMinusY(wire);
+            seekToMerge.seekToMergeX(wire);
+            seekToMerge.seekToMergeZ(wire);
         }
     }
 
