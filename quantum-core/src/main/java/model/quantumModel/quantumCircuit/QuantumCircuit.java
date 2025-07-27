@@ -20,18 +20,16 @@ import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitDispl
 import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitValidation;
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGates.ControlledGate.ControlledGate;
-import model.quantumModel.quantumPorts.QuantumCircuitPort;
+import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
+import model.quantumModel.quantumPort.QuantumCircuitPort;
 import model.quantumModel.QuantumState;
-import model.quantumModel.quantumStates.BasicQuantumState;
+import model.quantumModel.quantumState.BasicQuantumState;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-//Todo: Implementation of all kind of Measurement displays and optimize seek methods
 
 public class QuantumCircuit implements QuantumCircuitPort {
     private int nQubits;
@@ -89,6 +87,39 @@ public class QuantumCircuit implements QuantumCircuitPort {
         validate.validateQuantumStateBounds(this, wire);
         circuit.get(wire).set(0, state);
     }
+
+    @Override
+    public QuantumGate removeGate(int wire, int depth){
+        if (circuit.get(wire).get(depth) instanceof QuantumGate){
+            QuantumGate deletedGate = (QuantumGate) circuit.get(wire).get(depth);
+            circuit.get(wire).set(depth, null);
+            return deletedGate;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<Object> removeWire(int wire){
+        List<Object> deletedWire = circuit.get(wire);
+        circuit.remove(wire);
+        return deletedWire;
+    }
+
+    @Override
+    public Display removeDisplay(Display display) {
+        Display deletedDisplay = null;
+        for (int i = display.fromWire(); i < display.toWire(); i++) {
+            for (int j = display.fromDepth(); j < display.toDepth(); j++) {
+                if (circuit.get(i).get(j) instanceof Display) {
+                    deletedDisplay = (Display) circuit.get(i).get(j);
+                    circuit.get(i).set(j, null);
+                }
+            }
+        }
+        return deletedDisplay;
+    }
+
 
     public void mergeGates() {
         for (List<Object> wire : circuit) {
