@@ -12,21 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package view;
-import io.javalin.Javalin;
-import java.nio.file.Paths;
+package model.quantumModel.quantumGate;
 
+import model.mathModel.Complex;
+import model.mathModel.Matrix;
+import model.quantumModel.QuantumGate;
 
-public class UIService {
-        public static void main(String[] args) {
-            Javalin app = Javalin.create(config -> {
-                String webRoot = Paths.get("www/public").toAbsolutePath().toString();
-                config.staticFiles.add(webRoot, io.javalin.http.staticfiles.Location.EXTERNAL);
-            }).start(7000);
+public class TGate extends QuantumGate {
+    public TGate() {
+        super(buildT(), 1, "T (π/8)");
+    }
 
-            app.get("/", ctx -> ctx.redirect("/index.html"));
-            app.get("/circuit", ctx -> ctx.redirect("/circuit.html"));
-
-        }
+    private static Matrix buildT() {
+        Complex[][] tGate = new Complex[2][2];
+        tGate[0][0] = new Complex(1, 0);
+        tGate[0][1] = new Complex(0, 0);
+        tGate[1][0] = new Complex(0, 0);
+        tGate[1][1] = Complex.exponential(Math.PI / 4);
+        return new Matrix(tGate);
+    }
 }
-
