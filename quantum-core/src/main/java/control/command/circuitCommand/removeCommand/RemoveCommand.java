@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command.circuitCommand;
+package control.command.circuitCommand.removeCommand;
 
 import control.command.QuantumCommand;
 import model.commandsModel.Location;

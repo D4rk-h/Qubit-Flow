@@ -13,7 +13,7 @@
 // limitations under the License.
 
 package model.mathModel;
-
+// Todo: Improve implementation making all matrix complex
 public class Matrix {
     private double[][] data;
     private final int rows;

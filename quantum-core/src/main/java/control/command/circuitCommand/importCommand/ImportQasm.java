@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command.circuitCommand;
+package control.command.circuitCommand.importCommand;
 
 import control.command.QuantumCommand;
 
-public class Export implements QuantumCommand {
+public class ImportQasm implements QuantumCommand {
     @Override
     public void execute() {
 
