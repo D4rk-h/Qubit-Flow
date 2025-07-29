@@ -15,8 +15,9 @@
 package model.quantumModel.quantumCircuit;
 
 import model.quantumModel.measurementDisplay.Display;
+import model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization.QuantumCircuitCLIDisplay;
 import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitSeekToMerge;
-import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitDisplayShift;
+import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitDisplayUtils;
 import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitValidation;
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
@@ -35,9 +36,9 @@ public class QuantumCircuit implements QuantumCircuitPort {
     private int nQubits;
     private int depth;
     private List<List<Object>> circuit;
-    private final static QuantumCircuitDisplayShift displayShifter = new QuantumCircuitDisplayShift();
-    private final static QuantumCircuitValidation validate = new QuantumCircuitValidation();
-    private final static QuantumCircuitCLIDisplay displayUtil = new QuantumCircuitCLIDisplay();
+    private final static QuantumCircuitDisplayUtils displayUtils = new QuantumCircuitDisplayUtils();
+    private final static QuantumCircuitValidation validateUtils = new QuantumCircuitValidation();
+    private final static QuantumCircuitCLIDisplay cliUtils = new QuantumCircuitCLIDisplay();
     private final static QuantumCircuitSeekToMerge seekToMerge = new QuantumCircuitSeekToMerge();
 
     public QuantumCircuit(int nQubits, int depth) {
@@ -46,7 +47,7 @@ public class QuantumCircuit implements QuantumCircuitPort {
         this.nQubits = nQubits;
         this.depth = depth;
         this.circuit = IntStream.range(0, nQubits)
-                .mapToObj(i -> new ArrayList<>(Collections.nCopies(depth, null)))
+                .mapToObj(wire -> new ArrayList<>(Collections.nCopies(depth, null)))
                 .collect(Collectors.toList());
     }
 
@@ -56,35 +57,35 @@ public class QuantumCircuit implements QuantumCircuitPort {
 
     @Override
     public void add(QuantumGate gate, int wire, int depth) {
-        validate.validateQuantumGateBounds(this, wire, depth, gate);
+        validateUtils.validateQuantumGateBounds(this, wire, depth, gate);
         circuit.get(wire).set(depth, gate);
     }
 
     @Override
     public void add(Display display) {
-        validate.validateDisplayBounds(display, this);
-        if (displayShifter.needsShift(display, circuit)) {
-            int shiftAmount = displayShifter.calculateRequiredShiftAmount(display, circuit);
-            this.circuit = displayShifter.shiftColumnsRight(circuit, display.fromDepth(), shiftAmount);
+        validateUtils.validateDisplayBounds(display, this);
+        if (displayUtils.needsShift(display, circuit)) {
+            int shiftAmount = displayUtils.calculateRequiredShiftAmount(display, circuit);
+            this.circuit = displayUtils.shiftColumnsRight(circuit, display.fromDepth(), shiftAmount);
         }
-        displayShifter.placeDisplay(display, this.circuit);
+        displayUtils.placeDisplay(display, this.circuit);
     }
 
     @Override
-    public void addControlled(ControlledGate controlledGate, int i, int j) {
-        validate.validateControlledGateBounds(controlledGate, this, i, j);
-        circuit.get(i).set(j, controlledGate);
+    public void addControlled(ControlledGate controlledGate, int wire, int depth) {
+        validateUtils.validateControlledGateBounds(controlledGate, this, wire, depth);
+        circuit.get(wire).set(depth, controlledGate);
     }
 
     @Override
-    public void add(BlochSphere sphere, int i, int j) {
-        validate.validateBlochSphereBounds(this, i, j);
-        circuit.get(i).set(j, sphere);
+    public void add(BlochSphere sphere, int wire, int depth) {
+        validateUtils.validateBlochSphereBounds(this, wire, depth);
+        circuit.get(wire).set(depth, sphere);
     }
 
     @Override
     public void add(QuantumState state, int wire) {
-        validate.validateQuantumStateBounds(this, wire);
+        validateUtils.validateQuantumStateBounds(this, wire);
         circuit.get(wire).set(0, state);
     }
 
@@ -108,16 +109,7 @@ public class QuantumCircuit implements QuantumCircuitPort {
 
     @Override
     public Display removeDisplay(Display display) {
-        Display deletedDisplay = null;
-        for (int i = display.fromWire(); i < display.toWire(); i++) {
-            for (int j = display.fromDepth(); j < display.toDepth(); j++) {
-                if (circuit.get(i).get(j) instanceof Display) {
-                    deletedDisplay = (Display) circuit.get(i).get(j);
-                    circuit.get(i).set(j, null);
-                }
-            }
-        }
-        return deletedDisplay;
+        return displayUtils.removeDisplay(display, this.circuit);
     }
 
 
@@ -130,15 +122,15 @@ public class QuantumCircuit implements QuantumCircuitPort {
     }
 
     public void show() {
-        System.out.println(displayUtil.formatCircuit(this));
+        System.out.println(cliUtils.formatCircuit(this));
     }
 
     public void showWithLabels() {
-        System.out.println(displayUtil.formatCircuitWithLabels(this));
+        System.out.println(cliUtils.formatCircuitWithLabels(this));
     }
 
     public String getCircuitString() {
-        return displayUtil.formatCircuit(this);
+        return cliUtils.formatCircuit(this);
     }
 
     public void setInitialState(BasicQuantumState state, int qubit) {
