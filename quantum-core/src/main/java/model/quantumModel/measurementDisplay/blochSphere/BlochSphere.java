@@ -21,11 +21,11 @@ public class BlochSphere {
     private final BlochSpace center;
     private final double radius;
     private QuantumState currentState;
-    private VisualConfig visualConfig;
+    private BlochVisualizationConfig visualConfig;
     private QuantumState nextState = null;
     private MeasurementReport measurementReport;
 
-    public BlochSphere(BlochSpace center, double radius, QuantumState currentState, QuantumState nextState, VisualConfig visualConfig, MeasurementReport measurementReport) {
+    public BlochSphere(BlochSpace center, double radius, QuantumState currentState, QuantumState nextState, BlochVisualizationConfig visualConfig, MeasurementReport measurementReport) {
         this.center = center;
         this.radius = radius;
         this.currentState = currentState;
@@ -66,11 +66,11 @@ public class BlochSphere {
         this.measurementReport = measurementReport;
     }
 
-    public VisualConfig getVisualConfig() {
+    public BlochVisualizationConfig getVisualConfig() {
         return visualConfig;
     }
 
-    public void setVisualConfig(VisualConfig visualConfig) {
+    public void setVisualConfig(BlochVisualizationConfig visualConfig) {
         this.visualConfig = visualConfig;
     }
 }
