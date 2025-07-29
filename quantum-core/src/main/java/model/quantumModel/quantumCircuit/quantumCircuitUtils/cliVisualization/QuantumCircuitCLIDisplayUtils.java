@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumCircuit;
+package model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization;
 
 import model.mathModel.Complex;
 import model.quantumModel.QuantumGate;

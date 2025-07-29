@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumCircuit;
+package model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization;
 
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
 import model.quantumModel.QuantumState;
 import model.quantumModel.quantumState.BasicQuantumState;
