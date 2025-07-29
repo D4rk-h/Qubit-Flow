@@ -12,28 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command.circuitCommand;
+package control.command.circuitCommand.createCustomCommand;
 
 import control.command.QuantumCommand;
+import model.mathModel.Matrix;
+import model.quantumModel.QuantumGate;
+import java.util.Stack;
 
-public class CreateCustom implements QuantumCommand {
+public class CreateCustomGate implements QuantumCommand {
+    private Matrix matrix;
+    private int numOfQubits;
+    private String customName;
+    private Stack<QuantumGate> customGates;
+
     @Override
     public void execute() {
-
+        customGates.push(new QuantumGate(matrix, numOfQubits, customName));
     }
 
     @Override
     public void undo() {
-
+        customGates.pop();
     }
 
     @Override
     public boolean canUndo() {
-        return false;
+        return !customGates.isEmpty();
     }
 
     @Override
     public void redo() {
-
+        execute();
     }
 }
