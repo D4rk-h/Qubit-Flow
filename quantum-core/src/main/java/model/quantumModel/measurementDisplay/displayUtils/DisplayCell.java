@@ -12,25 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.measurementDisplay;
+package model.quantumModel.measurementDisplay.displayUtils;
 
-import model.quantumModel.measurementDisplay.displayUtils.DisplayCell;
+import model.quantumModel.measurementDisplay.Display;
 
-import java.util.UUID;
+public record DisplayCell(Display parentDisplay) {
 
-public record Display(
-        Object display,
-        int fromWire,
-        int toWire,
-        int fromDepth,
-        int toDepth,
-        UUID id
-) {
-    public Display(Object display, int fromWire, int toWire, int fromDepth, int toDepth) {
-        this(display, fromWire, toWire, fromDepth, toDepth, UUID.randomUUID());
-    }
-
-    public DisplayCell createCell() {
-        return new DisplayCell(this);
+    @Override
+    public String toString() {
+        return parentDisplay.display().toString();
     }
 }
