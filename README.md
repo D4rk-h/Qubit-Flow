@@ -1,7 +1,19 @@
-# Quantum Properties and Algorithms Behavior
+ <h1>
+  <img src="logo.png" alt="Qubit-Flow Logo" width="38" style="vertical-align:-6px;">
+  Qubit-Flow
+</h1>
 
-## Purpose
-### The main purpose of this project is to explain quantum properties and quantum algorithms behavior on quantum circuits. Also display in an elegant way, the transformation of quantum states (vectors) on the Bloch sphere.
+## Quantum Properties and Algorithms Behavior
+
+A Java-based quantum computing simulation library for understanding quantum mechanics through hands-on implementation
+
+## 🎯 Purpose
+This project is my journey from data science into quantum computing. As a self-taught quantum enthusiast, I'm building this library to understand and demonstrate quantum properties and algorithms behavior through interactive experimentation rather than abstract mathematics alone.
+
+## 📚 Educational Foundation
+This implementation is primarily based on concepts from:
+
+"Quantum Computation and Quantum Information" by Nielsen & Chuang - The foundational textbook that guided this project's theoretical framework
 
 ## License <img src="law-24.svg" color=#fff width="24" style="vertical-align: middle;">
 
