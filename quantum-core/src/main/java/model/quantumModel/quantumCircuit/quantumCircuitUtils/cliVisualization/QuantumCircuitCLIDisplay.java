@@ -14,8 +14,12 @@
 
 package model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization;
 
+import model.quantumModel.measurementDisplay.Display;
+import model.quantumModel.measurementDisplay.amplitude.Amplitude;
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
+import model.quantumModel.measurementDisplay.chance.Chance;
+import model.quantumModel.measurementDisplay.density.Density;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
 import model.quantumModel.QuantumState;
@@ -37,7 +41,7 @@ public class QuantumCircuitCLIDisplay {
                     .collect(Collectors.joining("\n"));
         }
 
-        private String formatWire(List<Object> wire) {
+        public String formatWire(List<Object> wire) {
             StringBuilder wireBuilder = new StringBuilder();
             wireBuilder.append(formatInitialState(wire.get(0)));
             for (int position = 1; position < wire.size(); position++) {
@@ -71,8 +75,18 @@ public class QuantumCircuitCLIDisplay {
             if (element instanceof ControlledGate) {
                 return CONTROL_SYMBOL;
             }
-            if (element instanceof BlochSphere) {
-                return "[B]";
+            if (element instanceof Display) {
+                Display display = (Display) element;
+                if (display.display() instanceof Chance) {
+                    return "[Chc]";
+                } else if (display.display() instanceof Density) {
+                    return "[Dns]";
+                } else if (display.display() instanceof Amplitude) {
+                    return "[Amp]";
+                } else if (display.display() instanceof BlochSphere){
+                    return "[Blc]";
+                }
+                return "[NaN]";
             }
             return EMPTY_WIRE;
         }

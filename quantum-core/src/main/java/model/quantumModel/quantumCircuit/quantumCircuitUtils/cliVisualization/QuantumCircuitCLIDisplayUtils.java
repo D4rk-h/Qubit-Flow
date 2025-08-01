@@ -55,7 +55,7 @@ public class QuantumCircuitCLIDisplayUtils {
         return "|ψ⟩";
     }
 
-    public String formatGate(QuantumGate gate) {
+    public String formatGate(QuantumGate  gate) {
         String gateName = gate.getName();
         switch (gateName.toUpperCase()) {
             case "HADAMARD":
@@ -84,6 +84,6 @@ public class QuantumCircuitCLIDisplayUtils {
 
     private static String truncateGateName(String gateName) {
         if (gateName.length() <= 3) {return "[" + gateName + "]";}
-        return "[" + gateName.substring(0, 3) + "]";
+        return "[" + gateName.substring(0, 1) + "]";
     }
 }

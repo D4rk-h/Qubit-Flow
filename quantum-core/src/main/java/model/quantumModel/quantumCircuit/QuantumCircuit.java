@@ -112,7 +112,6 @@ public class QuantumCircuit implements QuantumCircuitPort {
         return displayUtils.removeDisplay(display, this.circuit);
     }
 
-
     public void mergeGates() {
         for (List<Object> wire : circuit) {
             seekToMerge.seekToMergeMinusY(wire);
