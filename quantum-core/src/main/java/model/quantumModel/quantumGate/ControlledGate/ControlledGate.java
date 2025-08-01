@@ -16,6 +16,7 @@ package model.quantumModel.quantumGate.ControlledGate;
 
 import model.quantumModel.QuantumState;
 
+//todo: fix this class implementation, same with multiple qubit states
 public class ControlledGate {
     private QuantumState[] control;
     private int controlQubits;
