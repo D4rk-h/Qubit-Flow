@@ -26,9 +26,7 @@ public class ExportJSON implements QuantumCommand {
             Map<String, String> wire = new HashMap<>();
             for (int i=0;i<circuit.getCircuit().size();i++) {
                 String nWire = "wire-" + i;
-                for (int j=0;j<circuit.getCircuit().get(i).size();j++) {
-                    wire.put(nWire, utils.formatWire(circuit.getCircuit().get(i)));
-                }
+                wire.put(nWire, utils.formatWire(circuit.getCircuit().get(i)));
                 circuitData.put("circuit", wire);
             }
             circuitData.put("numOfQubits", circuit.getnQubits());
