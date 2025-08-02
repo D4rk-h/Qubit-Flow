@@ -24,10 +24,10 @@ public class PauliYGate extends QuantumGate {
     }
     private static Matrix buildPauliY(){
         Complex[][] pauliY = new Complex[2][2];
-        pauliY[0][0] = new Complex(0, 0);
-        pauliY[0][1] = new Complex(0, -1);
-        pauliY[1][0] = new Complex(0, 1);
-        pauliY[1][1] = new Complex(0, 0);
+        pauliY[0][0] = Complex.ZERO;
+        pauliY[0][1] = Complex.MINUS_I;
+        pauliY[1][0] = Complex.I;
+        pauliY[1][1] = Complex.ZERO;
         return new Matrix(pauliY);
     }
 }

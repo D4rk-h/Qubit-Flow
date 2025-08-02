@@ -25,9 +25,9 @@ public class TGate extends QuantumGate {
 
     private static Matrix buildT() {
         Complex[][] tGate = new Complex[2][2];
-        tGate[0][0] = new Complex(1, 0);
-        tGate[0][1] = new Complex(0, 0);
-        tGate[1][0] = new Complex(0, 0);
+        tGate[0][0] = Complex.ONE;
+        tGate[0][1] = Complex.ZERO;
+        tGate[1][0] = Complex.ZERO;
         tGate[1][1] = Complex.exponential(Math.PI / 4);
         return new Matrix(tGate);
     }
