@@ -11,29 +11,3 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-package control.command.circuitCommand;
-
-import control.command.QuantumCommand;
-
-public class Import implements QuantumCommand {
-    @Override
-    public void execute() {
-
-    }
-
-    @Override
-    public void undo() {
-
-    }
-
-    @Override
-    public boolean canUndo() {
-        return false;
-    }
-
-    @Override
-    public void redo() {
-
-    }
-}
