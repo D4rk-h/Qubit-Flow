@@ -12,8 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command;
+package model.quantumModel.measurementDisplay.displayUtils;
 
-public interface CommandPort {
-    void execute();
+public enum DisplayCategory {
+    AMPLITUDE("Amplitude", "[A]"),
+    PROBABILITY("Probability", "[P]"),
+    DENSITY("Density Matrix", "[D]"),
+    BLOCH_SPHERE("Bloch Sphere", "[B]");
+
+    private final String name;
+    private final String symbol;
+
+    DisplayCategory(String name, String symbol) {
+        this.name = name;
+        this.symbol = symbol;
+    }
+
+    public String getName() { return name; }
+    public String getSymbol() { return symbol; }
 }

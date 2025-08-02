@@ -25,10 +25,10 @@ public class PauliXGate extends QuantumGate {
 
     private static Matrix buildPauliX() {
         Complex[][] pauliX = new Complex[2][2];
-        pauliX[0][0] = new Complex(0, 0);
-        pauliX[0][1] = new Complex(1, 0);
-        pauliX[1][0] = new Complex(1, 0);
-        pauliX[1][1] = new Complex(0, 0);
+        pauliX[0][0] = Complex.ZERO;
+        pauliX[0][1] = Complex.ONE;
+        pauliX[1][0] = Complex.ONE;
+        pauliX[1][1] = Complex.ZERO;
         return new Matrix(pauliX);
     }
 }

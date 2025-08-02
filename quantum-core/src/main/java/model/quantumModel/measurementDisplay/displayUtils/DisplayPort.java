@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command;
+package model.quantumModel.measurementDisplay.displayUtils;
 
-public interface CommandPort {
-    void execute();
+import model.quantumModel.quantumState.QuantumState;
+
+public interface DisplayPort {
+    String getDisplaySymbol();
+    String getDisplayName();
+    Object renderContent();
+    boolean isCompatibleWith(QuantumState state);
 }

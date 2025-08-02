@@ -1,8 +1,8 @@
-package control.command.circuitCommand;
+package control.command.circuitCommand.importCommand;
 
 import control.command.QuantumCommand;
 
-public class Export implements QuantumCommand {
+public class ImportQiskit implements QuantumCommand {
     @Override
     public void execute() {
 

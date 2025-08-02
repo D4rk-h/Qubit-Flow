@@ -26,10 +26,10 @@ public class HadamardGate extends QuantumGate {
     private static Matrix buildHadamard(){
         Complex[][] hadamard = new Complex[2][2];
         double value = 1 / Math.sqrt(2);
-        hadamard[0][0] = new Complex(value, 0);
-        hadamard[0][1] = new Complex(value, 0);
-        hadamard[1][0] = new Complex(value, 0);
-        hadamard[1][1] = new Complex(-value, 0);
+        hadamard[0][0] = Complex.ONE.scale(value);
+        hadamard[0][1] = Complex.ONE.scale(value);
+        hadamard[1][0] = Complex.ONE.scale(value);
+        hadamard[1][1] = Complex.ONE.scale(-value);
         return new Matrix(hadamard);
     }
 }

@@ -12,10 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel;
+package control.command.circuitCommand.importCommand;
 
-public record MeasurementReport (
-        double measure,
-        QuantumState collapsedState
-){
+import control.command.QuantumCommand;
+
+public class ImportQasm implements QuantumCommand {
+    @Override
+    public void execute() {
+
+    }
+
+    @Override
+    public void undo() {
+
+    }
+
+    @Override
+    public boolean canUndo() {
+        return false;
+    }
+
+    @Override
+    public void redo() {
+
+    }
 }

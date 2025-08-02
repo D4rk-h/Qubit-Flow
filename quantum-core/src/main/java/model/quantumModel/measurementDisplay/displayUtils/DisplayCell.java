@@ -12,8 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command;
+package model.quantumModel.measurementDisplay.displayUtils;
 
-public interface CommandPort {
-    void execute();
+import model.quantumModel.measurementDisplay.Display;
+
+public record DisplayCell(Display parentDisplay) {
+
+    @Override
+    public String toString() {
+        return parentDisplay.display().toString();
+    }
 }

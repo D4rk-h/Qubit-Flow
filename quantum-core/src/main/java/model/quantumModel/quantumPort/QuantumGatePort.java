@@ -14,7 +14,7 @@
 
 package model.quantumModel.quantumPort;
 
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 
 public interface QuantumGatePort {
     QuantumState apply(QuantumState state);

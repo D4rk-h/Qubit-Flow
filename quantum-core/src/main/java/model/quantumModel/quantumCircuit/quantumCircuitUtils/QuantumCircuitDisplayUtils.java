@@ -15,32 +15,27 @@
 package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 
 import model.quantumModel.measurementDisplay.Display;
-import model.quantumModel.QuantumState;
-import model.quantumModel.quantumState.BellStates.PHIState.PHIminus;
-import model.quantumModel.quantumState.BellStates.PHIState.PHIplus;
-import model.quantumModel.quantumState.BellStates.PSIState.PSIminus;
-import model.quantumModel.quantumState.BellStates.PSIState.PSIplus;
-import model.quantumModel.quantumState.GreenbergHorneZeilinger.GHZState;
-import model.quantumModel.quantumState.WState.WState;
+import model.quantumModel.measurementDisplay.displayUtils.DisplayCell;
+import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class QuantumCircuitDisplayShift {
+public class QuantumCircuitDisplayUtils {
 
     public List<List<Object>> shiftColumnsRight(List<List<Object>> circuit, int fromColumnIndex, int shiftAmount) {
         if (circuit == null || circuit.isEmpty()) {throw new IllegalArgumentException("Circuit cannot be null or empty");}
         if (fromColumnIndex < 0 || shiftAmount <= 0) {throw new IllegalArgumentException("fromColumnIndex and shiftAmount must be positive");}
-        int rows = circuit.size();
+        int wires = circuit.size();
         int originalCols = circuit.get(0).size();
         int newCols = originalCols + shiftAmount;
         List<List<Object>> result = new ArrayList<>();
-        for (int i = 0; i < rows; i++) {
+        for (int wire = 0; wire < wires; wire ++) {
             List<Object> row = new ArrayList<>(Collections.nCopies(newCols, null));
             result.add(row);
         }
-        for (int row = 0; row < rows; row++) {
+        for (int row = 0; row < wires; row++) {
             List<Object> originalRow = circuit.get(row);
             List<Object> newRow = result.get(row);
             for (int col = 0; col < fromColumnIndex && col < originalRow.size(); col++) {
@@ -92,9 +87,9 @@ public class QuantumCircuitDisplayShift {
     }
 
     public boolean needsShift(Display display, List<List<Object>> circuit) {
-        for (int i = display.fromWire(); i <= display.toWire(); i++) {
-            for (int j = display.fromDepth(); j <= display.toDepth(); j++) {
-                if (circuit.get(i).get(j) != null) {
+        for (int wire = display.fromWire(); wire <= display.toWire(); wire ++) {
+            for (int depth = display.fromDepth(); depth <= display.toDepth(); depth++) {
+                if (circuit.get(wire).get(depth) != null) {
                     return true;
                 }
             }
@@ -102,14 +97,38 @@ public class QuantumCircuitDisplayShift {
         return false;
     }
 
-    public String getStateLabel(QuantumState state) {
-        if (state instanceof PHIplus) return "|Φ+⟩";
-        if (state instanceof PHIminus) return "|Φ-⟩";
-        if (state instanceof PSIplus) return "|Ψ+⟩";
-        if (state instanceof PSIminus) return "|Ψ-⟩";
-        if (state instanceof GHZState) return "|GHZ⟩";
-        if (state instanceof WState) return "|W⟩";
-        if (state.getNumQubits() == 1) return "|" + state + "⟩";
+    public Display removeDisplay(Display display, List<List<Object>> circuit) {
+        Display removedDisplay = null;
+        boolean found = false;
+        for (int wire = display.fromWire(); wire <= display.toWire(); wire++) {
+            for (int depth = display.fromDepth(); depth <= display.toDepth(); depth++) {
+                Object cell = circuit.get(wire).get(depth);
+                if (cell instanceof DisplayCell) {
+                    if (((DisplayCell) cell).parentDisplay().id().equals(display.id())) {
+                        if (!found) {removedDisplay = ((DisplayCell) cell).parentDisplay();}
+                        circuit.get(wire).set(depth, null);
+                        found = true;
+                    }
+                }
+            }
+        }
+        return removedDisplay;
+    }
+
+    private Display findDisplayAt(int wire, int depth, List<List<Object>> circuit) {
+        if (wire >= 0 && wire < circuit.size() && depth >= 0 && depth < circuit.get(wire).size()) {
+            Object cell = circuit.get(wire).get(depth);
+            if (cell instanceof DisplayCell) {
+                return ((DisplayCell) cell).parentDisplay();
+            }
+        }
+        return null;
+    }
+
+    public boolean hasDisplayAt(int wire, int depth, List<List<Object>> circuit) {return findDisplayAt(wire, depth, circuit) != null;}
+
+    public String getStateLabel(BasicQuantumState state) {
+        if (state.toQuantumState().getNumQubits() == 1) return state.getSymbol() ;
         return "|ψ⟩";
     }
 }
