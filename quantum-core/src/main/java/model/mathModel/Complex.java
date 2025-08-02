@@ -88,6 +88,13 @@ public class Complex {
         return new Complex(real, imag);
     }
 
+    public Complex divide(Complex number) {
+        double denominator = number.real * number.real + number.imaginary * number.imaginary;
+        double real = (this.real * number.real + this.imaginary * number.imaginary) / denominator;
+        double imag = (this.imaginary * number.real - this.real * number.imaginary) / denominator;
+        return new Complex(real, imag);
+    }
+
     public Complex scale(double lambda) {return new Complex(this.real * lambda, this.imaginary * lambda);}
 
     public String toString() {if (real == 0) return imaginary + "i"; if (imaginary == 0) return real + ""; if (imaginary <  0) return real + " - " + (-imaginary) + "i";return real + " + " + imaginary + "i";}

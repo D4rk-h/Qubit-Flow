@@ -13,44 +13,23 @@
 // limitations under the License.
 
 package model.mathModel;
-// Todo: Improve implementation making all matrix complex
+
 public class Matrix {
-    private double[][] data;
     private final int rows;
-    private static final double EPSILON = 1e-10;
     private final int cols;
-    private Complex[][] complexData;
-    private boolean isComplex = false;
+    private Complex[][] data;
 
     public Matrix(Complex[][] data){
-        this.complexData = data;
-        this.isComplex = true;
+        this.data = data;
         this.rows = data.length;
         this.cols = data[0].length;
     }
 
     public Matrix(int rows, int cols){
-        if (rows <= 0 || cols <= 0) {
-            throw new IllegalArgumentException("The matrix dimension cannot be built by negative numbers or 0");
-        }
+        if (rows <= 0 || cols <= 0) {throw new IllegalArgumentException("The matrix dimension cannot be built by negative numbers or 0");}
         this.rows = rows;
         this.cols = cols;
-        this.data = new double[rows][cols];
-    }
-
-    public Matrix(double[][] data){
-        if (data == null ||data.length == 0 || data[0].length == 0){
-            throw new IllegalArgumentException("MathCore.model.Matrix is empty.");
-        }
-        this.rows = data.length;
-        this.cols = data[0].length;
-        this.data = new double[rows][cols];
-        for (int i = 0; i < rows; i ++ ){
-            if (data[i].length != cols){
-                throw new IllegalArgumentException("Inconsistent matrix. e.g. 2x3, 2x1...");
-            }
-            System.arraycopy(data[i], 0, this.data[i], 0, cols);
-        }
+        this.data = new Complex[rows][cols];
     }
 
     public int getCols() {
@@ -61,52 +40,35 @@ public class Matrix {
         return rows;
     }
 
-    public double[][] getData(){return this.data;}
-    public Complex[][] getComplexData(){return this.complexData;}
+    public Complex[][] getData(){return this.data;}
 
-    public void set(int row, int col, double newValue){
-        if (row < 0 || row >= rows || col < 0 || col>= cols){
-            throw new IndexOutOfBoundsException("Index out of bounds");
-        }
+    public void set(int row, int col, Complex newValue) {
+        if (row < 0 || row >= rows || col < 0 || col>= cols){throw new IndexOutOfBoundsException("Index out of bounds");}
         data[row][col] = newValue;
     }
 
-    public Object get(int row, int col, boolean isComplex){
-        if (row < 0 || row >= rows || col < 0 || col>= cols){
-            throw new IndexOutOfBoundsException("Index out of bounds");
-        }
-        if (isComplex){return complexData[row][col];}
+    public Complex get(int row, int col){
+        if (row < 0 || row >= rows || col < 0 || col>= cols){throw new IndexOutOfBoundsException("Index out of bounds");}
         return data[row][col];
     }
 
-    public void set(int row, int col, Complex newValue){
-        if (row < 0 || row >= rows || col < 0 || col>= cols){
-            throw new IndexOutOfBoundsException("Index out of bounds");
-        }
-        complexData[row][col] = newValue;
-    }
-
     public Matrix add(Matrix other) {
-        if (this.rows != other.rows || this.cols != other.cols){
-            throw new IllegalArgumentException("Cannot Sum Matrices of distinct dimensions");
-        }
+        if (this.rows != other.rows || this.cols != other.cols){throw new IllegalArgumentException("Cannot Sum Matrices of distinct dimensions");}
         Matrix result = new Matrix(rows, cols);
         for (int i=0;i<rows;i++){
             for (int j=0;j<cols;j++){
-                result.data[i][j] = data[i][j] + other.data[i][j];
+                result.data[i][j] = data[i][j].add(other.data[i][j]);
             }
         }
         return result;
     }
 
     public Matrix sub(Matrix other) {
-        if (this.rows != other.rows || this.cols != other.cols){
-            throw new IllegalArgumentException("Cannot Subtract Matrices of distinct dimensions");
-        }
+        if (this.rows != other.rows || this.cols != other.cols){throw new IllegalArgumentException("Cannot Subtract Matrices of distinct dimensions");}
         Matrix result = new Matrix(rows, cols);
         for (int i=0;i<rows;i++){
             for (int j=0;j<cols;j++){
-                result.data[i][j] = data[i][j] - other.data[i][j];
+                result.data[i][j] = data[i][j].subtract(other.data[i][j]);
             }
         }
         return result;
@@ -119,9 +81,9 @@ public class Matrix {
         Matrix result = new Matrix(this.rows, other.cols);
         for (int i=0;i<this.rows;i++){
             for (int j=0;j<other.cols;j++){
-                double sum = 0;
+                Complex sum = Complex.ZERO;
                 for (int k=0;k<this.cols;k++) {
-                    sum += data[i][k] * other.data[k][j];
+                    sum = sum.add(data[i][k].multiply(other.data[k][j]));
                 }
                 result.data[i][j] = sum;
             }
@@ -131,37 +93,31 @@ public class Matrix {
 
     public Matrix adjoint() {
         Matrix transposed = this.transpose();
-        for (int i=0; i<transposed.getComplexData().length;i++) {
-            for (int j=0; j<transposed.getComplexData()[i].length; j++) {
-                transposed.set(i, j, transposed.getComplexData()[i][j].conjugate());
+        for (int i=0; i<transposed.getData().length;i++) {
+            for (int j=0; j<transposed.getData()[i].length; j++) {
+                transposed.set(i, j, transposed.getData()[i][j].conjugate());
             }
         }
         return transposed;
     }
 
     public Complex[] multiplyVector(Complex[] vector) {
-        if (isComplex) {
-            if (vector.length != cols) {
-                throw new IllegalArgumentException("Vector length must match matrix columns");
+        if (vector.length != cols) {throw new IllegalArgumentException("Vector length must match matrix columns");}
+        Complex[] result = new Complex[rows];
+        for (int i=0;i<rows;i++) {
+            result[i] = new Complex(0, 0);
+            for (int j=0;j<cols;j++) {
+                result[i] = result[i].add(data[i][j].multiply(vector[j]));
             }
-            Complex[] result = new Complex[rows];
-            for (int i=0;i<rows;i++) {
-                result[i] = new Complex(0, 0);
-                for (int j=0;j<cols;j++) {
-                    result[i] = result[i].add(complexData[i][j].multiply(vector[j]));
-                }
-            }
-            return result;
-        } else {
-            throw new IllegalStateException("Cannot multiply complex vector with real matrix");
         }
+        return result;
     }
 
     public Matrix multiply(double lambda){
         Matrix result = new Matrix(rows, cols);
         for (int i=0;i<rows;i++) {
             for (int j=0;j<cols;j++) {
-                result.data[i][j] = lambda * this.data[i][j];
+                result.data[i][j] = this.data[i][j].scale(lambda);
             }
         }
         return result;
@@ -171,16 +127,14 @@ public class Matrix {
         Matrix result = new Matrix(rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                result.complexData[i][j] = new Complex(lambda.getRealPart() * this.data[i][j], lambda.getImaginaryPart() * this.data[i][j]);
+                result.data[i][j] = this.data[i][j].multiply(lambda);
             }
         }
         return result;
     }
 
     public Matrix transpose() {
-        if (this.rows <= 0 || this.cols <= 0) {
-            throw new IllegalArgumentException("MathCore.model.Matrix is empty...");
-        }
+        if (this.rows <= 0 || this.cols <= 0) {throw new IllegalArgumentException("MathCore.model.Matrix is empty...");}
         Matrix result = new Matrix(rows, cols);
         for (int i=0;i<this.rows;i++) {
             for (int j=0;j<this.cols;j++){
@@ -191,56 +145,51 @@ public class Matrix {
     }
 
     public Matrix conjugate() {
-        if (this.complexData.length > 0){
-            for (int i=0;i<this.complexData.length;i++) {
-                for (int j=0;j<this.complexData[i].length;j++) {
-                    this.complexData[i][j] = this.complexData[i][j].conjugate();
+        Matrix result = new Matrix(this.rows, this.cols);
+        if (this.data.length > 0){
+            for (int i=0;i<this.data.length;i++) {
+                for (int j=0;j<this.data[i].length;j++) {
+                    result.data[i][j] = this.data[i][j].conjugate();
                 }
             }
         }
-        return this;
+        return result;
     }
 
-    public double determinant() {
-        if (rows != cols) {
-            throw new IllegalStateException("Determinant can only be calculated for square matrices. Got " + rows + "x" + cols);
-        }
-        if (rows == 0) {
-            return 1.0;
-        }
+    public Complex determinant() {
+        if (rows != cols) {throw new IllegalStateException("Determinant can only be calculated for square matrices. Got " + rows + "x" + cols);}
+        if (rows == 0) {return Complex.ONE;}
         return calculateDeterminant(this.data);
     }
 
-    private double calculateDeterminant(double[][] matrixData) {
+    private Complex calculateDeterminant(Complex[][] matrixData) {
         int n = matrixData.length;
-        if (n == 1) {
-            return matrixData[0][0];
-        }
+        if (n == 1) {return matrixData[0][0];}
         if (n == 2) {
-            return matrixData[0][0] * matrixData[1][1] - matrixData[0][1] * matrixData[1][0];
+            Complex term1 = matrixData[0][0].multiply(matrixData[1][1]);
+            Complex term2 = matrixData[0][1].multiply(matrixData[1][0]);
+            return term1.subtract(term2);
         }
-        double det = 0;
+        Complex det = Complex.ZERO;
         for (int j = 0; j < n; j++) {
-            double[][] submatrix = createSubmatrix(matrixData, 0, j);
-            double cofactor = Math.pow(-1, j) * matrixData[0][j] * calculateDeterminant(submatrix);
-            det += cofactor;
+            Complex[][] submatrix = createSubmatrix(matrixData, 0, j);
+            Complex minorDet = calculateDeterminant(submatrix);
+            Complex sign = (j % 2 == 0) ? Complex.ONE : Complex.ONE.scale(-1.0);
+            Complex cofactor = sign.multiply(matrixData[0][j]).multiply(minorDet);
+            det = det.add(cofactor);
         }
         return det;
     }
 
-    private double[][] createSubmatrix(double[][] originalData, int rowToRemove, int colToRemove) {
+    private Complex[][] createSubmatrix(Complex[][] originalData, int rowToRemove, int colToRemove) {
         int n = originalData.length;
-        double[][] submatrix = new double[n - 1][n - 1];
+        Complex[][] submatrix = new Complex[n - 1][n - 1];
         int subRow = 0;
         for (int r = 0; r < n; r++) {
-            if (r == rowToRemove) {
-                continue;
-            }
+            if (r == rowToRemove) {continue;}
             int subCol = 0;
             for (int c = 0; c < n; c++) {
-                if (c == colToRemove) {
-                    continue;
-                }
+                if (c == colToRemove) {continue;}
                 submatrix[subRow][subCol] = originalData[r][c];
                 subCol++;
             }
@@ -249,45 +198,39 @@ public class Matrix {
         return submatrix;
     }
 
-    public boolean isSquared(){
-        return rows == cols;
-    }
+    public boolean isSquared(){return rows == cols;}
 
     public Matrix inverse() {
-        if (rows != cols) {
-            throw new IllegalStateException("MathCore.model.Matrix must be square to calculate inverse. Got " + rows + "x" + cols);
-        }
+        if (rows != cols) {throw new IllegalStateException("Matrix must be square to calculate inverse. Got " + rows + "x" + cols);}
         int n = rows;
-        if (n == 0) {
-            throw new IllegalStateException("Cannot invert a 0x0 matrix.");
-        }
-        double det = determinant();
-        if (Math.abs(det) < EPSILON) {
-            throw new IllegalStateException("MathCore.model.Matrix is singular (determinant is approximately zero), cannot calculate inverse.");
-        }
+        if (n == 0) {throw new IllegalStateException("Cannot invert a 0x0 matrix.");}
+        Complex det = determinant();
+        if (det.magnitude() < Complex.EPSILON) {throw new IllegalStateException("Matrix is singular (determinant is approximately zero), cannot calculate inverse.");}
         if (n == 1) {
-            return new Matrix(new double[][]{{1.0 / data[0][0]}});
+            Complex[][] inverseData = new Complex[1][1];
+            inverseData[0][0] = Complex.ONE.divide(data[0][0]);
+            return new Matrix(inverseData);
         }
-        double[][] cofactorData = new double[n][n];
+        Complex[][] cofactorData = new Complex[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                double[][] minor = createSubmatrix(this.data, i, j);
-                double minorDet = calculateDeterminant(minor);
-                double sign = ((i + j) % 2 == 0) ? 1.0 : -1.0;
-                cofactorData[i][j] = sign * minorDet;
+                Complex[][] minor = createSubmatrix(this.data, i, j);
+                Complex minorDet = calculateDeterminant(minor);
+                Complex sign = ((i + j) % 2 == 0) ? Complex.ONE : Complex.ONE.scale(-1.0);
+                cofactorData[i][j] = sign.multiply(minorDet);
             }
         }
-        double[][] adjugateData = new double[n][n];
+        Complex[][] adjugateData = new Complex[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 adjugateData[j][i] = cofactorData[i][j];
             }
         }
-        double[][] inverseData = new double[n][n];
-        double invDet = 1.0 / det;
+        Complex[][] inverseData = new Complex[n][n];
+        Complex invDet = Complex.ONE.divide(det);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                inverseData[i][j] = invDet * adjugateData[i][j];
+                inverseData[i][j] = invDet.multiply(adjugateData[i][j]);
             }
         }
         return new Matrix(inverseData);
