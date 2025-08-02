@@ -15,13 +15,27 @@
 package model.mathModel;
 
 public class Complex {
+    public static final Complex ZERO = new Complex(0.0, 0.0);
+    public static final Complex ONE = new Complex(1.0, 0.0);
+    public static final Complex I = new Complex(0.0, 1.0);
+    public static final Complex MINUS_I = new Complex(0.0, -1.0);
+
     private double real;
     private double imaginary;
+    public static final double EPSILON = 1e-10;
+    private transient Double cachedMagnitude;
+    private transient Double cachedPhase;
 
-    public Complex(double real_part, double imaginary_part) {
-        real = real_part;
-        imaginary = imaginary_part;
+    public Complex(double real, double imaginary) {
+        this.real = real;
+        this.imaginary = imaginary;
     }
+
+    public Complex real(double real) {return new Complex(real, 0.0);}
+
+    public Complex imaginary(double imaginary) {return new Complex(0.0, imaginary);}
+
+    public Complex polar(double magnitude, double phase) {return new Complex(magnitude * Math.cos(phase), magnitude * Math.sin(phase));}
 
     public double getRealPart(){
         return real;
@@ -74,12 +88,19 @@ public class Complex {
         return new Complex(real, imag);
     }
 
-    public Complex scalar(double lambda) {return new Complex(this.real * lambda, this.imaginary * lambda);}
+    public Complex scale(double lambda) {return new Complex(this.real * lambda, this.imaginary * lambda);}
 
-    public String toString() {if (real == 0) return imaginary + "i"; if (imaginary == 0) return real + ""; if (imaginary <  0) return real + " - " + (-imaginary) + "i";return real + " + " + imaginary + "i";
+    public String toString() {if (real == 0) return imaginary + "i"; if (imaginary == 0) return real + ""; if (imaginary <  0) return real + " - " + (-imaginary) + "i";return real + " + " + imaginary + "i";}
+
+    public static Complex exponential(double theta) {return new Complex(Math.cos(theta), Math.sin(theta));}
+
+    public boolean isApproximatelyEqual(Complex other, double tolerance) {
+        if (other == null) return false;
+        return Math.abs(this.real - other.real) < tolerance &&
+                Math.abs(this.imaginary - other.imaginary) < tolerance;
     }
 
-    public static Complex exponential(double theta) {
-        return new Complex(Math.cos(theta), Math.sin(theta));
+    public boolean isApproximatelyEqual(Complex other) {
+        return isApproximatelyEqual(other, EPSILON);
     }
 }
