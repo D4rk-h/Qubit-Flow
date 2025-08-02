@@ -14,7 +14,7 @@
 
 package model.quantumModel.measurementDisplay.displayUtils;
 
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.measurementDisplay.amplitude.Amplitude;
 import model.quantumModel.measurementDisplay.amplitude.AmplitudeFormat;

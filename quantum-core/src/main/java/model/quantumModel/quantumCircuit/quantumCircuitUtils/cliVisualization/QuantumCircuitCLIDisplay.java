@@ -22,8 +22,8 @@ import model.quantumModel.measurementDisplay.chance.Chance;
 import model.quantumModel.measurementDisplay.density.Density;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
-import model.quantumModel.QuantumState;
-import model.quantumModel.quantumState.BasicQuantumState;
+import model.quantumModel.quantumState.QuantumState;
+import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
 
 import java.util.List;
 import java.util.stream.Collectors;

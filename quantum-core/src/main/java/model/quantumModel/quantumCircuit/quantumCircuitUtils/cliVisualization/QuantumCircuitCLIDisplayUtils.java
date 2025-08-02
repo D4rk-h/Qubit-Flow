@@ -16,7 +16,7 @@ package model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization;
 
 import model.mathModel.Complex;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 
 public class QuantumCircuitCLIDisplayUtils {
     private static boolean isApproximatelyEqual(Complex a, Complex b) {

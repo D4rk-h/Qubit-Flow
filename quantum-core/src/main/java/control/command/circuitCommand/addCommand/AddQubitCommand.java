@@ -16,7 +16,7 @@ package control.command.circuitCommand.addCommand;
 
 import model.commandsModel.Location;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 
 public class AddQubitCommand extends AddCommand implements AddCommandPort {
     private final QuantumState state;

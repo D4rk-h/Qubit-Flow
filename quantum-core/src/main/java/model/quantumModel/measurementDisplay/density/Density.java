@@ -16,7 +16,7 @@ package model.quantumModel.measurementDisplay.density;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayCategory;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
 

@@ -15,7 +15,7 @@
 package model.quantumModel.measurementDisplay.amplitude;
 
 import model.mathModel.Complex;
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayCategory;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
 

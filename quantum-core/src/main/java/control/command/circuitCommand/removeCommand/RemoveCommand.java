@@ -17,7 +17,7 @@ package control.command.circuitCommand.removeCommand;
 import control.command.QuantumCommand;
 import model.commandsModel.Location;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.measurementDisplay.Display;
 
 public class RemoveCommand implements QuantumCommand {

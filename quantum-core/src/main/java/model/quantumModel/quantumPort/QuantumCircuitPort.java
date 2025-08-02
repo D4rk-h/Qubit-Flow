@@ -18,7 +18,7 @@ import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
 import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 
 import java.util.List;
 

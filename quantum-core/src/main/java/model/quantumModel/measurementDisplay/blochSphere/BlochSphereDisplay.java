@@ -15,7 +15,7 @@
 package model.quantumModel.measurementDisplay.blochSphere;
 
 import model.mathModel.Complex;
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayCategory;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
 
@@ -40,9 +40,7 @@ public class BlochSphereDisplay implements DisplayPort {
 
         @Override
         public Object renderContent() {
-            if (isCompatibleWith(targetState)) {
-                throw new IllegalArgumentException("Bloch Sphere doesn't support Multi-qubit state");
-            }
+            if (isCompatibleWith(targetState)) {throw new IllegalArgumentException("Bloch Sphere doesn't support Multi-qubit state");}
             BlochSpace coordinates = calculateBlochCoordinates(targetState);
             return new BlochSphere(
                     new BlochSpace(coordinates.x(), coordinates.y(), coordinates.z()),

@@ -14,7 +14,7 @@
 
 package model.quantumModel.measurementDisplay.displayUtils;
 
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 
 public interface DisplayPort {
     String getDisplaySymbol();

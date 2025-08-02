@@ -18,7 +18,7 @@ import control.command.QuantumCommand;
 import model.quantumModel.measurementDisplay.Display;
 import model.commandsModel.Location;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.QuantumState;
+import model.quantumModel.quantumState.QuantumState;
 
 
 public class AddCommand implements QuantumCommand {

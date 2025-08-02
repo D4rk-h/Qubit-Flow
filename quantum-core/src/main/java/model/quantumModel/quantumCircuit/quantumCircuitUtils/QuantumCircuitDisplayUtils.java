@@ -15,14 +15,8 @@
 package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 
 import model.quantumModel.measurementDisplay.Display;
-import model.quantumModel.QuantumState;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayCell;
-import model.quantumModel.quantumState.BellStates.PHIState.PHIminus;
-import model.quantumModel.quantumState.BellStates.PHIState.PHIplus;
-import model.quantumModel.quantumState.BellStates.PSIState.PSIminus;
-import model.quantumModel.quantumState.BellStates.PSIState.PSIplus;
-import model.quantumModel.quantumState.GreenbergHorneZeilinger.GHZState;
-import model.quantumModel.quantumState.WState.WState;
+import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,14 +127,8 @@ public class QuantumCircuitDisplayUtils {
 
     public boolean hasDisplayAt(int wire, int depth, List<List<Object>> circuit) {return findDisplayAt(wire, depth, circuit) != null;}
 
-    public String getStateLabel(QuantumState state) {
-        if (state instanceof PHIplus) return "|Φ+⟩";
-        if (state instanceof PHIminus) return "|Φ-⟩";
-        if (state instanceof PSIplus) return "|Ψ+⟩";
-        if (state instanceof PSIminus) return "|Ψ-⟩";
-        if (state instanceof GHZState) return "|GHZ⟩";
-        if (state instanceof WState) return "|W⟩";
-        if (state.getNumQubits() == 1) return "|" + state + "⟩";
+    public String getStateLabel(BasicQuantumState state) {
+        if (state.toQuantumState().getNumQubits() == 1) return state.getSymbol() ;
         return "|ψ⟩";
     }
 }
