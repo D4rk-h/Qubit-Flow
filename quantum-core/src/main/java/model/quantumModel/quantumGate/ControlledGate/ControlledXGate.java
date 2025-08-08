@@ -19,20 +19,23 @@ import model.mathModel.Matrix;
 import model.quantumModel.QuantumGate;
 
 public class ControlledXGate extends QuantumGate {
-    public ControlledXGate() {super(buildControlledXMatrix(), 2, "Controlled-X");}
+    public ControlledXGate() {super(buildControlledXMatrix(), 2, "CNOT");}
+
+    public ControlledXGate(int controlQubit, int targetQubit) {
+        super(buildControlledXMatrix(), 2, "CNOT", new int[]{controlQubit, targetQubit});
+    }
 
     private static Matrix buildControlledXMatrix(){
         Complex[][] controlledX = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                controlledX[i][j] = new Complex(0, 0);
+                controlledX[i][j] = Complex.ZERO;
             }
         }
-        controlledX[0][0] = new Complex(1, 0);
-        controlledX[1][1] = new Complex(1, 0);
-        controlledX[2][3] = new Complex(1, 0);
-        controlledX[3][2] = new Complex(1, 0);
+        controlledX[0][0] = Complex.ONE;
+        controlledX[1][1] = Complex.ONE;
+        controlledX[2][3] = Complex.ONE;
+        controlledX[3][2] = Complex.ONE;
         return new Matrix(controlledX);
     }
-
 }
