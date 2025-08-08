@@ -22,6 +22,7 @@ import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitValid
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
 import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
+import model.quantumModel.quantumGate.MultiQubitGateMarker;
 import model.quantumModel.quantumPort.QuantumCircuitPort;
 import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
@@ -91,8 +92,7 @@ public class QuantumCircuit implements QuantumCircuitPort {
 
     @Override
     public QuantumGate removeGate(int wire, int depth){
-        if (circuit.get(wire).get(depth) instanceof QuantumGate){
-            QuantumGate deletedGate = (QuantumGate) circuit.get(wire).get(depth);
+        if (circuit.get(wire).get(depth) instanceof QuantumGate deletedGate){
             circuit.get(wire).set(depth, null);
             return deletedGate;
         } else {
@@ -118,6 +118,28 @@ public class QuantumCircuit implements QuantumCircuitPort {
             seekToMerge.seekToMergeX(wire);
             seekToMerge.seekToMergeZ(wire);
         }
+    }
+
+    public QuantumState execute(QuantumState initialState) {
+        if (initialState.getNumQubits() != this.nQubits) {throw new IllegalArgumentException("Initial state qubits dont match circuit size");}
+        QuantumState currentState = initialState.clone();
+        for (int depth=0;depth<this.depth;depth++) {
+            currentState = executeDepth(currentState, depth);
+        }
+        return currentState;
+    }
+
+    private QuantumState executeDepth(QuantumState state, int depth) {
+        QuantumState currentState = state;
+        for (List<Object> objects : circuit) {
+            if (depth < objects.size()) {
+                Object element = objects.get(depth);
+                if (element instanceof QuantumGate gate && !(element instanceof MultiQubitGateMarker)) {
+                    currentState = gate.apply(currentState);
+                }
+            }
+        }
+        return currentState;
     }
 
     public void show() {
