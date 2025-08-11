@@ -24,7 +24,7 @@ import model.quantumModel.quantumState.QuantumState;
 
 public class AddCommand implements QuantumCommand {
     private final Object elementToAdd;
-    private final Location location;
+    public final Location location;
     private AddCommandPort addDelegate;
 
     public AddCommand(Object elementToAdd, Location location) {
