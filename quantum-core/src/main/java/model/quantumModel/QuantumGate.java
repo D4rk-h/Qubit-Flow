@@ -19,6 +19,9 @@ import model.mathModel.Matrix;
 import model.quantumModel.quantumPort.QuantumGatePort;
 import model.quantumModel.quantumState.QuantumState;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class QuantumGate implements QuantumGatePort {
     private final Matrix matrix;
     private final int numQubits;
@@ -39,9 +42,7 @@ public class QuantumGate implements QuantumGatePort {
 
     private static int[] createDefaultTargets(int numQubits) {
         int[] targets = new int[numQubits];
-        for (int i = 0; i < numQubits; i++) {
-            targets[i] = i;
-        }
+        for (int i = 0; i < numQubits; i++) targets[i] = i;
         return targets;
     }
 
@@ -50,12 +51,15 @@ public class QuantumGate implements QuantumGatePort {
         if (matrix.getRows() != expectedSize || matrix.getCols() != expectedSize) {
             throw new IllegalArgumentException("Matrix size must be " + expectedSize + "x" + expectedSize);
         }
+        if (targetQubits.length != numQubits) throw new IllegalArgumentException("Number of target qubits must match gate's n-qubit");
+        Set<Integer> uniqueTargets = new HashSet<>();
+        for (int target : targetQubits) {
+            if (!uniqueTargets.add(target)) throw new IllegalArgumentException("Duplicate target qubit: " + target);
+        }
     }
 
     public QuantumGate expandToSystem(int systemSize, int[] qubitPositions) {
-        if (qubitPositions.length != this.numQubits) {
-            throw new IllegalArgumentException("Must specify position for each qubit in gate");
-        }
+        if (qubitPositions.length != this.numQubits) throw new IllegalArgumentException("Must specify position for each qubit in gate");
         Matrix expandedMatrix = buildExpandedMatrix(systemSize, qubitPositions);
         return new QuantumGate(expandedMatrix, systemSize, name + "_expanded", qubitPositions);
     }
@@ -68,13 +72,13 @@ public class QuantumGate implements QuantumGatePort {
                 expandedMatrix[i][j] = Complex.ZERO;
             }
         }
-        for (int i = 0; i < totalSize; i++) {
-            for (int j = 0; j < totalSize; j++) {
-                int gateInputState = extractBits(i, positions);
-                int gateOutputState = extractBits(j, positions);
-                if (areOtherBitsEqual(i, j, positions)) {
-                    Complex matrixElement = matrix.get(gateOutputState, gateInputState);
-                    expandedMatrix[j][i] = matrixElement;
+        for (int fullInputState = 0; fullInputState < totalSize; fullInputState++) {
+            int gateInputState = extractBits(fullInputState, positions);
+            for (int gateOutputState = 0; gateOutputState < (1 << numQubits); gateOutputState++) {
+                Complex amplitude = matrix.get(gateOutputState, gateInputState);
+                if (amplitude.magnitude() > Complex.EPSILON) {
+                    int fullOutputState = replaceBits(fullInputState, gateOutputState, positions);
+                    expandedMatrix[fullOutputState][fullInputState] = amplitude;
                 }
             }
         }
@@ -83,26 +87,29 @@ public class QuantumGate implements QuantumGatePort {
 
     private int extractBits(int state, int[] positions) {
         int result = 0;
+        for (int i = 0; i < positions.length; i++) if ((state & (1 << positions[i])) != 0) result |= (1 << i);
+        return result;
+    }
+
+    private int replaceBits(int originalState, int newBits, int[] positions) {
+        int result = originalState;
+        for (int pos : positions) result &= ~(1 << pos);
         for (int i = 0; i < positions.length; i++) {
-            if ((state & (1 << positions[i])) != 0) {
-                result |= (1 << i);
-            }
+            if ((newBits & (1 << i)) != 0) result |= (1 << positions[i]);
         }
         return result;
     }
 
     private boolean areOtherBitsEqual(int state1, int state2, int[] positions) {
         int mask = 0;
-        for (int pos : positions) {
-            mask |= (1 << pos);
-        }
+        for (int pos : positions) mask |= (1 << pos);
         return (state1 & ~mask) == (state2 & ~mask);
     }
 
     @Override
     public QuantumState apply(QuantumState state) {
-        if (this.numQubits == state.getNumQubits()) {return state.applyGate(this);}
-        else {throw new IllegalArgumentException("Gate size doesn't match system size. Use expandToSystem() first.");}
+        if (this.numQubits == state.getNumQubits()) return state.applyGate(this);
+        else throw new IllegalArgumentException("Gate size doesn't match system size. Use expandToSystem() first.");
     }
 
     public Matrix getMatrix() { return matrix; }
