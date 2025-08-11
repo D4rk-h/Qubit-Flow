@@ -16,13 +16,13 @@ public class RemoveDisplayCommand implements QuantumCommand {
 
     @Override
     public void execute() {
-        wasRemoved = wasSuccessfullyRemoved(circuit.removeDisplay(display));
+        wasRemoved = circuit.removeDisplay(display);
     }
 
     @Override
     public void undo() {
         if (wasRemoved) {
-            circuit.add(display);
+            circuit.addDisplay(display);
         }
     }
 

@@ -14,7 +14,6 @@
 
 package control.command.circuitCommand.addCommand;
 
-import control.command.CommandHistory;
 import control.command.QuantumCommand;
 import model.quantumModel.measurementDisplay.Display;
 import model.commandsModel.Location;

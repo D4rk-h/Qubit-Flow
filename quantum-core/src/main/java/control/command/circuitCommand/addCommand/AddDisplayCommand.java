@@ -28,6 +28,6 @@ public class AddDisplayCommand implements AddCommandPort {
 
     @Override
     public void addToCircuit() {
-        circuit.add(display);
+        circuit.addDisplay(display);
     }
 }
