@@ -15,121 +15,24 @@
 package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 
 import model.quantumModel.measurementDisplay.Display;
-import model.quantumModel.measurementDisplay.displayUtils.DisplayCell;
 import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-// todo: fix implementation and develop add and remove displays methods
 public class QuantumCircuitDisplayUtils {
 
-    public List<List<Object>> shiftColumnsRight(List<List<Object>> circuit, int fromColumnIndex, int shiftAmount) {
-        if (circuit == null || circuit.isEmpty()) {throw new IllegalArgumentException("Circuit cannot be null or empty");}
-        if (fromColumnIndex < 0 || shiftAmount <= 0) {throw new IllegalArgumentException("fromColumnIndex and shiftAmount must be positive");}
-        int wires = circuit.size();
-        int originalCols = circuit.get(0).size();
-        int newCols = originalCols + shiftAmount;
-        List<List<Object>> result = new ArrayList<>();
-        for (int wire = 0; wire < wires; wire ++) {
-            List<Object> row = new ArrayList<>(Collections.nCopies(newCols, null));
-            result.add(row);
-        }
-        for (int row = 0; row < wires; row++) {
-            List<Object> originalRow = circuit.get(row);
-            List<Object> newRow = result.get(row);
-            for (int col = 0; col < fromColumnIndex && col < originalRow.size(); col++) {
-                newRow.set(col, originalRow.get(col));
-            }
-            for (int col = fromColumnIndex; col < originalRow.size(); col++) {
-                int newPosition = col + shiftAmount;
-                if (newPosition < newCols) {
-                    newRow.set(newPosition, originalRow.get(col));
-                }
-            }
-        }
-        return result;
+    public boolean isDisplayValid(Display display, int circuitSize) {
+        return display.fromWire() >= 0 && display.toWire() < circuitSize && display.fromWire() <= display.toWire();
     }
-
-    public int calculateRequiredShiftAmount(Display display, List<List<Object>> circuit) {
-        int maxShiftNeeded = 0;
-        for (int wire = display.fromWire(); wire <= display.toWire(); wire++) {
-             int shiftForThisWire = 0;
-            for (int depth = display.fromDepth(); depth <= display.toDepth(); depth++) {
-                if (depth < circuit.get(wire).size() && circuit.get(wire).get(depth) != null) {
-                    int searchDepth = depth;
-                    while (searchDepth < circuit.get(wire).size() && circuit.get(wire).get(searchDepth) != null) {
-                        searchDepth++;
-                    }
-                    shiftForThisWire = Math.max(shiftForThisWire, searchDepth - display.fromDepth() + (display.toDepth() - display.fromDepth()));
-                }
-            }
-            maxShiftNeeded = Math.max(maxShiftNeeded, shiftForThisWire);
-        }
-        return maxShiftNeeded;
-    }
-
-    public void placeDisplay(Display display, List<List<Object>> circuit) {
-        ensureCircuitSize(display.toDepth() + 1, circuit);
-        for (int wire = display.fromWire(); wire <= display.toWire(); wire++) {
-            for (int depth = display.fromDepth(); depth <= display.toDepth(); depth++) {
-                circuit.get(wire).set(depth, display.display());
-            }
-        }
-    }
-
-    private void ensureCircuitSize(int requiredDepth, List<List<Object>> circuit) {
-        for (List<Object> wire : circuit) {
-            while (wire.size() < requiredDepth) {
-                wire.add(null);
-            }
-        }
-    }
-
-    public boolean needsShift(Display display, List<List<Object>> circuit) {
-        for (int wire = display.fromWire(); wire <= display.toWire(); wire ++) {
-            for (int depth = display.fromDepth(); depth <= display.toDepth(); depth++) {
-                if (circuit.get(wire).get(depth) != null) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public Display removeDisplay(Display display, List<List<Object>> circuit) {
-        Display removedDisplay = null;
-        boolean found = false;
-        for (int wire = display.fromWire(); wire <= display.toWire(); wire++) {
-            for (int depth = display.fromDepth(); depth <= display.toDepth(); depth++) {
-                Object cell = circuit.get(wire).get(depth);
-                if (cell instanceof DisplayCell) {
-                    if (((DisplayCell) cell).parentDisplay().id().equals(display.id())) {
-                        if (!found) {removedDisplay = ((DisplayCell) cell).parentDisplay();}
-                        circuit.get(wire).set(depth, null);
-                        found = true;
-                    }
-                }
-            }
-        }
-        return removedDisplay;
-    }
-
-    private Display findDisplayAt(int wire, int depth, List<List<Object>> circuit) {
-        if (wire >= 0 && wire < circuit.size() && depth >= 0 && depth < circuit.get(wire).size()) {
-            Object cell = circuit.get(wire).get(depth);
-            if (cell instanceof DisplayCell) {
-                return ((DisplayCell) cell).parentDisplay();
-            }
-        }
-        return null;
-    }
-
-    public boolean hasDisplayAt(int wire, int depth, List<List<Object>> circuit) {return findDisplayAt(wire, depth, circuit) != null;}
 
     public String getStateLabel(BasicQuantumState state) {
-        if (state.toQuantumState().getNumQubits() == 1) return state.getSymbol() ;
+        if (state.toQuantumState().getNumQubits() == 1) return state.getSymbol();
         return "|ψ⟩";
+    }
+
+    public boolean hasDisplayConflict(Display display1, Display display2) {
+        return !(display1.toWire() < display2.fromWire() || display2.toWire() < display1.fromWire());
+    }
+
+    public int getDisplayQubitSpan(Display display) {
+        return display.toWire() - display.fromWire() + 1;
     }
 }

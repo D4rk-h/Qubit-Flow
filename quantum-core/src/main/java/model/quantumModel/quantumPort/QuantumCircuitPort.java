@@ -23,13 +23,13 @@ import model.quantumModel.quantumState.QuantumState;
 import java.util.List;
 
 public interface QuantumCircuitPort {
-    void add(QuantumGate gate, int i, int j);
-    void add(BlochSphere sphere, int i, int j);
-    void add(QuantumState state, int i);
-    void add(Display display);
-    QuantumGate removeGate(int i, int j);
-    List<Object> removeWire(int i);
-    Display removeDisplay(Display display);
+    void add(QuantumGate gate, int wire, int depth);
+    void addDisplay(Display display);
+    void addControlled(ControlGate controlledGate, int wire, int depth);
+    void add(BlochSphere sphere, int wire, int depth);
+    void add(QuantumState state, int wire);
 
-    void addControlled(ControlGate controlledGate, int i, int j);
+    QuantumGate removeGate(int wire, int depth);
+    List<Object> removeWire(int wire);
+    boolean removeDisplay(Display display);
 }
