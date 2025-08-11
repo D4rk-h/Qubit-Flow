@@ -40,7 +40,7 @@ public class BlochSphereDisplay implements DisplayPort {
 
         @Override
         public Object renderContent() {
-            if (isCompatibleWith(targetState)) {throw new IllegalArgumentException("Bloch Sphere doesn't support Multi-qubit state");}
+            if (!isCompatibleWith(targetState)) {throw new IllegalArgumentException("Bloch Sphere doesn't support Multi-qubit state");}
             BlochSpace coordinates = calculateBlochCoordinates(targetState);
             return new BlochSphere(
                     new BlochSpace(coordinates.x(), coordinates.y(), coordinates.z()),
@@ -54,7 +54,7 @@ public class BlochSphereDisplay implements DisplayPort {
 
     @Override
     public boolean isCompatibleWith(QuantumState state) {
-        return state.getNumQubits() != 1;
+        return state.getNumQubits() == 1;
     }
 
     private BlochSpace calculateBlochCoordinates(QuantumState state) {
