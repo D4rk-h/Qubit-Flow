@@ -37,14 +37,14 @@ public class DisplayFactory {
     }
 
     public static Display createDensityDisplay(QuantumState state, int fromWire, int toWire, int fromDepth, int toDepth, boolean showOnlyDiagonal) {
-        if (new Density(state, showOnlyDiagonal).isCompatibleWith(state)) {throw new IllegalArgumentException("Density display is only compatible with less than 6 qubits systems");}
+        if (!new Density(state, showOnlyDiagonal).isCompatibleWith(state)) {throw new IllegalArgumentException("Density display is only compatible with less than 6 qubits systems");}
         Density densityDisplay = new Density(state, showOnlyDiagonal);
         return new Display(densityDisplay, fromWire, toWire, fromDepth, toDepth);
     }
 
     public static Display createBlochSphereDisplay(QuantumState state, int fromWire, int toWire, int fromDepth, int toDepth, BlochVisualizationConfig config) {
         BlochSphereDisplay blochDisplay = new BlochSphereDisplay(state, config);
-        if (blochDisplay.isCompatibleWith(state)) {throw new IllegalArgumentException("Bloch sphere display only works with single-qubit states");}
+        if (!blochDisplay.isCompatibleWith(state)) {throw new IllegalArgumentException("Bloch sphere display only works with single-qubit states");}
         return new Display(blochDisplay, fromWire, toWire, fromDepth, toDepth);
     }
 
