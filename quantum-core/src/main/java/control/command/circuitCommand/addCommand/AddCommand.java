@@ -14,6 +14,7 @@
 
 package control.command.circuitCommand.addCommand;
 
+import control.command.CommandHistory;
 import control.command.QuantumCommand;
 import model.quantumModel.measurementDisplay.Display;
 import model.commandsModel.Location;
@@ -23,52 +24,49 @@ import model.quantumModel.quantumState.QuantumState;
 
 public class AddCommand implements QuantumCommand {
     private final Object elementToAdd;
-    public final Location location;
-    private AddCommandPort addCommandDelegate;
+    private final Location location;
+    private AddCommandPort addDelegate;
 
-    public AddCommand(Object elementToAdd, Location location){
+    public AddCommand(Object elementToAdd, Location location) {
         this.elementToAdd = elementToAdd;
         this.location = location;
+        this.addDelegate = createAddDelegate();
     }
 
-    @Override
-    public void execute() {
+    private AddCommandPort createAddDelegate() {
         if (elementToAdd instanceof QuantumGate) {
-            AddGateCommand add = new AddGateCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
-            add.addToCircuit();
+            return new AddGateCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
         } else if (elementToAdd instanceof QuantumState) {
-            AddQubitCommand add = new AddQubitCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
-            add.addToCircuit();
+            return new AddQubitCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
         } else if (elementToAdd instanceof Display) {
-            AddDisplayCommand add = new AddDisplayCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
-            add.addToCircuit();
+            return new AddDisplayCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
         } else {
             throw new IllegalArgumentException("Cannot create AddCommand objects with elementToAdd being instance of " + elementToAdd.getClass());
         }
     }
+    @Override
+    public void execute() {
+        addDelegate.addToCircuit();
+    }
 
     @Override
     public void undo() {
-        if (canUndo()) {
-            if (elementToAdd instanceof QuantumGate) {
-                location.circuit().removeGate(location.wire(), location.depth());
-            } else if (elementToAdd instanceof QuantumState) {
-                location.circuit().removeWire(location.wire());
-            } else if (elementToAdd instanceof Display) {
-                location.circuit().removeDisplay((Display) elementToAdd);
-            }
+        if (elementToAdd instanceof QuantumGate) {
+            location.circuit().removeGate(location.wire(), location.depth());
+        } else if (elementToAdd instanceof QuantumState) {
+            location.circuit().removeWire(location.wire());
+        } else if (elementToAdd instanceof Display) {
+            location.circuit().removeDisplay((Display) elementToAdd);
         }
     }
 
     @Override
     public boolean canUndo() {
-        return addCommandDelegate != null;
+        return true;
     }
 
     @Override
     public void redo() {
-        if (addCommandDelegate != null) {
-            addCommandDelegate.addToCircuit();
-        }
+        execute();
     }
 }
