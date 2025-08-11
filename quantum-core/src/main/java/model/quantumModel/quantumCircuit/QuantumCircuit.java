@@ -21,15 +21,13 @@ import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitDispl
 import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitValidation;
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
+import model.quantumModel.quantumGate.ControlledGate.ControlGate;
 import model.quantumModel.quantumGate.MultiQubitGateMarker;
 import model.quantumModel.quantumPort.QuantumCircuitPort;
 import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -73,7 +71,7 @@ public class QuantumCircuit implements QuantumCircuitPort {
     }
 
     @Override
-    public void addControlled(ControlledGate controlledGate, int wire, int depth) {
+    public void addControlled(ControlGate controlledGate, int wire, int depth) {
         validateUtils.validateControlledGateBounds(controlledGate, this, wire, depth);
         circuit.get(wire).set(depth, controlledGate);
     }
@@ -131,23 +129,64 @@ public class QuantumCircuit implements QuantumCircuitPort {
 
     private QuantumState executeDepth(QuantumState state, int depth) {
         QuantumState currentState = state;
-        for (List<Object> objects : circuit) {
-            if (depth < objects.size()) {
-                Object element = objects.get(depth);
-                if (element instanceof QuantumGate gate && !(element instanceof MultiQubitGateMarker)) {
-                    currentState = gate.apply(currentState);
+        Set<Integer> processedQubits = new HashSet<>();
+        for (int wire = 0; wire < circuit.size(); wire++) {
+            if (depth < circuit.get(wire).size() && !processedQubits.contains(wire)) {
+                Object element = circuit.get(wire).get(depth);
+                if (element instanceof QuantumGate && !(element instanceof MultiQubitGateMarker)) {
+                    currentState =  ((QuantumGate) element).apply(currentState);
+                    for (int targetQubit : ((QuantumGate) element).getTargetQubits()) {
+                        processedQubits.add(targetQubit);
+                    }
+                }
+                else if (element instanceof MultiQubitGateMarker) {
+                    MultiQubitGateMarker marker = (MultiQubitGateMarker) element;
+                    int primaryQubit = marker.getPrimaryQubit();
+                    if (!processedQubits.contains(primaryQubit)) {
+                        Object primaryElement = circuit.get(primaryQubit).get(depth);
+                        if (primaryElement instanceof QuantumGate) {
+                            QuantumGate primaryGate = (QuantumGate) primaryElement;
+                            currentState = primaryGate.apply(currentState);
+                            for (int targetQubit : primaryGate.getTargetQubits()) {
+                                processedQubits.add(targetQubit);
+                            }
+                        }
+                    }
                 }
             }
         }
         return currentState;
     }
 
-    public void show() {
-        System.out.println(cliUtils.formatCircuit(this));
+    public List<QuantumState> executeStepByStep(QuantumState initialState) {
+        List<QuantumState> stateHistory = new ArrayList<>();
+        QuantumState currentState = initialState.clone();
+        stateHistory.add(currentState.clone());
+        for (int depth = 0; depth < this.depth; depth++) {
+            currentState = executeDepth(currentState, depth);
+            stateHistory.add(currentState.clone());
+        }
+        return stateHistory;
     }
 
-    public void showWithLabels() {
-        System.out.println(cliUtils.formatCircuitWithLabels(this));
+    public List<QuantumGate> getGatesAtDepth(int depth) {
+        List<QuantumGate> gates = new ArrayList<>();
+        Set<QuantumGate> uniqueGates = new HashSet<>();
+        for (int wire = 0; wire < circuit.size(); wire++) {
+            if (depth < circuit.get(wire).size()) {
+                Object element = circuit.get(wire).get(depth);
+                if (element instanceof QuantumGate && !(element instanceof MultiQubitGateMarker)) {
+                    if (uniqueGates.add(((QuantumGate) element))) {
+                        gates.add(((QuantumGate) element));
+                    }
+                }
+            }
+        }
+        return gates;
+    }
+
+    public void show() {
+        System.out.println(cliUtils.formatCircuit(this));
     }
 
     public String getCircuitString() {
@@ -155,9 +194,7 @@ public class QuantumCircuit implements QuantumCircuitPort {
     }
 
     public void setInitialState(BasicQuantumState state, int qubit) {
-        if (qubit < 0 || qubit >= nQubits) {
-            throw new IndexOutOfBoundsException("Qubit index out of bounds");
-        }
+        if (qubit < 0 || qubit >= nQubits) throw new IndexOutOfBoundsException("Qubit index out of bounds");
         circuit.get(qubit).set(0, state);
     }
 
