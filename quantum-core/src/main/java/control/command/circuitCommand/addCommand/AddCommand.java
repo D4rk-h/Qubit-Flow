@@ -35,11 +35,11 @@ public class AddCommand implements QuantumCommand {
 
     private AddCommandPort createAddDelegate() {
         if (elementToAdd instanceof QuantumGate) {
-            return new AddGateCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
+            return new AddGateCommand((QuantumGate) elementToAdd, location.circuit(), location.wire(), location.depth());
         } else if (elementToAdd instanceof QuantumState) {
-            return new AddQubitCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
+            return new AddQubitCommand((QuantumState) elementToAdd, location.circuit(), location.wire(), location.depth());
         } else if (elementToAdd instanceof Display) {
-            return new AddDisplayCommand(elementToAdd, location.circuit(), location.wire(), location.depth());
+            return new AddDisplayCommand((Display) elementToAdd, location.circuit());
         } else {
             throw new IllegalArgumentException("Cannot create AddCommand objects with elementToAdd being instance of " + elementToAdd.getClass());
         }

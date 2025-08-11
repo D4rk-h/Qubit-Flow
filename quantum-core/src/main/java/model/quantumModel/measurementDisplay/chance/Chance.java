@@ -19,11 +19,9 @@ import model.quantumModel.measurementDisplay.displayUtils.DisplayCategory;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
 
 public class Chance implements DisplayPort {
-    private final QuantumState targetState;
     private final ChanceFormat format;
 
-    public Chance(QuantumState state, ChanceFormat format) {
-        this.targetState = state;
+    public Chance(ChanceFormat format) {
         this.format = format;
     }
 
@@ -38,8 +36,8 @@ public class Chance implements DisplayPort {
     }
 
     @Override
-    public Object renderContent() {
-        double[] probabilities = targetState.getProbabilities();
+    public Object renderContent(QuantumState state) {
+        double[] probabilities = state.getProbabilities();
         return switch(format) {
             case PERCENTAGE -> formatPercentage(probabilities);
             case DECIMAL -> formatDecimal(probabilities);
@@ -47,8 +45,8 @@ public class Chance implements DisplayPort {
     }
 
     @Override
-    public boolean isCompatibleWith(QuantumState state) {
-        return false;
+    public boolean isCompatibleWith(int qubitCount) {
+        return true;
     }
 
     private Object formatPercentage(double[] probabilities) {

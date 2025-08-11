@@ -21,11 +21,9 @@ import model.quantumModel.measurementDisplay.displayUtils.DisplayCategory;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
 
 public class Density implements DisplayPort {
-    private final QuantumState targetState;
     private final boolean showOnlyDiagonal;
 
-    public Density(QuantumState state, boolean showOnlyDiagonal) {
-        this.targetState = state;
+    public Density(boolean showOnlyDiagonal) {
         this.showOnlyDiagonal = showOnlyDiagonal;
     }
 
@@ -40,14 +38,15 @@ public class Density implements DisplayPort {
     }
 
     @Override
-    public Object renderContent() {
-        Matrix densityMatrix = calculateDensityMatrix(targetState);
+    public Object renderContent(QuantumState state) {
+        if (!isCompatibleWith(state.getNumQubits())) throw new IllegalArgumentException("Too much qubits, matrix is not legible");
+        Matrix densityMatrix = calculateDensityMatrix(state);
         return showOnlyDiagonal ? extractDiagonal(densityMatrix) : densityMatrix;
     }
 
     @Override
-    public boolean isCompatibleWith(QuantumState state) {
-        return state.getNumQubits() > 6;
+    public boolean isCompatibleWith(int qubitCount) {
+        return qubitCount < 8;
     }
 
     private Matrix calculateDensityMatrix(QuantumState state) {

@@ -20,13 +20,9 @@ import model.quantumModel.measurementDisplay.displayUtils.DisplayCategory;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
 
 public class Amplitude implements DisplayPort {
-    private final QuantumState targetState;
-    private final boolean showPhase;
     private final AmplitudeFormat format;
 
-    public Amplitude(QuantumState targetState, boolean showPhase, AmplitudeFormat format) {
-        this.targetState = targetState;
-        this.showPhase = showPhase;
+    public Amplitude(AmplitudeFormat format) {
         this.format = format;
     }
 
@@ -41,8 +37,8 @@ public class Amplitude implements DisplayPort {
     }
 
     @Override
-    public Object renderContent() {
-        Complex[] amplitudes = targetState.getAmplitudes();
+    public Object renderContent(QuantumState state) {
+        Complex[] amplitudes = state.getAmplitudes();
         return switch(format) {
             case RECTANGULAR -> formatRectangular(amplitudes);
             case POLAR -> formatPolar(amplitudes);
@@ -50,17 +46,17 @@ public class Amplitude implements DisplayPort {
     }
 
     @Override
-    public boolean isCompatibleWith(QuantumState state) {
-        return true;
+    public boolean isCompatibleWith(int qubitCount) {
+        return qubitCount > 0;
     }
 
     private Object formatRectangular(Complex[] amplitudes) {
-        //todo implementation of rect format
+        // TODO: implementation of rectangular format
         return amplitudes;
     }
 
     private Object formatPolar(Complex[] amplitudes) {
-        // todo implementation of polar format
+        // TODO: implementation of polar format
         return amplitudes;
     }
 }

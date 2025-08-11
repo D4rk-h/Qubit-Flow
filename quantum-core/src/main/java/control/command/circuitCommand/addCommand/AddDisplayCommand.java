@@ -15,20 +15,19 @@
 package control.command.circuitCommand.addCommand;
 
 import model.quantumModel.measurementDisplay.Display;
-import model.commandsModel.Location;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 
-public class AddDisplayCommand extends AddCommand implements AddCommandPort {
+public class AddDisplayCommand implements AddCommandPort {
     private final Display display;
+    private final QuantumCircuit circuit;
 
-    public AddDisplayCommand(Object display, QuantumCircuit circuit, int wire, int depth) {
-        super(display, new Location(circuit, wire, depth));
-        this.display = (Display) display;
+    public AddDisplayCommand(Display display, QuantumCircuit circuit) {
+        this.display = display;
+        this.circuit = circuit;
     }
 
     @Override
     public void addToCircuit() {
-        location.circuit().add(display);
+        circuit.add(display);
     }
-
 }

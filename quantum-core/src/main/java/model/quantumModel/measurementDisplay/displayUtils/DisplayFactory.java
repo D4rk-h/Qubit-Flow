@@ -14,7 +14,6 @@
 
 package model.quantumModel.measurementDisplay.displayUtils;
 
-import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.measurementDisplay.amplitude.Amplitude;
 import model.quantumModel.measurementDisplay.amplitude.AmplitudeFormat;
@@ -26,34 +25,39 @@ import model.quantumModel.measurementDisplay.density.Density;
 
 public class DisplayFactory {
 
-    public static Display createAmplitudeDisplay(QuantumState state, int fromWire, int toWire, int fromDepth, int toDepth, AmplitudeFormat format) {
-        Amplitude amplitudeDisplay = new Amplitude(state, true, format);
-        return new Display(amplitudeDisplay, fromWire, toWire, fromDepth, toDepth);
+    public static Display createAmplitudeDisplay(int fromWire, int toWire, AmplitudeFormat format) {
+        Amplitude amplitudeDisplay = new Amplitude(format);
+        return new Display(amplitudeDisplay, fromWire, toWire);
     }
 
-    public static Display createProbabilityDisplay(QuantumState state, int fromWire, int toWire, int fromDepth, int toDepth, ChanceFormat format) {
-        Chance probabilityDisplay = new Chance(state, format);
-        return new Display(probabilityDisplay, fromWire, toWire, fromDepth, toDepth);
+    public static Display createProbabilityDisplay(int fromWire, int toWire, ChanceFormat format) {
+        Chance probabilityDisplay = new Chance(format);
+        return new Display(probabilityDisplay, fromWire, toWire);
     }
 
-    public static Display createDensityDisplay(QuantumState state, int fromWire, int toWire, int fromDepth, int toDepth, boolean showOnlyDiagonal) {
-        if (!new Density(state, showOnlyDiagonal).isCompatibleWith(state)) {throw new IllegalArgumentException("Density display is only compatible with less than 6 qubits systems");}
-        Density densityDisplay = new Density(state, showOnlyDiagonal);
-        return new Display(densityDisplay, fromWire, toWire, fromDepth, toDepth);
+    public static Display createDensityDisplay(int fromWire, int toWire, boolean showOnlyDiagonal) {
+        Density densityDisplay = new Density(showOnlyDiagonal);
+        return new Display(densityDisplay, fromWire, toWire);
     }
 
-    public static Display createBlochSphereDisplay(QuantumState state, int fromWire, int toWire, int fromDepth, int toDepth, BlochVisualizationConfig config) {
-        BlochSphereDisplay blochDisplay = new BlochSphereDisplay(state, config);
-        if (!blochDisplay.isCompatibleWith(state)) {throw new IllegalArgumentException("Bloch sphere display only works with single-qubit states");}
-        return new Display(blochDisplay, fromWire, toWire, fromDepth, toDepth);
+    public static Display createBlochSphereDisplay(int wire, BlochVisualizationConfig config) {
+        if (wire < 0) throw new IllegalArgumentException("Wire index cannot be negative");
+        BlochSphereDisplay blochDisplay = new BlochSphereDisplay(config);
+        return new Display(blochDisplay, wire);
     }
 
-    public static Display createDefaultDisplay(DisplayCategory category, QuantumState state, int fromWire, int toWire, int fromDepth, int toDepth) {
+    public static Display createDefaultDisplay(DisplayCategory category, int fromWire, int toWire) {
         return switch(category) {
-            case AMPLITUDE -> createAmplitudeDisplay(state, fromWire, toWire, fromDepth, toDepth, AmplitudeFormat.RECTANGULAR);
-            case PROBABILITY -> createProbabilityDisplay(state, fromWire, toWire, fromDepth, toDepth, ChanceFormat.PERCENTAGE);
-            case DENSITY -> createDensityDisplay(state, fromWire, toWire, fromDepth, toDepth, false);
-            case BLOCH_SPHERE -> createBlochSphereDisplay(state, fromWire, toWire, fromDepth, toDepth, new BlochVisualizationConfig(true, 1.0, true, true));
+            case AMPLITUDE -> createAmplitudeDisplay(fromWire, toWire, AmplitudeFormat.RECTANGULAR);
+            case PROBABILITY -> createProbabilityDisplay(fromWire, toWire, ChanceFormat.PERCENTAGE);
+            case DENSITY -> createDensityDisplay(fromWire, toWire, false);
+            case BLOCH_SPHERE -> {
+                if (fromWire != toWire) throw new IllegalArgumentException("Bloch sphere display only works with single qubits");
+                yield createBlochSphereDisplay(fromWire, new BlochVisualizationConfig(true, 1.0, true, true));
+            }
         };
+    }
+    public static Display createDefaultDisplay(DisplayCategory category, int wire) {
+        return createDefaultDisplay(category, wire, wire);
     }
 }

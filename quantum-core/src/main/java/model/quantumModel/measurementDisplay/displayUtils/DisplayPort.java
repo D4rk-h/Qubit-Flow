@@ -19,6 +19,6 @@ import model.quantumModel.quantumState.QuantumState;
 public interface DisplayPort {
     String getDisplaySymbol();
     String getDisplayName();
-    Object renderContent();
-    boolean isCompatibleWith(QuantumState state);
+    Object renderContent(QuantumState state);
+    boolean isCompatibleWith(int qubitCount);
 }

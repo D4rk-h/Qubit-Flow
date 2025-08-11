@@ -21,9 +21,9 @@ import model.quantumModel.quantumState.QuantumState;
 public class AddQubitCommand extends AddCommand implements AddCommandPort {
     private final QuantumState state;
 
-    public AddQubitCommand(Object state, QuantumCircuit circuit, int wire, int depth) {
+    public AddQubitCommand(QuantumState state, QuantumCircuit circuit, int wire, int depth) {
         super(state, new Location(circuit, wire, depth));
-        this.state = (QuantumState) state;
+        this.state = state;
     }
 
     @Override

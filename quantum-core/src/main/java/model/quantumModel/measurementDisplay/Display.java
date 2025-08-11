@@ -22,15 +22,29 @@ public record Display(
         Object display,
         int fromWire,
         int toWire,
-        int fromDepth,
-        int toDepth,
         UUID id
 ) {
-    public Display(Object display, int fromWire, int toWire, int fromDepth, int toDepth) {
-        this(display, fromWire, toWire, fromDepth, toDepth, UUID.randomUUID());
+    public Display(Object displayImplementation, int fromWire, int toWire) {
+        this(displayImplementation, fromWire, toWire, UUID.randomUUID());
+    }
+
+    public Display(Object displayImplementation, int wire) {
+        this(displayImplementation, wire, wire, UUID.randomUUID());
     }
 
     public DisplayCell createCell() {
         return new DisplayCell(this);
+    }
+
+    public boolean isMultiQubit() {
+        return fromWire != toWire;
+    }
+
+    public int getQubitCount() {
+        return toWire - fromWire + 1;
+    }
+
+    public boolean coversWire(int wire) {
+        return wire >= fromWire && wire <= toWire;
     }
 }

@@ -20,11 +20,9 @@ import model.quantumModel.measurementDisplay.displayUtils.DisplayCategory;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
 
 public class BlochSphereDisplay implements DisplayPort {
-        private final QuantumState targetState;
         private final BlochVisualizationConfig config;
 
-        public BlochSphereDisplay(QuantumState state, BlochVisualizationConfig config) {
-            this.targetState = state;
+        public BlochSphereDisplay(BlochVisualizationConfig config) {
             this.config = config;
         }
 
@@ -39,13 +37,13 @@ public class BlochSphereDisplay implements DisplayPort {
         }
 
         @Override
-        public Object renderContent() {
-            if (!isCompatibleWith(targetState)) {throw new IllegalArgumentException("Bloch Sphere doesn't support Multi-qubit state");}
-            BlochSpace coordinates = calculateBlochCoordinates(targetState);
+        public Object renderContent(QuantumState state) {
+            if (!isCompatibleWith(state.getNumQubits())) {throw new IllegalArgumentException("Bloch Sphere doesn't support Multi-qubit state");}
+            BlochSpace coordinates = calculateBlochCoordinates(state);
             return new BlochSphere(
                     new BlochSpace(coordinates.x(), coordinates.y(), coordinates.z()),
                     1.0,
-                    targetState,
+                    state,
                     null,
                     new BlochVisualizationConfig(config.isAnimated(), config.animationDuration(), true, true),
                     null
@@ -53,8 +51,8 @@ public class BlochSphereDisplay implements DisplayPort {
         }
 
     @Override
-    public boolean isCompatibleWith(QuantumState state) {
-        return state.getNumQubits() == 1;
+    public boolean isCompatibleWith(int qubitCount) {
+        return qubitCount == 1;
     }
 
     private BlochSpace calculateBlochCoordinates(QuantumState state) {
