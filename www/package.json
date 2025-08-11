@@ -1,9 +1,0 @@
-{
-  "name": "quantum-properties-web",
-  "scripts": {
-    "build-css": "tailwindcss -i ./input.css -o ./public/style.css --watch"
-  },
-  "devDependencies": {
-    "tailwindcss": "^3.3.0"
-  }
-}
