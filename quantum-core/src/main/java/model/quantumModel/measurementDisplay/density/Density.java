@@ -67,7 +67,7 @@ public class Density implements DisplayPort {
         for (int i=0;i<matrix.getRows();i++) {
             for (int j=0;j<matrix.getCols();j++) {
                 if (i==j){
-                    result.set(i, j, (Complex) matrix.get(i, j, true));
+                    result.set(i, j, (Complex) matrix.get(i, j));
                 }
                 result.set(i, j, null);
             }

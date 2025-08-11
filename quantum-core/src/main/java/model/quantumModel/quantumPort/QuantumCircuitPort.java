@@ -17,7 +17,7 @@ package model.quantumModel.quantumPort;
 import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
 import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
+import model.quantumModel.quantumGate.ControlledGate.ControlGate;
 import model.quantumModel.quantumState.QuantumState;
 
 import java.util.List;
@@ -31,5 +31,5 @@ public interface QuantumCircuitPort {
     List<Object> removeWire(int i);
     Display removeDisplay(Display display);
 
-    void addControlled(ControlledGate controlledGate, int i, int j);
+    void addControlled(ControlGate controlledGate, int i, int j);
 }

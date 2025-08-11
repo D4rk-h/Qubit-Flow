@@ -21,7 +21,7 @@ import model.quantumModel.QuantumGate;
 import model.quantumModel.measurementDisplay.chance.Chance;
 import model.quantumModel.measurementDisplay.density.Density;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
-import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
+import model.quantumModel.quantumGate.ControlledGate.ControlGate;
 import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
 
@@ -72,7 +72,7 @@ public class QuantumCircuitCLIDisplay {
             if (element instanceof QuantumGate) {
                 return gateFormatter((QuantumGate) element);
             }
-            if (element instanceof ControlledGate) {
+            if (element instanceof ControlGate) {
                 return CONTROL_SYMBOL;
             }
             if (element instanceof Display) {
