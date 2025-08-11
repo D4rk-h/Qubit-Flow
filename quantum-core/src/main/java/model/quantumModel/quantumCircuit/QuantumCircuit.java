@@ -63,11 +63,8 @@ public class QuantumCircuit implements QuantumCircuitPort {
     @Override
     public void add(Display display) {
         validateUtils.validateDisplayBounds(display, this);
-        if (displayUtils.needsShift(display, circuit)) {
-            int shiftAmount = displayUtils.calculateRequiredShiftAmount(display, circuit);
-            this.circuit = displayUtils.shiftColumnsRight(circuit, display.fromDepth(), shiftAmount);
-        }
-        displayUtils.placeDisplay(display, this.circuit);
+
+        //todo: develop display add and remove methods
     }
 
     @Override
@@ -107,7 +104,8 @@ public class QuantumCircuit implements QuantumCircuitPort {
 
     @Override
     public Display removeDisplay(Display display) {
-        return displayUtils.removeDisplay(display, this.circuit);
+    //todo: develop removeDisplay method
+        return null;
     }
 
     public void mergeGates() {

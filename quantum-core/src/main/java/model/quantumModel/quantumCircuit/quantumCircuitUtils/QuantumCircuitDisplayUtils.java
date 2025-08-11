@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// todo: fix implementation and develop add and remove displays methods
 public class QuantumCircuitDisplayUtils {
 
     public List<List<Object>> shiftColumnsRight(List<List<Object>> circuit, int fromColumnIndex, int shiftAmount) {
