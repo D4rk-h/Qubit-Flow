@@ -316,27 +316,22 @@ public class Matrix {
     }
 
     public String toString(int precision) {
-        if (rows == 0 || cols == 0) {
-            return "[]";
-        }
+        if (rows == 0 || cols == 0) return "[]";
         int maxWidth = findMaxElementWidth(precision);
         StringBuilder result = new StringBuilder();
         String formatString = "%" + maxWidth + "s";
-
-        result.append("┌").append(" ".repeat(maxWidth * cols + (cols - 1) * 2 + 2)).append("┐\n");
+        String repeat = " ".repeat(maxWidth * cols + (cols - 1) * 2 + 2);
+        result.append("┌").append(repeat).append("┐\n");
         for (int i = 0; i < rows; i++) {
             result.append("│ ");
             for (int j = 0; j < cols; j++) {
                 String element = formatElement(this.data[i][j], precision);
                 result.append(String.format(formatString, element));
-
-                if (j < cols - 1) {
-                    result.append("  ");
-                }
+                if (j < cols - 1) result.append("  ");
             }
             result.append(" │\n");
         }
-        result.append("└").append(" ".repeat(maxWidth * cols + (cols - 1) * 2 + 2)).append("┘");
+        result.append("└").append(repeat).append("┘");
         return result.toString();
     }
 
@@ -370,19 +365,14 @@ public class Matrix {
         String realPart = formatDouble(real, precision);
         String imagPart = formatDouble(Math.abs(imag), precision);
         String sign = imag >= 0 ? "+" : "-";
-        if (Math.abs(Math.abs(imag) - 1.0) < Math.pow(10, -precision)) {
-            return realPart + sign + "i";
-        } else {
-            return realPart + sign + imagPart + "i";
-        }
+        if (Math.abs(Math.abs(imag) - 1.0) < Math.pow(10, -precision)) return realPart + sign + "i";
+        else return realPart + sign + imagPart + "i";
     }
 
     private String formatDouble(double value, int precision) {
         if (Double.isNaN(value)) return "NaN";
         if (Double.isInfinite(value)) return value > 0 ? "∞" : "-∞";
-        if (Math.abs(value) < Math.pow(10, -precision)) {
-            return "0";
-        }
+        if (Math.abs(value) < Math.pow(10, -precision)) return "0";
         String format = "%." + precision + "f";
         String result = String.format(format, value);
         if (result.contains(".")) {result = result.replaceAll("0+$", "").replaceAll("\\.$", "");}
