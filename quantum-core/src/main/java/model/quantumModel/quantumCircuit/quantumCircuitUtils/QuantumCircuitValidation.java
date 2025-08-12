@@ -12,12 +12,6 @@ import java.util.List;
 import java.util.Set;
 
 public class QuantumCircuitValidation {
-    public void validateDisplayBounds(Display display, QuantumCircuit quantumCircuit) {
-        if (display.fromWire() < 0 || display.toWire() >= quantumCircuit.getnQubits()) {throw new IndexOutOfBoundsException("Wire index out of bounds");}
-        if (display.fromDepth() < 0) {throw new IndexOutOfBoundsException("Depth index cannot be negative");}
-        if (display.fromDepth() > display.toDepth() || display.fromWire() > display.toWire()) {throw new IllegalArgumentException("Invalid display range: from indices must be <= to indices");}
-    }
-
     public void validateQuantumGateBounds(QuantumCircuit quantumCircuit, int i, int j, QuantumGate gate) {
         if (i < 0 || i >= quantumCircuit.getnQubits() || j <= 0 || j >= quantumCircuit.getCircuit().get(0).size()) {throw new IndexOutOfBoundsException("Index out of bounds");}
     }

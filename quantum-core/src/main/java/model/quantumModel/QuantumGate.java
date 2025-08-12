@@ -59,30 +59,12 @@ public class QuantumGate implements QuantumGatePort {
     }
 
     public QuantumGate expandToSystem(int systemSize, int[] qubitPositions) {
-        if (qubitPositions.length != this.numQubits) throw new IllegalArgumentException("Must specify position for each qubit in gate");
-        Matrix expandedMatrix = buildExpandedMatrix(systemSize, qubitPositions);
+        Matrix expandedMatrix = buildExpandedMatrix(systemSize);
         return new QuantumGate(expandedMatrix, systemSize, name + "_expanded", qubitPositions);
     }
 
-    private Matrix buildExpandedMatrix(int systemSize, int[] positions) {
-        int totalSize = (int) Math.pow(2, systemSize);
-        Complex[][] expandedMatrix = new Complex[totalSize][totalSize];
-        for (int i = 0; i < totalSize; i++) {
-            for (int j = 0; j < totalSize; j++) {
-                expandedMatrix[i][j] = Complex.ZERO;
-            }
-        }
-        for (int fullInputState = 0; fullInputState < totalSize; fullInputState++) {
-            int gateInputState = extractBits(fullInputState, positions);
-            for (int gateOutputState = 0; gateOutputState < (1 << numQubits); gateOutputState++) {
-                Complex amplitude = matrix.get(gateOutputState, gateInputState);
-                if (amplitude.magnitude() > Complex.EPSILON) {
-                    int fullOutputState = replaceBits(fullInputState, gateOutputState, positions);
-                    expandedMatrix[fullOutputState][fullInputState] = amplitude;
-                }
-            }
-        }
-        return new Matrix(expandedMatrix);
+    private Matrix buildExpandedMatrix(int systemSize) {
+        return this.matrix.tensorPower(systemSize);
     }
 
     private int extractBits(int state, int[] positions) {
