@@ -15,11 +15,13 @@
 package control.command.simulationCommand;
 
 import control.command.SimulationCommand;
+import model.quantumModel.quantumCircuit.QuantumCircuit;
 
 public class Simulate implements SimulationCommand {
+    private QuantumCircuit circuit;
+
     @Override
     public void execute() {
-
     }
 
     @Override

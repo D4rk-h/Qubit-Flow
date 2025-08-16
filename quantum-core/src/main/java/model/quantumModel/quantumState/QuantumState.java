@@ -15,7 +15,7 @@
 package model.quantumModel.quantumState;
 
 import model.mathModel.Complex;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.quantumStateUtils.MeasurementResult;
 import model.quantumModel.quantumState.quantumStateUtils.QuantumStateUtils;
 

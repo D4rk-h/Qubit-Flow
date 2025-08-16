@@ -16,7 +16,7 @@ package control.command.circuitCommand.createCustomCommand;
 
 import control.command.QuantumCommand;
 import model.mathModel.Matrix;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 import java.util.Stack;
 
 public class CreateCustomGate implements QuantumCommand {

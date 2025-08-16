@@ -1,8 +1,6 @@
 package model.quantumModel.quantumGate;
 
-import model.mathModel.Complex;
 import model.mathModel.Matrix;
-import model.quantumModel.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 
 public class MultiQubitGateMarker extends QuantumGate {

@@ -16,7 +16,7 @@ package control.command.circuitCommand.addCommand;
 
 import model.commandsModel.Location;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 
 public class AddGateCommand extends AddCommand implements AddCommandPort {
     private final QuantumGate gate;

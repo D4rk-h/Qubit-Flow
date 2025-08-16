@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel;
+package model.quantumModel.quantumGate;
 
-import model.mathModel.Complex;
 import model.mathModel.Matrix;
 import model.quantumModel.quantumPort.QuantumGatePort;
 import model.quantumModel.quantumState.QuantumState;

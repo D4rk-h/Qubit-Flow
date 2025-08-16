@@ -19,9 +19,10 @@ import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
 import model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization.QuantumCircuitCLIDisplay;
 import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitSeekToMerge;
 import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitValidation;
-import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
-import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGate.ControlledGate.ControlGate;
+import model.quantumModel.quantumGate.QuantumGate;
+import model.quantumModel.quantumGate.ControlGate.CNot;
+import model.quantumModel.quantumGate.ControlGate.ControlGate;
+import model.quantumModel.quantumGate.ControlGate.Toffoli;
 import model.quantumModel.quantumGate.MultiQubitGateMarker;
 import model.quantumModel.quantumPort.QuantumCircuitPort;
 import model.quantumModel.quantumState.QuantumState;
@@ -63,15 +64,33 @@ public class QuantumCircuit implements QuantumCircuitPort {
     }
 
     @Override
-    public void addControlled(ControlGate controlledGate, int wire, int depth) {
-        validateUtils.validateControlledGateBounds(controlledGate, this, wire, depth);
-        circuit.get(wire).set(depth, controlledGate);
+    public void addCNot(CNot cnot, int wire, int depth) {
+        if (this.nQubits < 2) throw new IllegalArgumentException("Cannot place a cnot into a single-qubit circuit");
+        ControlGate control = new ControlGate((QuantumState) circuit.get(wire).getFirst(), cnot);
+        control.setActivation(control.activateControl(this.nQubits));
+        cnot.setControl(control);
+        cnot.setNumOfQubits(this.nQubits);
+        circuit.get(wire).set(depth, cnot.getControl());
+        circuit.get(wire + 1).set(depth, cnot);
     }
 
     @Override
-    public void add(BlochSphere sphere, int wire, int depth) {
-        validateUtils.validateBlochSphereBounds(this, wire, depth);
-        circuit.get(wire).set(depth, sphere);
+    public void addToffoli(Toffoli toff, int wire, int depth) {
+        if (this.nQubits < 3) throw new IllegalArgumentException("Toffoli gate must be placed in a three/plus-qubit circuit");
+        ControlGate control2 = new ControlGate((QuantumState) circuit.get(wire + 1).getFirst(), toff);
+        ControlGate control1 = new ControlGate((QuantumState) circuit.get(wire).getFirst(), control2);
+        toff.setFirstControl(control1);
+        toff.setSecondControl(control2);
+        toff.setNumOfQubits(this.nQubits);
+        circuit.get(wire).set(depth, toff.getFirstControl());
+        circuit.get(wire + 1).set(depth, toff.getSecondControl());
+        circuit.get(wire + 2).set(depth, toff);
+    }
+
+    @Override
+    public void addControl(ControlGate control, int targetWire, int targetDepth) {
+        validateUtils.validateControlPlacement(this, targetWire, targetDepth);
+        circuit.get(targetWire - 1).set(targetDepth, control);
     }
 
     @Override

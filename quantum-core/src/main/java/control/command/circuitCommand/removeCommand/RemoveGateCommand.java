@@ -2,7 +2,7 @@ package control.command.circuitCommand.removeCommand;
 
 import control.command.QuantumCommand;
 import model.commandsModel.Location;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 
 public class RemoveGateCommand implements QuantumCommand {
     private final Location location;

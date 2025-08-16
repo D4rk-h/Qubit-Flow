@@ -17,7 +17,7 @@ package control.command.circuitCommand.addCommand;
 import control.command.QuantumCommand;
 import model.quantumModel.measurementDisplay.Display;
 import model.commandsModel.Location;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 
 

@@ -1,10 +1,13 @@
 package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 
-import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
-import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGate.ControlledGate.ControlGate;
+import model.quantumModel.quantumGate.QuantumGate;
+import model.quantumModel.quantumGate.ControlGate.CNot;
+import model.quantumModel.quantumGate.ControlGate.ControlGate;
+import model.quantumModel.quantumGate.ControlGate.Swap;
+import model.quantumModel.quantumGate.ControlGate.Toffoli;
 import model.quantumModel.quantumGate.MultiQubitGateMarker;
+import model.quantumModel.quantumGate.TGate;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 public class QuantumCircuitValidation {
+
     public void validateQuantumGateBounds(QuantumCircuit quantumCircuit, int i, int j, QuantumGate gate) {
         if (i < 0 || i >= quantumCircuit.getnQubits() || j <= 0 || j >= quantumCircuit.getCircuit().get(0).size()) {throw new IndexOutOfBoundsException("Index out of bounds");}
     }
@@ -50,4 +54,16 @@ public class QuantumCircuitValidation {
         }
         return true;
     }
+
+    public void validateControlPlacement(QuantumCircuit circuit, int targetWire, int targetDepth) {
+        Object targetGate = circuit.getCircuit().get(targetWire).get(targetDepth);
+        if ((targetWire - 1) < 0 || targetDepth <= 0) throw new IllegalArgumentException("Target coordinates out of bounds");
+        if (targetGate instanceof Swap || targetGate instanceof TGate) {
+            throw new IllegalArgumentException("Control cannot be added to this gate");
+        }
+        if (!(targetGate instanceof QuantumGate) && !(targetGate instanceof Toffoli) && !(targetGate instanceof CNot)) {
+            throw new IllegalArgumentException("Control cannot be added to something that isnt a gate");
+        }
+    }
+
 }

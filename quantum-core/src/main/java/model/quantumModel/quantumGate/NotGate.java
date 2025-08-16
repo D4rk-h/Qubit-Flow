@@ -16,10 +16,9 @@ package model.quantumModel.quantumGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
-import model.quantumModel.QuantumGate;
 
-public class PauliXGate extends QuantumGate {
-    public PauliXGate() {
+public class NotGate extends QuantumGate {
+    public NotGate() {
         super(buildPauliX(), 1, "XPauli-X");
     }
 

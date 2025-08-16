@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumGate.ControlledGate;
+package model.quantumModel.quantumGate.ControlGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 
-public class SwapGate extends QuantumGate {
-    public SwapGate() {super(buildSwapMatrix(), 2, "Swap");}
+public class Swap extends QuantumGate {
+    public Swap() {super(buildSwapMatrix(), 2, "Swap");}
 
     private static Matrix buildSwapMatrix() {
         Complex[][] swapG = new Complex[4][4];

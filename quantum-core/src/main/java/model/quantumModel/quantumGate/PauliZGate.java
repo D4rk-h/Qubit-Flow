@@ -16,7 +16,6 @@ package model.quantumModel.quantumGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
-import model.quantumModel.QuantumGate;
 
 public class PauliZGate extends QuantumGate {
     public PauliZGate() {

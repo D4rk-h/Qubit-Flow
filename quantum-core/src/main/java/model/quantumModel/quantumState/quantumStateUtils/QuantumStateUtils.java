@@ -15,7 +15,7 @@
 package model.quantumModel.quantumState.quantumStateUtils;
 
 import model.mathModel.Complex;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

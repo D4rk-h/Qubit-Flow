@@ -15,7 +15,7 @@
 package model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization;
 
 import model.mathModel.Complex;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 
 public class QuantumCircuitCLIDisplayUtils {

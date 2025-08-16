@@ -17,11 +17,11 @@ package model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization;
 import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.measurementDisplay.amplitude.Amplitude;
 import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.measurementDisplay.chance.Chance;
 import model.quantumModel.measurementDisplay.density.Density;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
-import model.quantumModel.quantumGate.ControlledGate.ControlGate;
+import model.quantumModel.quantumGate.ControlGate.ControlGate;
 import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
 
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 public class QuantumCircuitCLIDisplay {
         private static final String WIRE_SEGMENT = "———";
-        private static final String CONTROL_SYMBOL = "⬤";
+        private static final String CONTROL_SYMBOL = "*";
         private static final String EMPTY_WIRE = "   ";
         private static final QuantumCircuitCLIDisplayUtils utils = new QuantumCircuitCLIDisplayUtils();
 

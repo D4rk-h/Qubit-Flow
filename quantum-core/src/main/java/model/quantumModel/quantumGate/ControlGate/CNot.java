@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumGate.ControlledGate;
+package model.quantumModel.quantumGate.ControlGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
-import model.quantumModel.QuantumGate;
 
-public class ControlledXGate extends QuantumGate {
-    public ControlledXGate() {super(buildControlledXMatrix(), 2, "CNOT");}
+public class CNot {
+    private final Matrix matrix = buildControlledXMatrix();
+    private final String name = "CNOT";
+    private final String symbol = "⊕";
+    private ControlGate control;
+    private int numOfQubits = 2;
 
-    public ControlledXGate(int controlQubit, int targetQubit) {
-        super(buildControlledXMatrix(), 2, "CNOT", new int[]{controlQubit, targetQubit});
-    }
 
-    private static Matrix buildControlledXMatrix(){
+    private Matrix buildControlledXMatrix(){
         Complex[][] controlledX = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -37,5 +37,33 @@ public class ControlledXGate extends QuantumGate {
         controlledX[2][3] = Complex.ONE;
         controlledX[3][2] = Complex.ONE;
         return new Matrix(controlledX);
+    }
+
+    public Matrix getMatrix() {
+        return matrix;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ControlGate getControl() {
+        return control;
+    }
+
+    public void setControl(ControlGate control) {
+        this.control = control;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public int getNumOfQubits() {
+        return numOfQubits;
+    }
+
+    public void setNumOfQubits(int numOfQubits) {
+        this.numOfQubits = numOfQubits;
     }
 }

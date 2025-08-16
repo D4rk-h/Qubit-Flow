@@ -1,8 +1,8 @@
 package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumGate.HadamardGate;
-import model.quantumModel.quantumGate.PauliXGate;
+import model.quantumModel.quantumGate.NotGate;
 import model.quantumModel.quantumGate.PauliYGate;
 import model.quantumModel.quantumGate.PauliZGate;
 
@@ -13,7 +13,7 @@ public class QuantumCircuitSeekToMerge {
     public void seekToMergeZ(List<Object> wire) {
         for (int i=0; i<wire.size();i++) {
             if (wire.get(i) instanceof QuantumGate){
-                if (wire.get(i) instanceof HadamardGate && wire.get(i + 1) instanceof PauliXGate && wire.get(i + 2) instanceof HadamardGate) {
+                if (wire.get(i) instanceof HadamardGate && wire.get(i + 1) instanceof NotGate && wire.get(i + 2) instanceof HadamardGate) {
                     wire.set(i, new PauliZGate());
                     wire.set(i + 1, null);
                     wire.set(i + 2, null);
@@ -38,7 +38,7 @@ public class QuantumCircuitSeekToMerge {
         for (int i=0; i<wire.size();i++) {
             if (wire.get(i) instanceof QuantumGate){
                 if (wire.get(i) instanceof HadamardGate && wire.get(i + 1) instanceof PauliZGate && wire.get(i + 2) instanceof HadamardGate) {
-                    wire.set(i, new PauliXGate());
+                    wire.set(i, new NotGate());
                     wire.set(i + 1, null);
                     wire.set(i + 2, null);
                 }
