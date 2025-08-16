@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumGate;
+package model.quantumModel.quantumGate.singleQubitGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
+import model.quantumModel.quantumGate.QuantumGate;
 
-public class NotGate extends QuantumGate {
-    public NotGate() {
-        super(buildPauliX(), 1, "NOT (Pauli-X)", "⊕");
+public class YGate extends QuantumGate {
+    public YGate() {
+        super(buildPauliY(), 1, "Pauli-Y", "[Y]");
     }
-
-    private static Matrix buildPauliX() {
-        Complex[][] pauliX = new Complex[2][2];
-        pauliX[0][0] = Complex.ZERO;
-        pauliX[0][1] = Complex.ONE;
-        pauliX[1][0] = Complex.ONE;
-        pauliX[1][1] = Complex.ZERO;
-        return new Matrix(pauliX);
+    private static Matrix buildPauliY(){
+        Complex[][] pauliY = new Complex[2][2];
+        pauliY[0][0] = Complex.ZERO;
+        pauliY[0][1] = Complex.MINUS_I;
+        pauliY[1][0] = Complex.I;
+        pauliY[1][1] = Complex.ZERO;
+        return new Matrix(pauliY);
     }
 }

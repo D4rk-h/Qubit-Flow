@@ -2,11 +2,11 @@ package model.quantumModel.quantumCircuit.quantumCircuitUtils;
 
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumGate.ControlGate.CNot;
-import model.quantumModel.quantumGate.ControlGate.ControlGate;
-import model.quantumModel.quantumGate.ControlGate.Swap;
-import model.quantumModel.quantumGate.ControlGate.Toffoli;
-import model.quantumModel.quantumGate.TGate;
+import model.quantumModel.quantumGate.multiQubitGate.CNot;
+import model.quantumModel.quantumGate.Control.ControlGate;
+import model.quantumModel.quantumGate.multiQubitGate.Swap;
+import model.quantumModel.quantumGate.multiQubitGate.Toffoli;
+import model.quantumModel.quantumGate.singleQubitGate.TGate;
 
 import java.util.ArrayList;
 import java.util.List;

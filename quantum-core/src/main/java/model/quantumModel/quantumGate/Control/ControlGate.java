@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumGate.ControlGate;
+package model.quantumModel.quantumGate.Control;
 
 import model.quantumModel.quantumState.QuantumState;
 

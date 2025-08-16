@@ -16,9 +16,9 @@ package model.quantumModel.quantumPort;
 
 import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumGate.ControlGate.CNot;
-import model.quantumModel.quantumGate.ControlGate.ControlGate;
-import model.quantumModel.quantumGate.ControlGate.Toffoli;
+import model.quantumModel.quantumGate.multiQubitGate.CNot;
+import model.quantumModel.quantumGate.Control.ControlGate;
+import model.quantumModel.quantumGate.multiQubitGate.Toffoli;
 import model.quantumModel.quantumState.QuantumState;
 
 import java.util.List;

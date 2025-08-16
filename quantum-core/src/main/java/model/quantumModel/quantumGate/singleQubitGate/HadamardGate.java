@@ -12,26 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumGate.ControlGate;
+package model.quantumModel.quantumGate.singleQubitGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
 
-public class Swap extends QuantumGate {
-    public Swap() {super(buildSwapMatrix(), 2, "Swap", "x");}
+public class HadamardGate extends QuantumGate {
+    public HadamardGate() {
+        super(buildHadamard(), 1, "Hadamard", "[H]");
+    }
 
-    private static Matrix buildSwapMatrix() {
-        Complex[][] swapG = new Complex[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                swapG[i][j] = new Complex(0, 0);
-            }
-        }
-        swapG[0][0] = new Complex(1, 0);
-        swapG[1][2] = new Complex(1, 0);
-        swapG[2][1] = new Complex(1, 0);
-        swapG[3][3] = new Complex(1, 0);
-        return new Matrix(swapG);
+    private static Matrix buildHadamard(){
+        Complex[][] hadamard = new Complex[2][2];
+        double value = 1 / Math.sqrt(2);
+        hadamard[0][0] = Complex.ONE.scale(value);
+        hadamard[0][1] = Complex.ONE.scale(value);
+        hadamard[1][0] = Complex.ONE.scale(value);
+        hadamard[1][1] = Complex.ONE.scale(-value);
+        return new Matrix(hadamard);
     }
 }

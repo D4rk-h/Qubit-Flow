@@ -12,22 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumGate;
+package model.quantumModel.quantumGate.multiQubitGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
+import model.quantumModel.quantumGate.QuantumGate;
 
-public class ZGate extends QuantumGate {
-    public ZGate() {
-        super(buildPauliZ(), 1, "Pauli-Z", "[Z]");
-    }
+public class Swap extends QuantumGate {
+    public Swap() {super(buildSwapMatrix(), 2, "Swap", "x");}
 
-    private static Matrix buildPauliZ() {
-        Complex[][] pauliZ = new Complex[2][2];
-        pauliZ[0][0] = Complex.ONE;
-        pauliZ[0][1] = Complex.ZERO;
-        pauliZ[1][0] = Complex.ZERO;
-        pauliZ[1][1] = new Complex(-1, 0);
-        return new Matrix(pauliZ);
+    private static Matrix buildSwapMatrix() {
+        Complex[][] swapG = new Complex[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                swapG[i][j] = new Complex(0, 0);
+            }
+        }
+        swapG[0][0] = new Complex(1, 0);
+        swapG[1][2] = new Complex(1, 0);
+        swapG[2][1] = new Complex(1, 0);
+        swapG[3][3] = new Complex(1, 0);
+        return new Matrix(swapG);
     }
 }

@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumGate.ControlGate;
+package model.quantumModel.quantumGate.multiQubitGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
+import model.quantumModel.quantumGate.Control.ControlGate;
 import model.quantumModel.quantumGate.QuantumGate;
 
 public class CNot extends QuantumGate {
