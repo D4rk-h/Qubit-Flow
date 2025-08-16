@@ -18,31 +18,18 @@ import model.mathModel.Matrix;
 import model.quantumModel.quantumPort.QuantumGatePort;
 import model.quantumModel.quantumState.QuantumState;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class QuantumGate implements QuantumGatePort {
     private final Matrix matrix;
-    private final int numQubits;
+    private int numQubits;
     private final String name;
-    private final int[] targetQubits;
+    private final String symbol;
 
-    public QuantumGate(Matrix matrix, int numQubits, String name) {
-        this(matrix, numQubits, name, createDefaultTargets(numQubits));
-    }
-
-    public QuantumGate(Matrix matrix, int numQubits, String name, int[] targetQubits) {
+    public QuantumGate(Matrix matrix, int numQubits, String name, String symbol) {
         this.matrix = matrix;
         this.numQubits = numQubits;
         this.name = name;
-        this.targetQubits = targetQubits.clone();
+        this.symbol = symbol;
         validateGate();
-    }
-
-    private static int[] createDefaultTargets(int numQubits) {
-        int[] targets = new int[numQubits];
-        for (int i = 0; i < numQubits; i++) targets[i] = i;
-        return targets;
     }
 
     private void validateGate() {
@@ -50,41 +37,6 @@ public class QuantumGate implements QuantumGatePort {
         if (matrix.getRows() != expectedSize || matrix.getCols() != expectedSize) {
             throw new IllegalArgumentException("Matrix size must be " + expectedSize + "x" + expectedSize);
         }
-        if (targetQubits.length != numQubits) throw new IllegalArgumentException("Number of target qubits must match gate's n-qubit");
-        Set<Integer> uniqueTargets = new HashSet<>();
-        for (int target : targetQubits) {
-            if (!uniqueTargets.add(target)) throw new IllegalArgumentException("Duplicate target qubit: " + target);
-        }
-    }
-
-    public QuantumGate expandToSystem(int systemSize, int[] qubitPositions) {
-        Matrix expandedMatrix = buildExpandedMatrix(systemSize);
-        return new QuantumGate(expandedMatrix, systemSize, name + "_expanded", qubitPositions);
-    }
-
-    private Matrix buildExpandedMatrix(int systemSize) {
-        return this.matrix.tensorPower(systemSize);
-    }
-
-    private int extractBits(int state, int[] positions) {
-        int result = 0;
-        for (int i = 0; i < positions.length; i++) if ((state & (1 << positions[i])) != 0) result |= (1 << i);
-        return result;
-    }
-
-    private int replaceBits(int originalState, int newBits, int[] positions) {
-        int result = originalState;
-        for (int pos : positions) result &= ~(1 << pos);
-        for (int i = 0; i < positions.length; i++) {
-            if ((newBits & (1 << i)) != 0) result |= (1 << positions[i]);
-        }
-        return result;
-    }
-
-    private boolean areOtherBitsEqual(int state1, int state2, int[] positions) {
-        int mask = 0;
-        for (int pos : positions) mask |= (1 << pos);
-        return (state1 & ~mask) == (state2 & ~mask);
     }
 
     @Override
@@ -93,8 +45,16 @@ public class QuantumGate implements QuantumGatePort {
         else throw new IllegalArgumentException("Gate size doesn't match system size. Use expandToSystem() first.");
     }
 
+    @Override
+    public QuantumGate expandGateDimension(int circuitDimension, int whichQubitsToApply) {
+        if (circuitDimension <= 0 || whichQubitsToApply <= 0) throw new IllegalArgumentException("Dimension and target qubits must have positive values");
+        Matrix result = this.getMatrix().extendToMultiQubitGate(circuitDimension, whichQubitsToApply);
+        return new QuantumGate(result, circuitDimension, this.name, this.symbol);
+    }
+
+    public void setNumQubits(int numQubits) {this.numQubits = numQubits;}
+    public String getSymbol() {return symbol;}
     public Matrix getMatrix() { return matrix; }
     public String getName() { return name; }
     public int getNumQubits() { return numQubits; }
-    public int[] getTargetQubits() { return targetQubits.clone(); }
 }

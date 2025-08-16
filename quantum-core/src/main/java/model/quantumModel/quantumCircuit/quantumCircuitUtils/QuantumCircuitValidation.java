@@ -6,13 +6,10 @@ import model.quantumModel.quantumGate.ControlGate.CNot;
 import model.quantumModel.quantumGate.ControlGate.ControlGate;
 import model.quantumModel.quantumGate.ControlGate.Swap;
 import model.quantumModel.quantumGate.ControlGate.Toffoli;
-import model.quantumModel.quantumGate.MultiQubitGateMarker;
 import model.quantumModel.quantumGate.TGate;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class QuantumCircuitValidation {
 
@@ -36,23 +33,6 @@ public class QuantumCircuitValidation {
     private static void extend(List<List<Object>> circuit, int i, int j) {
         while (circuit.size() <= i) {circuit.add(new ArrayList<>());}
         while (circuit.get(i).size() <= j) {circuit.get(i).add(null);}
-    }
-
-    public boolean isValidCircuit(QuantumCircuit circuit) {
-        for (int depth = 0; depth < circuit.getDepth(); depth++) {
-            Set<Integer> usedQubits = new HashSet<>();
-            for (int wire = 0; wire < circuit.getCircuit().size(); wire++) {
-                if (depth < circuit.getCircuit().get(wire).size()) {
-                    Object element = circuit.getCircuit().get(wire).get(depth);
-                    if (element instanceof QuantumGate && !(element instanceof MultiQubitGateMarker)) {
-                        for (int targetQubit : ((QuantumGate) element).getTargetQubits()) {
-                            if (!usedQubits.add(targetQubit)) return false;
-                        }
-                    }
-                }
-            }
-        }
-        return true;
     }
 
     public void validateControlPlacement(QuantumCircuit circuit, int targetWire, int targetDepth) {

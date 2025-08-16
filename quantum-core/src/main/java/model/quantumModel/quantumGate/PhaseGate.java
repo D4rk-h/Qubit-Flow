@@ -19,15 +19,15 @@ import model.mathModel.Matrix;
 
 public class PhaseGate extends QuantumGate {
     public PhaseGate() {
-        super(buildPhase(), 1, "Phase");
+        super(buildPhase(), 1, "Phase", "[S]");
     }
 
     private static Matrix buildPhase() {
-        Complex[][] phaseG = new Complex[2][2];
-        phaseG[0][0] = Complex.ONE;
-        phaseG[0][1] = Complex.ZERO;
-        phaseG[1][0] = Complex.ZERO;
-        phaseG[1][1] = Complex.ONE;
-        return new Matrix(phaseG);
+        Complex[][] phase = new Complex[2][2];
+        phase[0][0] = Complex.ONE;
+        phase[0][1] = Complex.ZERO;
+        phase[1][0] = Complex.ZERO;
+        phase[1][1] = Complex.ONE;
+        return new Matrix(phase);
     }
 }

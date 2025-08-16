@@ -1,15 +1,34 @@
+// Copyright 2025 D4rk-h
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package model.quantumModel.quantumGate.ControlGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
+import model.quantumModel.quantumGate.QuantumGate;
 
-public class Toffoli {
+public class Toffoli extends QuantumGate {
     private final Matrix matrix = buildToffoliMatrix();
-    private final String name = "Toffoli";
-    private final String symbol = "[T]";
+    private int numOfQubits = 3;
     private ControlGate firstControl;
     private ControlGate secondControl;
-    private int numOfQubits = 3;
+
+    public Toffoli(ControlGate firstControl, ControlGate secondControl) {
+        super(buildToffoliMatrix(), 3, "Toffoli", "[T]");
+        this.firstControl = firstControl;
+        this.secondControl = secondControl;
+    }
 
     private static Matrix buildToffoliMatrix() {
         Complex[][] toffoli = new Complex[8][8];
@@ -34,7 +53,7 @@ public class Toffoli {
     }
 
     public String getName() {
-        return name;
+        return "Toffoli";
     }
 
     public ControlGate getFirstControl() {
@@ -54,7 +73,7 @@ public class Toffoli {
     }
 
     public String getSymbol() {
-        return symbol;
+        return "[T]";
     }
 
     public int getNumOfQubits() {

@@ -16,16 +16,19 @@ package model.quantumModel.quantumGate.ControlGate;
 
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
+import model.quantumModel.quantumGate.QuantumGate;
 
-public class CNot {
+public class CNot extends QuantumGate {
     private final Matrix matrix = buildControlledXMatrix();
-    private final String name = "CNOT";
-    private final String symbol = "⊕";
     private ControlGate control;
     private int numOfQubits = 2;
 
+    public CNot(ControlGate control) {
+        super(buildControlledXMatrix(), 2, "CNOT", "⊕");
+    }
 
-    private Matrix buildControlledXMatrix(){
+
+    private static Matrix buildControlledXMatrix(){
         Complex[][] controlledX = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -44,7 +47,7 @@ public class CNot {
     }
 
     public String getName() {
-        return name;
+        return "CNOT";
     }
 
     public ControlGate getControl() {
@@ -56,7 +59,7 @@ public class CNot {
     }
 
     public String getSymbol() {
-        return symbol;
+        return "⊕";
     }
 
     public int getNumOfQubits() {

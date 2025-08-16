@@ -17,16 +17,17 @@ package model.quantumModel.quantumGate;
 import model.mathModel.Complex;
 import model.mathModel.Matrix;
 
-public class PauliYGate extends QuantumGate {
-    public PauliYGate() {
-        super(buildPauliY(), 1, "YPauli-Y");
+public class ZGate extends QuantumGate {
+    public ZGate() {
+        super(buildPauliZ(), 1, "Pauli-Z", "[Z]");
     }
-    private static Matrix buildPauliY(){
-        Complex[][] pauliY = new Complex[2][2];
-        pauliY[0][0] = Complex.ZERO;
-        pauliY[0][1] = Complex.MINUS_I;
-        pauliY[1][0] = Complex.I;
-        pauliY[1][1] = Complex.ZERO;
-        return new Matrix(pauliY);
+
+    private static Matrix buildPauliZ() {
+        Complex[][] pauliZ = new Complex[2][2];
+        pauliZ[0][0] = Complex.ONE;
+        pauliZ[0][1] = Complex.ZERO;
+        pauliZ[1][0] = Complex.ZERO;
+        pauliZ[1][1] = new Complex(-1, 0);
+        return new Matrix(pauliZ);
     }
 }

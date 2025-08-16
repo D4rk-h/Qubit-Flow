@@ -14,8 +14,11 @@
 
 package model.quantumModel.quantumPort;
 
+import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 
 public interface QuantumGatePort {
-    QuantumState apply(QuantumState state);
+    <T> T apply(QuantumState state);
+    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
+
 }

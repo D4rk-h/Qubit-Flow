@@ -3,7 +3,6 @@ package control.command.circuitCommand.exportCommand;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import control.command.QuantumCommand;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
-import model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization.QuantumCircuitCLIDisplay;
 
 import java.io.File;
 import java.io.IOException;

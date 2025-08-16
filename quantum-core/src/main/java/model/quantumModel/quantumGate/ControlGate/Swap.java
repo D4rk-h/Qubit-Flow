@@ -19,7 +19,7 @@ import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
 
 public class Swap extends QuantumGate {
-    public Swap() {super(buildSwapMatrix(), 2, "Swap");}
+    public Swap() {super(buildSwapMatrix(), 2, "Swap", "x");}
 
     private static Matrix buildSwapMatrix() {
         Complex[][] swapG = new Complex[4][4];

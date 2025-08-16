@@ -20,6 +20,7 @@ public class ControlGate {
     private QuantumState targetState;
     private boolean activation;
     private Object targetGate;
+    private final String symbol = "●";
 
     public ControlGate(QuantumState targetState, Object targetGate) {
         this.targetState = targetState;
@@ -28,7 +29,6 @@ public class ControlGate {
 
     public boolean activateControl(int numOfQubits) {
         return targetState.equals(QuantumState.one(numOfQubits));
-        //Todo: rethink of add activate control method on circuit execution
     }
 
     public QuantumState getTargetState() {
@@ -53,5 +53,9 @@ public class ControlGate {
 
     public void setTargetGate(Object targetGate) {
         this.targetGate = targetGate;
+    }
+
+    public String getSymbol() {
+        return symbol;
     }
 }

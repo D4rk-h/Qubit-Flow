@@ -19,7 +19,7 @@ import model.mathModel.Matrix;
 
 public class NotGate extends QuantumGate {
     public NotGate() {
-        super(buildPauliX(), 1, "XPauli-X");
+        super(buildPauliX(), 1, "NOT (Pauli-X)", "⊕");
     }
 
     private static Matrix buildPauliX() {

@@ -16,14 +16,11 @@ package model.quantumModel.quantumCircuit;
 
 import model.quantumModel.measurementDisplay.Display;
 import model.quantumModel.measurementDisplay.displayUtils.DisplayPort;
-import model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization.QuantumCircuitCLIDisplay;
-import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitSeekToMerge;
 import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitValidation;
 import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumGate.ControlGate.CNot;
 import model.quantumModel.quantumGate.ControlGate.ControlGate;
 import model.quantumModel.quantumGate.ControlGate.Toffoli;
-import model.quantumModel.quantumGate.MultiQubitGateMarker;
 import model.quantumModel.quantumPort.QuantumCircuitPort;
 import model.quantumModel.quantumState.QuantumState;
 import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
@@ -39,8 +36,6 @@ public class QuantumCircuit implements QuantumCircuitPort {
     private List<Display> displays;
 
     private final static QuantumCircuitValidation validateUtils = new QuantumCircuitValidation();
-    private final static QuantumCircuitCLIDisplay cliUtils = new QuantumCircuitCLIDisplay();
-    private final static QuantumCircuitSeekToMerge seekToMerge = new QuantumCircuitSeekToMerge();
 
     public QuantumCircuit(int nQubits, int depth) {
         if (nQubits <= 0) {throw new IllegalArgumentException("At least 1 qubit is required");}
@@ -182,103 +177,8 @@ public class QuantumCircuit implements QuantumCircuitPort {
     @Override
     public boolean removeDisplay(Display display) {return displays.remove(display);}
 
-    public void mergeGates() {
-        for (List<Object> wire : circuit) {
-            seekToMerge.seekToMergeMinusY(wire);
-            seekToMerge.seekToMergeX(wire);
-            seekToMerge.seekToMergeZ(wire);
-        }
-    }
-
-    public Map<Display, Object> executeWithDisplays(QuantumState initialState) {
-        QuantumState finalState = execute(initialState);
-        Map<Display, Object> displayResults = new HashMap<>();
-        for (Display display : displays) {
-            if (display.display() instanceof DisplayPort port) {
-                QuantumState subState = extractSubState(finalState, display.fromWire(), display.toWire());
-                Object result = port.renderContent(subState);
-                displayResults.put(display, result);
-            }
-        }
-        return displayResults;
-    }
-
-    private QuantumState extractSubState(QuantumState fullState, int fromWire, int toWire) {
-        // TODO: Implement substate extraction for qubit range
-        return fullState;
-    }
-
-    public QuantumState execute(QuantumState initialState) {
-        if (initialState.getNumQubits() != this.nQubits) {throw new IllegalArgumentException("Initial state qubits dont match circuit size");}
-        QuantumState currentState = initialState.clone();
-        for (int depth=0;depth<this.depth;depth++) {
-            currentState = executeDepth(currentState, depth);
-        }
-        return currentState;
-    }
-
-    private QuantumState executeDepth(QuantumState state, int depth) {
-        QuantumState currentState = state;
-        Set<Integer> processedQubits = new HashSet<>();
-        for (int wire = 0; wire < circuit.size(); wire++) {
-            if (depth < circuit.get(wire).size() && !processedQubits.contains(wire)) {
-                Object element = circuit.get(wire).get(depth);
-                if (element instanceof QuantumGate && !(element instanceof MultiQubitGateMarker)) {
-                    currentState =  ((QuantumGate) element).apply(currentState);
-                    for (int targetQubit : ((QuantumGate) element).getTargetQubits()) {
-                        processedQubits.add(targetQubit);
-                    }
-                }
-                else if (element instanceof MultiQubitGateMarker) {
-                    int primaryQubit = ((MultiQubitGateMarker) element).getPrimaryQubit();
-                    if (!processedQubits.contains(primaryQubit)) {
-                        Object primaryElement = circuit.get(primaryQubit).get(depth);
-                        if (primaryElement instanceof QuantumGate) {
-                            currentState = ((QuantumGate) primaryElement).apply(currentState);
-                            for (int targetQubit : ((QuantumGate) primaryElement).getTargetQubits()) {
-                                processedQubits.add(targetQubit);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return currentState;
-    }
-
-    public List<QuantumState> executeStepByStep(QuantumState initialState) {
-        List<QuantumState> stateHistory = new ArrayList<>();
-        QuantumState currentState = initialState.clone();
-        stateHistory.add(currentState.clone());
-        for (int depth = 0; depth < this.depth; depth++) {
-            currentState = executeDepth(currentState, depth);
-            stateHistory.add(currentState.clone());
-        }
-        return stateHistory;
-    }
-
-    public List<QuantumGate> getGatesAtDepth(int depth) {
-        List<QuantumGate> gates = new ArrayList<>();
-        Set<QuantumGate> uniqueGates = new HashSet<>();
-        for (List<Object> objects : circuit) {
-            if (depth < objects.size()) {
-                Object element = objects.get(depth);
-                if (element instanceof QuantumGate && !(element instanceof MultiQubitGateMarker)) {
-                    if (uniqueGates.add(((QuantumGate) element))) {
-                        gates.add(((QuantumGate) element));
-                    }
-                }
-            }
-        }
-        return gates;
-    }
-
     public void show() {
-        System.out.println(cliUtils.formatCircuit(this));
-    }
-
-    public String getCircuitString() {
-        return cliUtils.formatCircuit(this);
+    //todo: develop a visualization method, CLI not viable
     }
 
     public void setInitialState(BasicQuantumState state, int qubit) {
