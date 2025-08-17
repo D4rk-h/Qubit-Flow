@@ -59,8 +59,131 @@ public class QuantumState implements Cloneable {
         return new QuantumState(QuantumStateUtils.createCustomSuperposition(numQubits, states, amplitudes), numQubits);
     }
 
-    public QuantumState applyGate(QuantumGate gate) {
-        return new QuantumState(QuantumStateUtils.applyGate(this, gate), numQubits, true);
+    private void applyGate(QuantumGate gate) {
+        Complex[] newAmplitudes = QuantumStateUtils.applyGate(this, gate);
+        System.arraycopy(newAmplitudes, 0, this.amplitudes, 0, newAmplitudes.length);
+    }
+
+    public void applyHadamard(int targetQubit) {
+        QuantumStateUtils.validateQubitIndex(targetQubit, this.numQubits);
+        int mask = 1 << targetQubit;
+        double factor = 1.0 / Math.sqrt(2.0);
+        for (int i = 0; i < amplitudes.length; i += 2 * mask) {
+            for (int j = 0; j < mask; j++) {
+                Complex a0 = amplitudes[i + j];
+                Complex a1 = amplitudes[i + j + mask];
+                amplitudes[i + j] = a0.add(a1).scale(factor);
+                amplitudes[i + j + mask] = a0.subtract(a1).scale(factor);
+            }
+        }
+    }
+
+    public void applyNot(int targetQubit) {
+        QuantumStateUtils.validateQubitIndex(targetQubit, this.numQubits);
+        int mask = 1 << targetQubit;
+        for (int i = 0; i < amplitudes.length; i += 2 * mask) {
+            for (int j = 0; j < mask; j++) {
+                Complex temp = amplitudes[i + j];
+                amplitudes[i + j] = amplitudes[i + j + mask];
+                amplitudes[i + j + mask] = temp;
+            }
+        }
+    }
+
+    public void applyY(int targetQubit) {
+        QuantumStateUtils.validateQubitIndex(targetQubit, this.numQubits);
+        int mask = 1 << targetQubit;
+        for (int i = 0; i < amplitudes.length; i += 2 * mask) {
+            for (int j = 0; j < mask; j++) {
+                Complex a0 = amplitudes[i + j];
+                Complex a1 = amplitudes[i + j + mask];
+                amplitudes[i + j] = a1.multiply(Complex.I);
+                amplitudes[i + j + mask] = a0.multiply(Complex.MINUS_I);
+            }
+        }
+    }
+
+    public void applyZ(int targetQubit) {
+        QuantumStateUtils.validateQubitIndex(targetQubit, this.numQubits);
+        int mask = 1 << targetQubit;
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & mask) != 0) amplitudes[i] = amplitudes[i].scale(-1.0);
+        }
+    }
+
+    public void applyT(int targetQubit) {
+        QuantumStateUtils.validateQubitIndex(targetQubit, this.numQubits);
+        int mask = 1 << targetQubit;
+        Complex tPhase = Complex.exponential(Math.PI / 4);
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & mask) != 0) amplitudes[i] = amplitudes[i].multiply(tPhase);
+        }
+    }
+
+    public void applyPhase(int targetQubit) {
+        QuantumStateUtils.validateQubitIndex(targetQubit, this.numQubits);
+        int mask = 1 << targetQubit;
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & mask) != 0) amplitudes[i] = amplitudes[i].multiply(Complex.I);
+        }
+    }
+
+    public void applySwap(int qubit1, int qubit2) {
+        QuantumStateUtils.validateQubitIndex(qubit1, this.numQubits);
+        QuantumStateUtils.validateQubitIndex(qubit2, this.numQubits);
+        if (qubit1 == qubit2) throw new IllegalArgumentException("Cannot swap a qubit with itself");
+        int mask1 = 1 << qubit1;
+        int mask2 = 1 << qubit2;
+        for (int i = 0; i < amplitudes.length; i++) {
+            boolean bit1 = (i & mask1) != 0;
+            boolean bit2 = (i & mask2) != 0;
+            if (bit1 != bit2) {
+                int swappedState = i ^ mask1 ^ mask2;
+                if (i < swappedState) {
+                    Complex temp = amplitudes[i];
+                    amplitudes[i] = amplitudes[swappedState];
+                    amplitudes[swappedState] = temp;
+                }
+            }
+        }
+    }
+
+    public void applyCNOT(int controlQubit, int targetQubit) {
+        QuantumStateUtils.validateQubitIndex(controlQubit, this.numQubits);
+        QuantumStateUtils.validateQubitIndex(targetQubit, this.numQubits);
+        if (controlQubit == targetQubit) throw new IllegalArgumentException("Control and target qubits must be different");
+        int controlMask = 1 << controlQubit;
+        int targetMask = 1 << targetQubit;
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & controlMask) != 0) {
+                int flippedState = i ^ targetMask;
+                if (i < flippedState) {
+                    Complex temp = amplitudes[i];
+                    amplitudes[i] = amplitudes[flippedState];
+                    amplitudes[flippedState] = temp;
+                }
+            }
+        }
+    }
+
+    public void applyToffoli(int control1, int control2, int target) {
+        QuantumStateUtils.validateQubitIndex(control1, this.numQubits);
+        QuantumStateUtils.validateQubitIndex(control2, this.numQubits);
+        QuantumStateUtils.validateQubitIndex(target, this.numQubits);
+        if (control1 == control2 || control1 == target || control2 == target) throw new IllegalArgumentException("All qubits must be different for Toffoli gate");
+        int control1Mask = 1 << control1;
+        int control2Mask = 1 << control2;
+        int targetMask = 1 << target;
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & control1Mask) != 0 && (i & control2Mask) != 0) {
+                int flippedState = i ^ targetMask;
+                if (i < flippedState) {
+                    Complex temp = amplitudes[i];
+                    amplitudes[i] = amplitudes[flippedState];
+                    amplitudes[flippedState] = temp;
+                }
+            }
+        }
     }
 
     public QuantumState applyBitFlip(int targetQubit) {
