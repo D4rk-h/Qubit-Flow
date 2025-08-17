@@ -28,7 +28,7 @@ public class PhaseGate extends QuantumGate {
         phase[0][0] = Complex.ONE;
         phase[0][1] = Complex.ZERO;
         phase[1][0] = Complex.ZERO;
-        phase[1][1] = Complex.ONE;
+        phase[1][1] = Complex.I;
         return new Matrix(phase);
     }
 }
