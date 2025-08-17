@@ -20,7 +20,7 @@ public class ControlGate {
     private QuantumState targetState;
     private boolean activation;
     private Object targetGate;
-    private final String symbol = "●";
+    private final String name = "Control";
 
     public ControlGate(QuantumState targetState, Object targetGate) {
         this.targetState = targetState;
@@ -55,7 +55,7 @@ public class ControlGate {
         this.targetGate = targetGate;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getName() {
+        return name;
     }
 }

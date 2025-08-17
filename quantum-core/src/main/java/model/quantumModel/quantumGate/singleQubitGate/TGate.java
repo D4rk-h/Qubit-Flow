@@ -20,7 +20,7 @@ import model.quantumModel.quantumGate.QuantumGate;
 
 public class TGate extends QuantumGate {
     public TGate() {
-        super(buildT(), 1, "T (π/8)", "[T]");
+        super(buildT(), 1, "T (π/8)");
     }
 
     private static Matrix buildT() {

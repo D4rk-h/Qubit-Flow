@@ -13,13 +13,13 @@ public class AddMultiQubitGateCommand extends AddCommand implements AddCommandPo
         super(gate, new Location(circuit, qubitPositions[0], depth));
         this.gate = gate;
         this.qubitPositions = qubitPositions.clone();
-        this.systemSize = circuit.getnQubits();
+        this.systemSize = circuit.getNQubits();
         validatePositions(circuit);
     }
 
     private void validatePositions(QuantumCircuit circuit) {
         for (int pos : qubitPositions) {
-            if (pos < 0 || pos >= circuit.getnQubits()) {
+            if (pos < 0 || pos >= circuit.getNQubits()) {
                 throw new IndexOutOfBoundsException("Qubit position " + pos + " out of bounds");
             }
         }

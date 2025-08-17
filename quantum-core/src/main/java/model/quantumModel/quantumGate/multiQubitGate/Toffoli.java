@@ -26,7 +26,7 @@ public class Toffoli extends QuantumGate {
     private ControlGate secondControl;
 
     public Toffoli(ControlGate firstControl, ControlGate secondControl) {
-        super(buildToffoliMatrix(), 3, "Toffoli", "[T]");
+        super(buildToffoliMatrix(), 3, "Toffoli");
         this.firstControl = firstControl;
         this.secondControl = secondControl;
     }

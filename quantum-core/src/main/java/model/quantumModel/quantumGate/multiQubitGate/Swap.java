@@ -19,19 +19,21 @@ import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
 
 public class Swap extends QuantumGate {
-    public Swap() {super(buildSwapMatrix(), 2, "Swap", "x");}
+    public Swap(int[] targetQubits) {
+        super(buildMatrix(), 2, "Swap");
+    }
 
-    private static Matrix buildSwapMatrix() {
-        Complex[][] swapG = new Complex[4][4];
+    private static Matrix buildMatrix() {
+        Complex[][] swap = new Complex[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                swapG[i][j] = new Complex(0, 0);
+                swap[i][j] = Complex.ZERO;
             }
         }
-        swapG[0][0] = new Complex(1, 0);
-        swapG[1][2] = new Complex(1, 0);
-        swapG[2][1] = new Complex(1, 0);
-        swapG[3][3] = new Complex(1, 0);
-        return new Matrix(swapG);
+        swap[0][0] = Complex.ONE;
+        swap[1][2] = Complex.ONE;
+        swap[2][1] = Complex.ONE;
+        swap[3][3] = Complex.ONE;
+        return new Matrix(swap);
     }
 }

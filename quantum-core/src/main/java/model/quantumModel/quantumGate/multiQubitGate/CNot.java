@@ -25,7 +25,7 @@ public class CNot extends QuantumGate {
     private int numOfQubits = 2;
 
     public CNot(ControlGate control) {
-        super(buildControlledXMatrix(), 2, "CNOT", "⊕");
+        super(buildControlledXMatrix(), 2, "CNOT");
     }
 
 

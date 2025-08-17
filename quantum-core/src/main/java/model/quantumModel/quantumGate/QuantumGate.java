@@ -22,13 +22,11 @@ public class QuantumGate implements QuantumGatePort {
     private final Matrix matrix;
     private int numQubits;
     private final String name;
-    private final String symbol;
 
-    public QuantumGate(Matrix matrix, int numQubits, String name, String symbol) {
+    public QuantumGate(Matrix matrix, int numQubits, String name) {
         this.matrix = matrix;
         this.numQubits = numQubits;
         this.name = name;
-        this.symbol = symbol;
         validateGate();
     }
 
@@ -49,11 +47,10 @@ public class QuantumGate implements QuantumGatePort {
     public QuantumGate expandGateDimension(int circuitDimension, int whichQubitsToApply) {
         if (circuitDimension <= 0 || whichQubitsToApply <= 0) throw new IllegalArgumentException("Dimension and target qubits must have positive values");
         Matrix result = this.getMatrix().extendToMultiQubitGate(circuitDimension, whichQubitsToApply);
-        return new QuantumGate(result, circuitDimension, this.name, this.symbol);
+        return new QuantumGate(result, circuitDimension, this.name);
     }
 
     public void setNumQubits(int numQubits) {this.numQubits = numQubits;}
-    public String getSymbol() {return symbol;}
     public Matrix getMatrix() { return matrix; }
     public String getName() { return name; }
     public int getNumQubits() { return numQubits; }

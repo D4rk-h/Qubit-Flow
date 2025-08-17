@@ -20,7 +20,7 @@ import model.quantumModel.quantumGate.QuantumGate;
 
 public class ZGate extends QuantumGate {
     public ZGate() {
-        super(buildPauliZ(), 1, "Pauli-Z", "[Z]");
+        super(buildPauliZ(), 1, "Pauli-Z");
     }
 
     private static Matrix buildPauliZ() {

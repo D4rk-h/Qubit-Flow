@@ -20,7 +20,7 @@ import model.quantumModel.quantumGate.QuantumGate;
 
 public class HadamardGate extends QuantumGate {
     public HadamardGate() {
-        super(buildHadamard(), 1, "Hadamard", "[H]");
+        super(buildHadamard(), 1, "Hadamard");
     }
 
     private static Matrix buildHadamard(){
