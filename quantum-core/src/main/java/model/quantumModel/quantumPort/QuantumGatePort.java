@@ -18,7 +18,6 @@ import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 
 public interface QuantumGatePort {
-    void apply(QuantumState state);
     QuantumGate expandGateDimension(int circuitDimension, int nQubit);
 
 }

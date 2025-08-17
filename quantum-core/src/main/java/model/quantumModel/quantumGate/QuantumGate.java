@@ -16,8 +16,6 @@ package model.quantumModel.quantumGate;
 
 import model.mathModel.Matrix;
 import model.quantumModel.quantumPort.QuantumGatePort;
-import model.quantumModel.quantumState.QuantumState;
-
 public class QuantumGate implements QuantumGatePort {
     private final Matrix matrix;
     private int numQubits;
@@ -35,12 +33,6 @@ public class QuantumGate implements QuantumGatePort {
         if (matrix.getRows() != expectedSize || matrix.getCols() != expectedSize) {
             throw new IllegalArgumentException("Matrix size must be " + expectedSize + "x" + expectedSize);
         }
-    }
-
-    @Override
-    public void apply(QuantumState state) {
-        if (this.numQubits == state.getNumQubits()) state.applyGate(this);
-        else throw new IllegalArgumentException("Gate size doesn't match system size. Use expandToSystem() first.");
     }
 
     @Override
