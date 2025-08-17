@@ -14,20 +14,60 @@
 
 package control.command.circuitCommand.addCommand;
 
-import model.commandsModel.Location;
+import control.command.UndoableCommand;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
+import model.quantumModel.quantumCircuit.circuitModel.CircuitLayer;
 import model.quantumModel.quantumState.QuantumState;
 
-public class AddQubitCommand extends AddCommand implements AddCommandPort {
-    private final QuantumState state;
+import java.util.ArrayList;
+import java.util.List;
 
-    public AddQubitCommand(QuantumState state, QuantumCircuit circuit, int wire, int depth) {
-        super(state, new Location(circuit, wire, depth));
-        this.state = state;
+public class AddQubitCommand implements UndoableCommand {
+    private final QuantumCircuit originalCircuit;
+    private final QuantumState originalState;
+    private final int originalQubits;
+    private QuantumCircuit newCircuit;
+    private QuantumState newState;
+    private boolean wasExecuted;
+
+    public AddQubitCommand(QuantumCircuit circuit, QuantumState state) {
+        this.originalCircuit = circuit;
+        this.originalState = state;
+        this.originalQubits = circuit.getNQubits();
+        this.wasExecuted = false;
     }
 
     @Override
-    public void addToCircuit() {
-        location.circuit().add(state, location.wire());
+    public void execute() {
+        int newNumQubits = originalQubits + 1;
+        newCircuit = new QuantumCircuit(newNumQubits);
+        copyExistingLayers();
+        QuantumState zeroQubit = QuantumState.zero(1);
+        newState = originalState.tensorProduct(zeroQubit);
+        wasExecuted = true;
+    }
+
+    @Override
+    public void undo() {wasExecuted = false;}
+
+    @Override
+    public boolean canUndo() {return wasExecuted && newCircuit != null && newState != null;}
+
+    @Override
+    public void redo() {execute();}
+
+    public QuantumCircuit getNewCircuit() { return newCircuit; }
+    public QuantumState getNewState() { return newState; }
+    public QuantumCircuit getOriginalCircuit() { return originalCircuit; }
+    public QuantumState getOriginalState() { return originalState; }
+
+    private void copyExistingLayers() {
+        List<CircuitLayer> newLayers = new ArrayList<>();
+        for (CircuitLayer layer : originalCircuit.getLayers()) {
+            CircuitLayer newLayer = new CircuitLayer();
+            layer.getOperations().forEach(newLayer::addOperation);
+            newLayers.add(newLayer);
+        }
+        newCircuit.setLayers(newLayers);
     }
 }

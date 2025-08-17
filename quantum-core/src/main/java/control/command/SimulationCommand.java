@@ -14,10 +14,10 @@
 
 package control.command;
 
-public interface SimulationCommand extends CommandPort {
-    @Override
-    void execute();
+public interface SimulationCommand extends Command {
     void pause();
     void resume();
     void abort();
+    boolean isRunning();
+    boolean isPaused();
 }

@@ -14,9 +14,7 @@
 
 package control.command;
 
-public interface QuantumCommand extends CommandPort {
-    @Override
-    void execute();
+public interface UndoableCommand extends Command {
     void undo();
     boolean canUndo();
     void redo();

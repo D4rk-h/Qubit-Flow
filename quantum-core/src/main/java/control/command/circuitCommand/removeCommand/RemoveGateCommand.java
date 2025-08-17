@@ -1,40 +1,61 @@
 package control.command.circuitCommand.removeCommand;
 
-import control.command.QuantumCommand;
-import model.commandsModel.Location;
-import model.quantumModel.quantumGate.QuantumGate;
+import control.command.UndoableCommand;
+import model.quantumModel.quantumCircuit.QuantumCircuit;
+import model.quantumModel.quantumCircuit.circuitModel.CircuitLayer;
+import model.quantumModel.quantumGate.GateOperation;
 
-public class RemoveGateCommand implements QuantumCommand {
-    private final Location location;
-    private QuantumGate removedGate;
+import java.util.List;
 
-    public RemoveGateCommand(Location location) {
-        this.location = location;
+public class RemoveGateCommand implements UndoableCommand {
+    private final QuantumCircuit circuit;
+    private final GateOperation operationToRemove;
+    private final int originalLayerIndex;
+    private boolean wasExecuted;
+    private CircuitLayer originalLayer;
+
+    public RemoveGateCommand(QuantumCircuit circuit, GateOperation operation, int layerIndex) {
+        this.circuit = circuit;
+        this.operationToRemove = operation;
+        this.originalLayerIndex = layerIndex;
+        this.wasExecuted = false;
     }
 
     @Override
     public void execute() {
-        removedGate = location.circuit().removeGate(location.wire(), location.depth());
-    }
+        List<CircuitLayer> layers = circuit.getLayers();
+        if (originalLayerIndex >= 0 && originalLayerIndex < layers.size()) {
+            originalLayer = layers.get(originalLayerIndex);
+            boolean removed = originalLayer.getOperations().remove(operationToRemove);
 
-    @Override
-    public void undo() {
-        if (removedGate != null) {
-            location.circuit().add(removedGate, location.wire(), location.depth());
+            if (removed) {
+                if (originalLayer.getOperations().isEmpty()) {
+                    layers.remove(originalLayerIndex);
+                }
+                wasExecuted = true;
+            }
         }
     }
 
     @Override
+    public void undo() {
+        if (!canUndo()) return;
+
+        if (originalLayer.getOperations().isEmpty()) {
+            // Re-add the layer if it was removed
+            circuit.getLayers().add(originalLayerIndex, originalLayer);
+        }
+        originalLayer.addOperation(operationToRemove);
+        wasExecuted = false;
+    }
+
+    @Override
     public boolean canUndo() {
-        return removedGate != null;
+        return wasExecuted && originalLayer != null;
     }
 
     @Override
     public void redo() {
         execute();
-    }
-
-    public QuantumGate getRemovedGate() {
-        return removedGate;
     }
 }

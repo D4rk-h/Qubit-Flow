@@ -12,22 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command.circuitCommand.addCommand;
+package control.command;
 
-import model.quantumModel.measurementDisplay.Display;
-import model.quantumModel.quantumCircuit.QuantumCircuit;
-
-public class AddDisplayCommand implements AddCommandPort {
-    private final Display display;
-    private final QuantumCircuit circuit;
-
-    public AddDisplayCommand(Display display, QuantumCircuit circuit) {
-        this.display = display;
-        this.circuit = circuit;
-    }
-
-    @Override
-    public void addToCircuit() {
-        circuit.addDisplay(display);
-    }
+public interface Command {
+    void execute();
 }
