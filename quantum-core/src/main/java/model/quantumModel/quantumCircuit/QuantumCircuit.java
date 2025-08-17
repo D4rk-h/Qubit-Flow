@@ -17,6 +17,7 @@ package model.quantumModel.quantumCircuit;
 import model.quantumModel.quantumCircuit.circuitModel.CircuitLayer;
 import model.quantumModel.quantumGate.GateOperation;
 import model.quantumModel.quantumGate.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGates;
 import model.quantumModel.quantumState.QuantumState;
 import java.util.*;
 
@@ -25,7 +26,7 @@ public class QuantumCircuit {
     private List<CircuitLayer> layers;
 
     public QuantumCircuit(int nQubit) {
-        if (nQubit < 1 || nQubit > 8) throw new IllegalArgumentException("Circuit max number of qubits: 8, given: "+nQubit);
+        if (nQubit < 1 || nQubit > 10) throw new IllegalArgumentException("Circuit max number of qubits: 8, given: "+nQubit);
         this.nQubit = nQubit;
         this.layers = new ArrayList<>();
     }
@@ -45,16 +46,37 @@ public class QuantumCircuit {
         availableLayer.addOperation(new GateOperation(gate, targetQubits));
     }
 
+    public void addHadamard(int qubit) {addGate(QuantumGates.hadamard(), qubit);}
+
+    public void addNot(int qubit) {addGate(QuantumGates.not(), qubit);}
+
+    public void addY(int qubit) {addGate(QuantumGates.y(), qubit);}
+
+    public void addZ(int qubit) {addGate(QuantumGates.z(), qubit);}
+
+    public void addT(int qubit) {addGate(QuantumGates.t(), qubit);}
+
+    public void addPhase(int qubit) {addGate(QuantumGates.phase(), qubit);}
+
+    public void addCNOT(int control, int target) {addGate(QuantumGates.cnot(), control, target);}
+
+    public void addSwap(int qubit1, int qubit2) {addGate(QuantumGates.swap(), qubit1, qubit2);}
+
+    public void addToffoli(int control1, int control2, int target) {addGate(QuantumGates.toffoli(), control1, control2, target);}
+
+    public void addControlled(QuantumGate gate, int control, int... targets) {
+        QuantumGate controlledGate = QuantumGates.controlled(gate);
+        int[] allQubits = new int[targets.length + 1];
+        allQubits[0] = control;
+        System.arraycopy(targets, 0, allQubits, 1, targets.length);
+        addGate(controlledGate, allQubits);
+    }
+
     public void executeOn(QuantumState state) {
         if (state.getNumQubits() != this.nQubit) throw new IllegalArgumentException("State must have " + nQubit + " qubits");
         for (CircuitLayer layer : layers) {
             layer.executeOn(state);
         }
-    }
-
-    private void validateQubit(int qubit) {
-        if (qubit < 0 || qubit >= nQubit)
-            throw new IllegalArgumentException("Qubit " + qubit + " out of bounds [0, " + (nQubit-1) + "]");
     }
 
     public int getDepth() {return layers.size();}

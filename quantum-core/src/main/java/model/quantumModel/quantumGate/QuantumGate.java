@@ -38,8 +38,8 @@ public class QuantumGate implements QuantumGatePort {
     }
 
     @Override
-    public QuantumState apply(QuantumState state) {
-        if (this.numQubits == state.getNumQubits()) return state.applyGate(this);
+    public void apply(QuantumState state) {
+        if (this.numQubits == state.getNumQubits()) state.applyGate(this);
         else throw new IllegalArgumentException("Gate size doesn't match system size. Use expandToSystem() first.");
     }
 
