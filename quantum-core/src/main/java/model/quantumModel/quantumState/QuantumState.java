@@ -59,7 +59,7 @@ public class QuantumState implements Cloneable {
         return new QuantumState(QuantumStateUtils.createCustomSuperposition(numQubits, states, amplitudes), numQubits);
     }
 
-    private void applyGate(QuantumGate gate) {
+    public void applyGate(QuantumGate gate) {
         Complex[] newAmplitudes = QuantumStateUtils.applyGate(this, gate);
         System.arraycopy(newAmplitudes, 0, this.amplitudes, 0, newAmplitudes.length);
     }
