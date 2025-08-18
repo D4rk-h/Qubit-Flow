@@ -10,14 +10,14 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
+// limitations under the License
 
-package model.quantumModel.quantumPort;
+package model.quantumModel.displayMeasurementProvider;
 
-import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 
-public interface QuantumGatePort {
-    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
-
+public interface DisplayMeasurementPort {
+    String getDisplayType();
+    Object extractData(QuantumState state);
+    boolean isCompatibleWith(int qubitCount);
 }

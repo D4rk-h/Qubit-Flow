@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumPort;
+package control.command.ports;
 
-import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumState.QuantumState;
+import model.quantumModel.quantumCircuit.QuantumCircuit;
 
-public interface QuantumGatePort {
-    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
-
+public interface ExportStrategy {
+    void export(QuantumCircuit circuit, String filename);
+    UndoableCommand createExportCommand(QuantumCircuit circuit, String filename);
 }

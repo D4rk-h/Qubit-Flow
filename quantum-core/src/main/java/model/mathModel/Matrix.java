@@ -76,7 +76,7 @@ public class Matrix {
 
     public Matrix multiply(Matrix other) {
         if (this.cols != other.rows){
-            throw new IllegalArgumentException("Cannot Subtract Matrices of distinct dimensions");
+            throw new IllegalArgumentException("Cannot Multiply Matrices of distinct dimensions");
         }
         Matrix result = new Matrix(this.rows, other.cols);
         for (int i=0;i<this.rows;i++){
@@ -91,7 +91,58 @@ public class Matrix {
         return result;
     }
 
-    public Matrix adjoint() {
+    public Matrix tensorProduct(Matrix other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other matrix cannot be null");
+        }
+        int newRows = this.rows * other.rows;
+        int newCols = this.cols * other.cols;
+        Matrix result = new Matrix(newRows, newCols);
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                Complex aij = this.data[i][j];
+                for (int k = 0; k < other.rows; k++) {
+                    for (int l = 0; l < other.cols; l++) {
+                        int resultRow = i * other.rows + k;
+                        int resultCol = j * other.cols + l;
+                        result.data[resultRow][resultCol] = aij.multiply(other.data[k][l]);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public Matrix extendToMultiQubitGate(int totalQubits, int targetQubit) {
+        if (totalQubits < 1) throw new IllegalArgumentException("Total qubits must be at least 1");
+        if (targetQubit < 0 || targetQubit >= totalQubits) throw new IllegalArgumentException("Target qubit must be between 0 and " + (totalQubits - 1));
+        if (!isSquared() || !isPowerOfTwo(this.rows)) throw new IllegalArgumentException("Gate must be square and dimension must be power of 2");
+        int gateQubits = (int) (Math.log(this.rows) / Math.log(2));
+        if (targetQubit + gateQubits > totalQubits) throw new IllegalArgumentException("Gate doesn't fit at target position");
+        Matrix result = createIdentityMatrix(1);
+        for (int i = 0; i < totalQubits; i += gateQubits) {
+            if (i == targetQubit) {
+                result = result.tensorProduct(this);
+                i += gateQubits - 1;
+            } else {
+                result = result.tensorProduct(createIdentityMatrix(2));
+            }
+        }
+        return result;
+    }
+
+    public Matrix tensorPower(int copies) {
+        if (copies < 1) throw new IllegalArgumentException("Number of copies must be at least 1");
+        if (copies == 1) return this.copy();
+        Matrix result = this;
+        for (int i = 1; i < copies; i++) {
+            result = result.tensorProduct(this);
+        }
+        return result;
+    }
+
+ public Matrix adjoint() {
         Matrix transposed = this.transpose();
         for (int i=0; i<transposed.getData().length;i++) {
             for (int j=0; j<transposed.getData()[i].length; j++) {
@@ -122,6 +173,19 @@ public class Matrix {
         }
         return result;
     }
+
+    private boolean isPowerOfTwo(int n) {return n > 0 && (n & (n - 1)) == 0;}
+
+    public static Matrix createIdentityMatrix(int size) {
+        Matrix identity = new Matrix(size, size);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                identity.data[i][j] = (i == j) ? Complex.ONE : Complex.ZERO;
+            }
+        }
+        return identity;
+    }
+
 
     public Matrix multiply(Complex lambda) {
         Matrix result = new Matrix(rows, cols);
@@ -198,7 +262,7 @@ public class Matrix {
         return submatrix;
     }
 
-    public boolean isSquared(){return rows == cols;}
+    private boolean isSquared(){return rows == cols;}
 
     public Matrix inverse() {
         if (rows != cols) {throw new IllegalStateException("Matrix must be square to calculate inverse. Got " + rows + "x" + cols);}
@@ -234,5 +298,84 @@ public class Matrix {
             }
         }
         return new Matrix(inverseData);
+    }
+
+    public Matrix copy() {
+        Matrix copy = new Matrix(this.rows, this.cols);
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                copy.data[i][j] = this.data[i][j];
+            }
+        }
+        return copy;
+    }
+
+    @Override
+    public String toString() {
+        return toString(4);
+    }
+
+    public String toString(int precision) {
+        if (rows == 0 || cols == 0) return "[]";
+        int maxWidth = findMaxElementWidth(precision);
+        StringBuilder result = new StringBuilder();
+        String formatString = "%" + maxWidth + "s";
+        String repeat = " ".repeat(maxWidth * cols + (cols - 1) * 2 + 2);
+        result.append("┌").append(repeat).append("┐\n");
+        for (int i = 0; i < rows; i++) {
+            result.append("│ ");
+            for (int j = 0; j < cols; j++) {
+                String element = formatElement(this.data[i][j], precision);
+                result.append(String.format(formatString, element));
+                if (j < cols - 1) result.append("  ");
+            }
+            result.append(" │\n");
+        }
+        result.append("└").append(repeat).append("┘");
+        return result.toString();
+    }
+
+    private int findMaxElementWidth(int precision) {
+        int maxWidth = 1;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                String element = formatElement(this.data[i][j], precision);
+                maxWidth = Math.max(maxWidth, element.length());
+            }
+        }
+        return maxWidth;
+    }
+
+    private String formatElement(Complex element, int precision) {
+        if (element == null) return "null";
+        double real = element.getRealPart();
+        double imag = element.getImaginaryPart();
+        if (Math.abs(imag) < Math.pow(10, -precision)) {
+            return formatDouble(real, precision);
+        }
+        if (Math.abs(real) < Math.pow(10, -precision)) {
+            if (Math.abs(imag - 1.0) < Math.pow(10, -precision)) {
+                return "i";
+            } else if (Math.abs(imag + 1.0) < Math.pow(10, -precision)) {
+                return "-i";
+            } else {
+                return formatDouble(imag, precision) + "i";
+            }
+        }
+        String realPart = formatDouble(real, precision);
+        String imagPart = formatDouble(Math.abs(imag), precision);
+        String sign = imag >= 0 ? "+" : "-";
+        if (Math.abs(Math.abs(imag) - 1.0) < Math.pow(10, -precision)) return realPart + sign + "i";
+        else return realPart + sign + imagPart + "i";
+    }
+
+    private String formatDouble(double value, int precision) {
+        if (Double.isNaN(value)) return "NaN";
+        if (Double.isInfinite(value)) return value > 0 ? "∞" : "-∞";
+        if (Math.abs(value) < Math.pow(10, -precision)) return "0";
+        String format = "%." + precision + "f";
+        String result = String.format(format, value);
+        if (result.contains(".")) {result = result.replaceAll("0+$", "").replaceAll("\\.$", "");}
+        return result;
     }
 }

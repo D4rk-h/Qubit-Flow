@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumPort;
+package model.quantumModel.displayMeasurementProvider.displayTypes;
 
-import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumState.QuantumState;
+import model.mathModel.Complex;
 
-public interface QuantumGatePort {
-    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
-
-}
+public record Amplitude (
+        Complex[] amplitudes
+    )
+{}

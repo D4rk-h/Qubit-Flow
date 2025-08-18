@@ -12,12 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumPort;
+package model.quantumModel.displayMeasurementProvider.provider;
 
-import model.quantumModel.quantumGate.QuantumGate;
+import model.quantumModel.displayMeasurementProvider.DisplayMeasurementPort;
+import model.quantumModel.displayMeasurementProvider.displayTypes.Probability;
 import model.quantumModel.quantumState.QuantumState;
 
-public interface QuantumGatePort {
-    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
+public class ProbabilityProvider implements DisplayMeasurementPort {
+    @Override
+    public String getDisplayType() {
+        return "Probability";
+    }
 
+    @Override
+    public Object extractData(QuantumState state) {
+        return new Probability(state.getProbabilities());
+    }
+
+    @Override
+    public boolean isCompatibleWith(int qubitCount) {
+        return true;
+    }
 }

@@ -15,7 +15,7 @@
 package model.quantumModel.quantumState.quantumStateUtils;
 
 import model.mathModel.Complex;
-import model.quantumModel.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -80,52 +80,34 @@ public class QuantumStateUtils {
     }
 
     public static Complex[] createCustomSuperposition(int numQubits, int[] states, Complex[] amplitudeValues) {
-        if (states.length != amplitudeValues.length) {
-            throw new IllegalArgumentException("States and amplitude arrays must have equal length");
-        }
-
+        if (states.length != amplitudeValues.length) throw new IllegalArgumentException("States and amplitude arrays must have equal length");
         int numStates = 1 << numQubits;
         Complex[] amplitudes = new Complex[numStates];
         Arrays.fill(amplitudes, Complex.ZERO);
-
         for (int i = 0; i < states.length; i++) {
             validateStateIndex(states[i], numStates);
             amplitudes[states[i]] = amplitudeValues[i];
         }
-
         return amplitudes;
     }
 
-    // ============= Normalization Methods =============
-
     public static Complex[] normalize(Complex[] amplitudes) {
         double norm = calculateNorm(amplitudes);
-        if (norm < Complex.EPSILON) {
-            throw new IllegalStateException("Cannot normalize zero state");
-        }
-
+        if (norm < Complex.EPSILON) throw new IllegalStateException("Cannot normalize zero state");
         Complex normalizationFactor = new Complex(1.0 / norm, 0.0);
-        return Arrays.stream(amplitudes)
-                .map(amp -> amp.multiply(normalizationFactor))
-                .toArray(Complex[]::new);
+        return Arrays.stream(amplitudes).map(amp -> amp.multiply(normalizationFactor)).toArray(Complex[]::new);
     }
 
     private static double calculateNorm(Complex[] amplitudes) {
         String key = Arrays.hashCode(amplitudes) + "_norm";
         return normCache.computeIfAbsent(key, k -> {
-            double sum = Arrays.stream(amplitudes)
-                    .mapToDouble(Complex::magnitudeSquared)
-                    .sum();
+            double sum = Arrays.stream(amplitudes).mapToDouble(Complex::magnitudeSquared).sum();
             return Math.sqrt(sum);
         });
     }
 
     public static Complex[] applyGate(QuantumState state, QuantumGate gate) {
-        if (gate.getNumQubits() != state.getNumQubits()) {
-            throw new IllegalArgumentException(
-                    String.format("Gate requires %d qubits, but state has %d qubits",
-                            gate.getNumQubits(), state.getNumQubits()));
-        }
+        if (gate.getNumQubits() != state.getNumQubits()) throw new IllegalArgumentException("State and gate number of qubits must be equal");
         return gate.getMatrix().multiplyVector(state.getAmplitudes());
     }
 

@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumPort;
+package control.command.simulate;
 
-import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumState.QuantumState;
+import control.command.ports.Command;
 
-public interface QuantumGatePort {
-    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
-
+public interface SimulationCommand extends Command {
+    void pause();
+    void resume();
+    void abort();
+    boolean isRunning();
+    boolean isPaused();
 }

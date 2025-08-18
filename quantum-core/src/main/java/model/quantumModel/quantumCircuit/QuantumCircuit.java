@@ -14,140 +14,86 @@
 
 package model.quantumModel.quantumCircuit;
 
-import model.quantumModel.measurementDisplay.Display;
-import model.quantumModel.quantumCircuit.quantumCircuitUtils.cliVisualization.QuantumCircuitCLIDisplay;
-import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitSeekToMerge;
-import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitDisplayUtils;
-import model.quantumModel.quantumCircuit.quantumCircuitUtils.QuantumCircuitValidation;
-import model.quantumModel.measurementDisplay.blochSphere.BlochSphere;
-import model.quantumModel.QuantumGate;
-import model.quantumModel.quantumGate.ControlledGate.ControlledGate;
-import model.quantumModel.quantumPort.QuantumCircuitPort;
+import model.quantumModel.quantumCircuit.circuitModel.CircuitLayer;
+import model.quantumModel.quantumGate.GateOperation;
+import model.quantumModel.quantumGate.QuantumGate;
+import model.quantumModel.quantumGate.QuantumGates;
 import model.quantumModel.quantumState.QuantumState;
-import model.quantumModel.quantumState.quantumStateUtils.BasicQuantumState;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+public class QuantumCircuit {
+    private int nQubit;
+    private List<CircuitLayer> layers;
 
-public class QuantumCircuit implements QuantumCircuitPort {
-    private int nQubits;
-    private int depth;
-    private List<List<Object>> circuit;
-    private final static QuantumCircuitDisplayUtils displayUtils = new QuantumCircuitDisplayUtils();
-    private final static QuantumCircuitValidation validateUtils = new QuantumCircuitValidation();
-    private final static QuantumCircuitCLIDisplay cliUtils = new QuantumCircuitCLIDisplay();
-    private final static QuantumCircuitSeekToMerge seekToMerge = new QuantumCircuitSeekToMerge();
-
-    public QuantumCircuit(int nQubits, int depth) {
-        if (nQubits <= 0) {throw new IllegalArgumentException("At least 1 qubit is required");}
-        if (depth <= 0) {throw new IllegalArgumentException("Depth should be positive");}
-        this.nQubits = nQubits;
-        this.depth = depth;
-        this.circuit = IntStream.range(0, nQubits)
-                .mapToObj(wire -> new ArrayList<>(Collections.nCopies(depth, null)))
-                .collect(Collectors.toList());
+    public QuantumCircuit(int nQubit) {
+        if (nQubit < 1 || nQubit > 10) throw new IllegalArgumentException("Circuit max number of qubits: 8, given: "+nQubit);
+        this.nQubit = nQubit;
+        this.layers = new ArrayList<>();
     }
 
-    public QuantumCircuit(int nQubits) {
-        this(nQubits, 25);
-    }
-
-    @Override
-    public void add(QuantumGate gate, int wire, int depth) {
-        validateUtils.validateQuantumGateBounds(this, wire, depth, gate);
-        circuit.get(wire).set(depth, gate);
-    }
-
-    @Override
-    public void add(Display display) {
-        validateUtils.validateDisplayBounds(display, this);
-        if (displayUtils.needsShift(display, circuit)) {
-            int shiftAmount = displayUtils.calculateRequiredShiftAmount(display, circuit);
-            this.circuit = displayUtils.shiftColumnsRight(circuit, display.fromDepth(), shiftAmount);
+    private void addGate(QuantumGate gate, int... targetQubits) {
+        CircuitLayer availableLayer = null;
+        for (CircuitLayer layer : layers) {
+            if (!layer.hasConflictWith(targetQubits)) {
+                availableLayer = layer;
+                break;
+            }
         }
-        displayUtils.placeDisplay(display, this.circuit);
+        if (availableLayer == null) {
+            availableLayer = new CircuitLayer();
+            layers.add(availableLayer);
+        }
+        availableLayer.addOperation(new GateOperation(gate, targetQubits));
     }
 
-    @Override
-    public void addControlled(ControlledGate controlledGate, int wire, int depth) {
-        validateUtils.validateControlledGateBounds(controlledGate, this, wire, depth);
-        circuit.get(wire).set(depth, controlledGate);
+    public void addHadamard(int qubit) {addGate(QuantumGates.hadamard(), qubit);}
+
+    public void addNot(int qubit) {addGate(QuantumGates.not(), qubit);}
+
+    public void addY(int qubit) {addGate(QuantumGates.y(), qubit);}
+
+    public void addZ(int qubit) {addGate(QuantumGates.z(), qubit);}
+
+    public void addT(int qubit) {addGate(QuantumGates.t(), qubit);}
+
+    public void addPhase(int qubit) {addGate(QuantumGates.phase(), qubit);}
+
+    public void addCNOT(int control, int target) {addGate(QuantumGates.cnot(), control, target);}
+
+    public void addSwap(int qubit1, int qubit2) {addGate(QuantumGates.swap(), qubit1, qubit2);}
+
+    public void addToffoli(int control1, int control2, int target) {addGate(QuantumGates.toffoli(), control1, control2, target);}
+
+    public void addControlled(QuantumGate gate, int control, int... targets) {
+        QuantumGate controlledGate = QuantumGates.controlled(gate);
+        int[] allQubits = new int[targets.length + 1];
+        allQubits[0] = control;
+        System.arraycopy(targets, 0, allQubits, 1, targets.length);
+        addGate(controlledGate, allQubits);
     }
 
-    @Override
-    public void add(BlochSphere sphere, int wire, int depth) {
-        validateUtils.validateBlochSphereBounds(this, wire, depth);
-        circuit.get(wire).set(depth, sphere);
-    }
-
-    @Override
-    public void add(QuantumState state, int wire) {
-        validateUtils.validateQuantumStateBounds(this, wire);
-        circuit.get(wire).set(0, state);
-    }
-
-    @Override
-    public QuantumGate removeGate(int wire, int depth){
-        if (circuit.get(wire).get(depth) instanceof QuantumGate){
-            QuantumGate deletedGate = (QuantumGate) circuit.get(wire).get(depth);
-            circuit.get(wire).set(depth, null);
-            return deletedGate;
-        } else {
-            return null;
+    public void executeOn(QuantumState state) {
+        if (state.getNumQubits() != this.nQubit) throw new IllegalArgumentException("State must have " + nQubit + " qubits");
+        for (CircuitLayer layer : layers) {
+            layer.executeOn(state);
         }
     }
 
-    @Override
-    public List<Object> removeWire(int wire){
-        List<Object> deletedWire = circuit.get(wire);
-        circuit.remove(wire);
-        return deletedWire;
-    }
+    public int getDepth() {return layers.size();}
+    public int getTotalGateCount() {return layers.stream().mapToInt(CircuitLayer::getOperationCount).sum();}
+    public int getNQubits() {return nQubit;}
+    public void setNQubits(int nQubits) {this.nQubit = nQubits;}
+    public List<CircuitLayer> getLayers() {return layers;}
+    public void setLayers(List<CircuitLayer> layers) {this.layers = layers;}
 
     @Override
-    public Display removeDisplay(Display display) {
-        return displayUtils.removeDisplay(display, this.circuit);
-    }
-
-    public void mergeGates() {
-        for (List<Object> wire : circuit) {
-            seekToMerge.seekToMergeMinusY(wire);
-            seekToMerge.seekToMergeX(wire);
-            seekToMerge.seekToMergeZ(wire);
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Quantum Circuit (").append(nQubit).append(" qubits, ").append(getDepth()).append(" layers):\n");
+        for (int i = 0; i < layers.size(); i++) {
+            sb.append("Layer ").append(i + 1).append(": ");
+            sb.append(layers.get(i).toString()).append("\n");
         }
+        return sb.toString();
     }
-
-    public void show() {
-        System.out.println(cliUtils.formatCircuit(this));
-    }
-
-    public void showWithLabels() {
-        System.out.println(cliUtils.formatCircuitWithLabels(this));
-    }
-
-    public String getCircuitString() {
-        return cliUtils.formatCircuit(this);
-    }
-
-    public void setInitialState(BasicQuantumState state, int qubit) {
-        if (qubit < 0 || qubit >= nQubits) {
-            throw new IndexOutOfBoundsException("Qubit index out of bounds");
-        }
-        circuit.get(qubit).set(0, state);
-    }
-
-    public int getnQubits() {return nQubits;}
-
-    public void setnQubits(int nQubits) {this.nQubits = nQubits;}
-
-    public List<List<Object>> getCircuit() {return circuit;}
-
-    public void setCircuit(List<List<Object>> circuit) {this.circuit = circuit;}
-
-    public int getDepth () {return depth;}
-
-    public void setDepth ( int depth){this.depth = depth;}
 }

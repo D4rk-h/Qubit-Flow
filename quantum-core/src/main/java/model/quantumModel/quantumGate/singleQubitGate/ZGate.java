@@ -12,12 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumPort;
+package model.quantumModel.quantumGate.singleQubitGate;
 
+import model.mathModel.Complex;
+import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumState.QuantumState;
 
-public interface QuantumGatePort {
-    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
+public class ZGate extends QuantumGate {
+    public ZGate() {
+        super(buildPauliZ(), 1, "Pauli-Z");
+    }
 
+    private static Matrix buildPauliZ() {
+        Complex[][] pauliZ = new Complex[2][2];
+        pauliZ[0][0] = Complex.ONE;
+        pauliZ[0][1] = Complex.ZERO;
+        pauliZ[1][0] = Complex.ZERO;
+        pauliZ[1][1] = new Complex(-1, 0);
+        return new Matrix(pauliZ);
+    }
 }

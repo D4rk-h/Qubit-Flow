@@ -12,12 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumPort;
+package model.quantumModel.quantumGate.singleQubitGate;
 
+import model.mathModel.Complex;
+import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumState.QuantumState;
 
-public interface QuantumGatePort {
-    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
+public class HadamardGate extends QuantumGate {
+    public HadamardGate() {
+        super(buildHadamard(), 1, "Hadamard");
+    }
 
+    private static Matrix buildHadamard(){
+        Complex[][] hadamard = new Complex[2][2];
+        double value = 1 / Math.sqrt(2);
+        hadamard[0][0] = Complex.ONE.scale(value);
+        hadamard[0][1] = Complex.ONE.scale(value);
+        hadamard[1][0] = Complex.ONE.scale(value);
+        hadamard[1][1] = Complex.ONE.scale(-value);
+        return new Matrix(hadamard);
+    }
 }

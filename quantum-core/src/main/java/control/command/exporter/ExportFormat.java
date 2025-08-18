@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model.quantumModel.quantumPort;
+package control.command.exporter;
 
-import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumState.QuantumState;
-
-public interface QuantumGatePort {
-    QuantumGate expandGateDimension(int circuitDimension, int nQubit);
-
+public enum ExportFormat {
+    JSON("json"),
+    QASM("qasm"),
+    QISKIT("py");
+    private final String extension;
+    ExportFormat(String extension) {this.extension = extension;}
+    public String getExtension() {return extension;}
 }
