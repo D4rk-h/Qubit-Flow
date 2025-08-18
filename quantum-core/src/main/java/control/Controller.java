@@ -14,6 +14,7 @@
 
 package control;
 
+import control.command.add.AddMeasurementCommand;
 import control.command.history.CommandHistory;
 import control.command.importer.CircuitImporter;
 import control.command.importer.ImportFormat;
@@ -28,8 +29,15 @@ import control.command.gate.GateType;
 import control.command.simulate.SimulateCommand;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumGate.GateOperation;
+import model.quantumModel.quantumGate.MeasurementOperation;
 import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
+import model.quantumModel.quantumState.quantumStateUtils.MeasurementResult;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static model.quantumModel.quantumState.quantumStateUtils.QuantumStateUtils.validateQubitIndex;
 
 public class Controller {
     private static final int MIN_QUBITS = 1;
@@ -40,6 +48,7 @@ public class Controller {
     private final CommandHistory commandHistory;
     private final CircuitExporter exporter;
     private final CircuitImporter importer;
+    private final List<MeasurementResult> measurementResults;
 
     public Controller(int numQubits) {
         validateQubitCount(numQubits);
@@ -48,6 +57,7 @@ public class Controller {
         this.commandHistory = new CommandHistory();
         this.exporter = new CircuitExporter();
         this.importer = new CircuitImporter();
+        this.measurementResults = new ArrayList<>();
         setupStateRestorer();
     }
 
@@ -81,6 +91,50 @@ public class Controller {
     }
 
     public void addControlledGate(QuantumGate gate, int control, int... targets) {circuit.addControlled(gate, control, targets);}
+
+    public AddMeasurementCommand addMeasurement(int qubit) {
+        return addMeasurement(new int[]{qubit});
+    }
+
+    public AddMeasurementCommand addMeasurement(int... qubits) {
+        validateMeasurementQubits(qubits);
+        AddMeasurementCommand command = new AddMeasurementCommand(circuit, currentState, qubits);
+        commandHistory.executeCommand(command);
+        return command;
+    }
+
+    public List<AddMeasurementCommand> addMeasurementAll() {
+        List<AddMeasurementCommand> commands = new ArrayList<>();
+        for (int i = 0; i < getQubitCount(); i++) {
+            commands.add(addMeasurement(i));
+        }
+        return commands;
+    }
+
+    public MeasurementResult measureQubit(int qubit) {
+        validateQubitIndex(qubit);
+        MeasurementResult result = currentState.measureQubit(qubit);
+        measurementResults.add(result);
+        return result;
+    }
+
+    public MeasurementResult measureAll() {
+        MeasurementResult result = currentState.measure();
+        measurementResults.add(result);
+        return result;
+    }
+
+    public List<MeasurementResult> getMeasurementResults() {
+        return new ArrayList<>(measurementResults);
+    }
+
+    public MeasurementResult getLastMeasurementResult() {
+        return measurementResults.isEmpty() ? null : measurementResults.get(measurementResults.size() - 1);
+    }
+
+    public void clearMeasurementResults() {
+        measurementResults.clear();
+    }
 
     public void addQubit() {
         UndoableCommand command = new AddQubitCommand(circuit, currentState);
@@ -145,6 +199,21 @@ public class Controller {
         return simulateCommand;
     }
 
+    public SimulateCommand simulateWithMeasurements() {
+        SimulateCommand simulateCommand = simulate();
+        circuit.getLayers().forEach(layer ->
+                layer.getOperations().forEach(op -> {
+                    if (op instanceof MeasurementOperation measurementOp &&
+                            measurementOp.getMeasurementResult() != null) {
+                        measurementResults.add(measurementOp.getMeasurementResult());
+                    }
+                })
+        );
+
+        return simulateCommand;
+    }
+
+
     public boolean undo() {return commandHistory.undo();}
 
     public boolean redo() {return commandHistory.redo();}
@@ -165,7 +234,10 @@ public class Controller {
 
     public void exportToQISKIT() {exportCircuit(ExportFormat.QISKIT);}
 
-    public void importCircuit(String filename, ImportFormat format) {importer.importCircuit(filename, format);}
+    public void importCircuit(String filename, ImportFormat format) {
+        importer.importCircuit(filename, format);
+        measurementResults.clear();
+    }
 
     public void importFromQASM(String qasmFile) {importCircuit(qasmFile, ImportFormat.QASM);}
 
@@ -180,6 +252,13 @@ public class Controller {
     public int getTotalGateCount() {return circuit.getTotalGateCount();}
 
     public int getQubitCount() {return circuit.getNQubits();}
+
+    public int getMeasurementCount() {
+        return (int) circuit.getLayers().stream()
+                .flatMap(layer -> layer.getOperations().stream())
+                .filter(op -> op instanceof MeasurementOperation)
+                .count();
+    }
 
     public String getCircuitInfo() {
         StringBuilder info = new StringBuilder();
@@ -200,11 +279,25 @@ public class Controller {
             );
         }
     }
+    private void validateQubitIndex(int qubit) {
+        if (qubit < 0 || qubit >= getQubitCount()) throw new IllegalArgumentException("Invalid qubit index. Must be between 0 and " + (getQubitCount() - 1));
+    }
+
+    private void validateMeasurementQubits(int[] qubits) {
+        if (qubits == null || qubits.length == 0) throw new IllegalArgumentException("Target qubits cannot be null or empty");
+        for (int qubit : qubits) validateQubitIndex(qubit);
+        for (int i = 0; i < qubits.length; i++) {
+            for (int j = i + 1; j < qubits.length; j++) {
+                if (qubits[i] == qubits[j]) throw new IllegalArgumentException("Duplicate qubit index: " + qubits[i]);
+            }
+        }
+    }
 
     private void setupStateRestorer() {
         this.commandHistory.setStateRestorer((circuitObj, stateObj) -> {
             this.circuit = (QuantumCircuit) circuitObj;
             this.currentState = (QuantumState) stateObj;
+            this.measurementResults.clear();
         });
     }
 }
