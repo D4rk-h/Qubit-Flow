@@ -72,6 +72,10 @@ public class QuantumCircuit {
         addGate(controlledGate, allQubits);
     }
 
+    public void addMeasurement(int... targets) {
+        // todo create measurement as gate
+    }
+
     public void executeOn(QuantumState state) {
         if (state.getNumQubits() != this.nQubit) throw new IllegalArgumentException("State must have " + nQubit + " qubits");
         for (CircuitLayer layer : layers) {

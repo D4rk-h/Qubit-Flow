@@ -45,9 +45,7 @@ public class QasmImportStrategy implements ImportStrategy {
     private String readFileContent(BufferedReader reader) throws IOException {
         StringBuilder content = new StringBuilder();
         String line;
-        while ((line = reader.readLine()) != null) {
-            content.append(line).append("\n");
-        }
+        while ((line = reader.readLine()) != null) content.append(line).append("\n");
         return content.toString();
     }
 

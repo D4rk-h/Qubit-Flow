@@ -14,12 +14,12 @@
 
 package control.command.createCustom;
 
-import control.command.QuantumCommand;
+import control.command.ports.UndoableCommand;
 import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
 import java.util.Stack;
 
-public class CreateCustomGate implements QuantumCommand {
+public class CreateCustomGate implements UndoableCommand {
     private Matrix matrix;
     private int numOfQubits;
     private String customName;
