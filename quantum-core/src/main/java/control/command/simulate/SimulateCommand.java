@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command.simulationCommand;
+package control.command.simulate;
 
-import control.command.SimulationCommand;
 import model.mathModel.Complex;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumState.QuantumState;
@@ -26,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class Simulate implements SimulationCommand {
+public class SimulateCommand implements SimulationCommand {
     private final QuantumCircuit circuit;
     private final QuantumState initialState;
     private final AtomicReference<QuantumState> finalState;
@@ -34,7 +33,7 @@ public class Simulate implements SimulationCommand {
     private final AtomicBoolean isPaused;
     private CompletableFuture<Void> simulationFuture;
 
-    public Simulate(QuantumCircuit circuit, QuantumState initialState) {
+    public SimulateCommand(QuantumCircuit circuit, QuantumState initialState) {
         this.circuit = validateCircuit(circuit);
         this.initialState = validateInitialState(initialState, circuit);
         this.finalState = new AtomicReference<>();
@@ -44,13 +43,9 @@ public class Simulate implements SimulationCommand {
 
     @Override
     public void execute() {
-        if (isRunning.get()) {
-            throw new IllegalStateException("Simulation is already running");
-        }
-
+        if (isRunning.get()) throw new IllegalStateException("Simulation is already running");
         isRunning.set(true);
         isPaused.set(false);
-
         simulationFuture = CompletableFuture.runAsync(this::runSimulation);
     }
 
@@ -75,40 +70,28 @@ public class Simulate implements SimulationCommand {
         if (isRunning.get()) {
             isRunning.set(false);
             isPaused.set(false);
-            if (simulationFuture != null) {
-                simulationFuture.cancel(true);
-            }
+            if (simulationFuture != null) simulationFuture.cancel(true);
             System.out.println("Simulation aborted");
         }
     }
 
     @Override
-    public boolean isRunning() {
-        return isRunning.get();
-    }
+    public boolean isRunning() {return isRunning.get();}
 
     @Override
-    public boolean isPaused() {
-        return isPaused.get();
-    }
+    public boolean isPaused() {return isPaused.get();}
 
-    public QuantumState getFinalState() {
-        return finalState.get();
-    }
+    public QuantumState getFinalState() {return finalState.get();}
 
     public MeasurementResult measure() {
         QuantumState state = finalState.get();
-        if (state == null) {
-            throw new IllegalStateException("No simulation results available for measurement");
-        }
+        if (state == null) throw new IllegalStateException("No simulation results available for measurement");
         return state.measure();
     }
 
     public Map<Integer, Integer> measureMultiple(int numMeasurements) {
         QuantumState state = finalState.get();
-        if (state == null) {
-            throw new IllegalStateException("No simulation results available for measurement");
-        }
+        if (state == null) throw new IllegalStateException("No simulation results available for measurement");
         return state.measureMultiple(numMeasurements);
     }
 
@@ -117,7 +100,6 @@ public class Simulate implements SimulationCommand {
             QuantumState state = initialState.clone();
             circuit.executeOn(state);
             finalState.set(state);
-
             logSimulationResults(state);
         } catch (Exception e) {
             System.err.println("Simulation error: " + e.getMessage());
@@ -131,10 +113,8 @@ public class Simulate implements SimulationCommand {
     private void logSimulationResults(QuantumState state) {
         System.out.println("Simulation completed successfully");
         System.out.println("Final state: " + state.toString());
-
         double[] probabilities = state.getProbabilities();
         System.out.println("Measurement probabilities:");
-
         for (int i = 0; i < probabilities.length; i++) {
             if (probabilities[i] > Complex.EPSILON) {
                 String binaryState = String.format("%" + circuit.getNQubits() + "s",
@@ -145,22 +125,18 @@ public class Simulate implements SimulationCommand {
     }
 
     private QuantumCircuit validateCircuit(QuantumCircuit circuit) {
-        if (circuit == null) {
-            throw new IllegalArgumentException("Circuit cannot be null");
-        }
+        if (circuit == null) throw new IllegalArgumentException("Circuit cannot be null");
         return circuit;
     }
 
     private QuantumState validateInitialState(QuantumState state, QuantumCircuit circuit) {
         QuantumState validatedState = state != null ? state : QuantumState.zero(circuit.getNQubits());
-
         if (validatedState.getNumQubits() != circuit.getNQubits()) {
             throw new IllegalArgumentException(
-                    "Initial state must have same number of qubits as circuit. " +
+                    "Initial state must have same number of qubits as circuit. \n" +
                             "Expected: " + circuit.getNQubits() + ", Got: " + validatedState.getNumQubits()
             );
         }
-
         return validatedState;
     }
 }

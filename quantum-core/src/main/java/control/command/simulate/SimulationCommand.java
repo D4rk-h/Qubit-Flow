@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package view;
-import control.Controller;
-import io.javalin.Javalin;
-import java.nio.file.Paths;
+package control.command.simulate;
 
+import control.command.ports.Command;
 
-public class UIService {
-        public static void main(String[] args) {
-        }
+public interface SimulationCommand extends Command {
+    void pause();
+    void resume();
+    void abort();
+    boolean isRunning();
+    boolean isPaused();
 }
-

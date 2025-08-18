@@ -1,8 +1,22 @@
-package control.command.circuitCommand.exportCommand;
+// Copyright 2025 D4rk-h
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package control.command.exporter.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import control.ExportStrategy;
-import control.command.UndoableCommand;
+import control.command.ports.UndoableCommand;
+import control.command.ports.ExportStrategy;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 
 import java.io.File;
@@ -10,7 +24,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JSONExportStrategy implements ExportStrategy {
+public class JsonExportStrategy implements ExportStrategy {
     @Override
     public void export(QuantumCircuit circuit, String filename) {
         ObjectMapper mapper = new ObjectMapper();
@@ -25,7 +39,7 @@ public class JSONExportStrategy implements ExportStrategy {
 
     @Override
     public UndoableCommand createExportCommand(QuantumCircuit circuit, String filename) {
-        return new control.export.ExportJSONCommand(circuit, filename);
+        return new ExportJSONCommand(circuit, filename);
     }
 
     private Map<String, Object> createCircuitData(QuantumCircuit circuit) {

@@ -12,12 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command;
+package control.command.ports;
 
-public interface SimulationCommand extends Command {
-    void pause();
-    void resume();
-    void abort();
-    boolean isRunning();
-    boolean isPaused();
+public interface Command {
+    void execute();
 }

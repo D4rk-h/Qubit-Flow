@@ -12,28 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command.circuitCommand.importCommand;
+package control.command.exporter;
 
-import control.command.QuantumCommand;
-
-public class ImportQasm implements QuantumCommand {
-    @Override
-    public void execute() {
-
-    }
-
-    @Override
-    public void undo() {
-
-    }
-
-    @Override
-    public boolean canUndo() {
-        return false;
-    }
-
-    @Override
-    public void redo() {
-
-    }
+public enum ExportFormat {
+    JSON("json"),
+    QASM("qasm"),
+    QISKIT("py");
+    private final String extension;
+    ExportFormat(String extension) {this.extension = extension;}
+    public String getExtension() {return extension;}
 }

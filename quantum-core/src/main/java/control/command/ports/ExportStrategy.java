@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command;
+package control.command.ports;
 
-public interface UndoableCommand extends Command {
-    void undo();
-    boolean canUndo();
-    void redo();
+import model.quantumModel.quantumCircuit.QuantumCircuit;
+
+public interface ExportStrategy {
+    void export(QuantumCircuit circuit, String filename);
+    UndoableCommand createExportCommand(QuantumCircuit circuit, String filename);
 }

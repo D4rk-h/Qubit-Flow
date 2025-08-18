@@ -1,11 +1,12 @@
-package control.command.circuitCommand.addCommand;
+package control.command.add;
 
-import control.command.UndoableCommand;
+import control.command.ports.UndoableCommand;
+import control.command.gate.GateFactory;
+import control.command.gate.GateType;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumCircuit.circuitModel.CircuitLayer;
 import model.quantumModel.quantumGate.GateOperation;
 import model.quantumModel.quantumGate.QuantumGate;
-import model.quantumModel.quantumGate.QuantumGates;
 
 import java.util.List;
 

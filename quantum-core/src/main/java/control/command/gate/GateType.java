@@ -1,9 +1,19 @@
+// Copyright 2025 D4rk-h
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package control.command.gate;
 
-/**
- * Enum representing different quantum gate types
- * Follows Open/Closed Principle - easy to extend
- */
 public enum GateType {
     HADAMARD(1, "H", "hadamard"),
     PAULI_X(1, "X", "not", "pauli-x"),
@@ -23,22 +33,14 @@ public enum GateType {
         this.aliases = aliases;
     }
 
-    public int getRequiredQubits() {
-        return requiredQubits;
-    }
+    public int getRequiredQubits() {return requiredQubits;}
 
-    public boolean isValidForQubits(int numQubits) {
-        return numQubits == requiredQubits;
-    }
+    public boolean isValidForQubits(int numQubits) {return numQubits == requiredQubits;}
 
     public static GateType fromString(String gateString) {
         String normalized = gateString.toUpperCase().replace("-", "_");
-
-        // Try direct enum match first
-        try {
-            return GateType.valueOf(normalized);
+        try {return GateType.valueOf(normalized);
         } catch (IllegalArgumentException e) {
-            // Try alias matching
             for (GateType type : values()) {
                 for (String alias : type.aliases) {
                     if (alias.equalsIgnoreCase(gateString)) {

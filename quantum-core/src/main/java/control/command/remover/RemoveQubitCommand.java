@@ -12,17 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package control.command.circuitCommand.addCommand;
+package control.command.remover;
 
-import control.command.UndoableCommand;
+import control.command.ports.UndoableCommand;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumCircuit.circuitModel.CircuitLayer;
 import model.quantumModel.quantumState.QuantumState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
-public class AddQubitCommand implements UndoableCommand {
+public class RemoveQubitCommand implements UndoableCommand {
     private final QuantumCircuit originalCircuit;
     private final QuantumState originalState;
     private final int originalQubits;
@@ -30,7 +29,11 @@ public class AddQubitCommand implements UndoableCommand {
     private QuantumState newState;
     private boolean wasExecuted;
 
-    public AddQubitCommand(QuantumCircuit circuit, QuantumState state) {
+    public RemoveQubitCommand(QuantumCircuit circuit, QuantumState state) {
+        if (circuit.getNQubits() <= 1) {
+            throw new IllegalStateException("Cannot remove qubit: minimum 1 qubit required");
+        }
+
         this.originalCircuit = circuit;
         this.originalState = state;
         this.originalQubits = circuit.getNQubits();
@@ -39,35 +42,53 @@ public class AddQubitCommand implements UndoableCommand {
 
     @Override
     public void execute() {
-        int newNumQubits = originalQubits + 1;
+        int newNumQubits = originalQubits - 1;
         newCircuit = new QuantumCircuit(newNumQubits);
-        copyExistingLayers();
-        QuantumState zeroQubit = QuantumState.zero(1);
-        newState = originalState.tensorProduct(zeroQubit);
+
+        // Copy only compatible gates (those not using the removed qubit)
+        copyCompatibleGates(newNumQubits);
+
+        // Create new initial state
+        newState = QuantumState.zero(newNumQubits);
+
         wasExecuted = true;
     }
 
     @Override
-    public void undo() {wasExecuted = false;}
+    public void undo() {
+        wasExecuted = false;
+    }
 
     @Override
-    public boolean canUndo() {return wasExecuted && newCircuit != null && newState != null;}
+    public boolean canUndo() {
+        return wasExecuted && newCircuit != null && newState != null;
+    }
 
     @Override
-    public void redo() {execute();}
+    public void redo() {
+        execute();
+    }
 
     public QuantumCircuit getNewCircuit() { return newCircuit; }
     public QuantumState getNewState() { return newState; }
     public QuantumCircuit getOriginalCircuit() { return originalCircuit; }
     public QuantumState getOriginalState() { return originalState; }
 
-    private void copyExistingLayers() {
-        List<CircuitLayer> newLayers = new ArrayList<>();
-        for (CircuitLayer layer : originalCircuit.getLayers()) {
-            CircuitLayer newLayer = new CircuitLayer();
-            layer.getOperations().forEach(newLayer::addOperation);
-            newLayers.add(newLayer);
-        }
-        newCircuit.setLayers(newLayers);
+    private void copyCompatibleGates(int maxQubits) {
+        originalCircuit.getLayers().forEach(layer -> {
+            var compatibleOps = layer.getOperations().stream()
+                    .filter(op -> allQubitsValid(op.getTargetQubits(), maxQubits))
+                    .toList();
+
+            if (!compatibleOps.isEmpty()) {
+                CircuitLayer newLayer = new CircuitLayer();
+                compatibleOps.forEach(newLayer::addOperation);
+                newCircuit.getLayers().add(newLayer);
+            }
+        });
+    }
+
+    private boolean allQubitsValid(int[] qubits, int maxQubits) {
+        return Arrays.stream(qubits).allMatch(q -> q < maxQubits);
     }
 }
