@@ -15,6 +15,8 @@
 package control;
 
 import control.command.history.CommandHistory;
+import control.command.importer.CircuitImporter;
+import control.command.importer.ImportFormat;
 import control.command.ports.UndoableCommand;
 import control.command.add.AddGateCommand;
 import control.command.add.AddQubitCommand;
@@ -37,6 +39,7 @@ public class Controller {
     private QuantumState currentState;
     private final CommandHistory commandHistory;
     private final CircuitExporter exporter;
+    private final CircuitImporter importer;
 
     public Controller(int numQubits) {
         validateQubitCount(numQubits);
@@ -44,6 +47,7 @@ public class Controller {
         this.currentState = QuantumState.zero(numQubits);
         this.commandHistory = new CommandHistory();
         this.exporter = new CircuitExporter();
+        this.importer = new CircuitImporter();
         setupStateRestorer();
     }
 
@@ -160,6 +164,12 @@ public class Controller {
     public void exportToQASM() {exportCircuit(ExportFormat.QASM);}
 
     public void exportToQISKIT() {exportCircuit(ExportFormat.QISKIT);}
+
+    public void importCircuit(String filename, ImportFormat format) {importer.importCircuit(filename, format);}
+
+    public void importFromQASM(String qasmFile) {importCircuit(qasmFile, ImportFormat.QASM);}
+
+    public void importFromQISKIT(String qiskitFile) {importCircuit(qiskitFile, ImportFormat.QISKIT);}
 
     public QuantumCircuit getCircuit() {return circuit;}
 

@@ -34,10 +34,7 @@ public class CircuitExporter {
 
     public void export(QuantumCircuit circuit, ExportFormat format) {
         ExportStrategy strategy = strategies.get(format);
-        if (strategy == null) {
-            throw new UnsupportedOperationException("Export format not supported: " + format);
-        }
-
+        if (strategy == null) throw new UnsupportedOperationException("Export format not supported: " + format);
         String filename = generateFilename(format);
         strategy.export(circuit, filename);
     }

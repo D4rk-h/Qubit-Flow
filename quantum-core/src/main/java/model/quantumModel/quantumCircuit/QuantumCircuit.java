@@ -90,6 +90,19 @@ public class QuantumCircuit {
     public List<CircuitLayer> getLayers() {return layers;}
     public void setLayers(List<CircuitLayer> layers) {this.layers = layers;}
 
+    public void replaceWith(QuantumCircuit newCircuit) {
+        this.setLayers(newCircuit.layers);
+        this.setNQubits(newCircuit.nQubit);
+    }
+
+    public void clear() {
+        this.layers.clear();
+    }
+
+    public QuantumCircuit clone() {
+        return this.clone();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -17,10 +17,12 @@ package control.command.importer.qasm;
 import control.command.ports.UndoableCommand;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 
+
 public class ImportQASMCommand implements UndoableCommand {
     private final QuantumCircuit targetCircuit;
     private final String filename;
     private QuantumCircuit previousState;
+    private QuantumCircuit importedCircuit;
     private boolean wasExecuted;
 
     public ImportQASMCommand(QuantumCircuit targetCircuit, String filename) {
@@ -31,12 +33,20 @@ public class ImportQASMCommand implements UndoableCommand {
 
     @Override
     public void execute() {
-
+        this.previousState = createDeepCopy(targetCircuit);
+        QasmImportStrategy strategy = new QasmImportStrategy();
+        this.importedCircuit = strategy.importCircuit(filename);
+        applyImportedCircuit(importedCircuit);
+        wasExecuted = true;
     }
 
     @Override
     public void undo() {
-
+        if (wasExecuted && previousState != null) {
+            restoreCircuitState(previousState);
+            wasExecuted = false;
+            System.out.println("Undid QASM import: " + filename);
+        }
     }
 
     @Override
@@ -46,6 +56,30 @@ public class ImportQASMCommand implements UndoableCommand {
 
     @Override
     public void redo() {
-        execute();
+        if (!wasExecuted && importedCircuit != null) {
+            applyImportedCircuit(importedCircuit);
+            wasExecuted = true;
+            System.out.println("Redid QASM import: " + filename);
+        }
+    }
+
+    private QuantumCircuit createDeepCopy(QuantumCircuit circuit) {
+        return circuit.clone();
+    }
+
+    private void applyImportedCircuit(QuantumCircuit imported) {
+        targetCircuit.replaceWith(imported);
+        System.out.println("Applied imported QASM circuit to target");
+    }
+
+    private void restoreCircuitState(QuantumCircuit previousState) {
+        targetCircuit.clear();
+        targetCircuit.replaceWith(previousState);
+        System.out.println("Restored circuit to previous state");
+    }
+
+    public String getFilename() {
+        return filename;
     }
 }
+
