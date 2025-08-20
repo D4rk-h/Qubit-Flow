@@ -16,6 +16,8 @@ package control.command.parser;
 
 import control.command.ports.ImportParser;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
+import model.quantumModel.quantumCircuit.circuitModel.CircuitLayer;
+import model.quantumModel.quantumGate.GateOperation;
 import model.quantumModel.quantumGate.QuantumGates;
 
 import java.util.ArrayList;
@@ -23,10 +25,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class QiskitParser implements ImportParser {
+public class QiskitParser implements ImportParser, ExportParser {
     private final String qiskitContent;
+
     public QiskitParser(String qiskitContent) {
         this.qiskitContent = qiskitContent;
+    }
+
+    public QiskitParser() {
+        this.qiskitContent = "";
     }
 
     @Override
@@ -48,7 +55,9 @@ public class QiskitParser implements ImportParser {
                 String args = matcher.group(2);
                 List<Integer> indices = new ArrayList<>();
                 Matcher indexMatcher = indexPattern.matcher(args);
-                while (indexMatcher.find()) indices.add(Integer.parseInt(indexMatcher.group()));
+                while (indexMatcher.find()) {
+                    indices.add(Integer.parseInt(indexMatcher.group()));
+                }
                 if (indices.isEmpty()) {continue;}
                 switch (operation) {
                     case "h":       circuit.addHadamard(indices.get(0)); break;
@@ -73,6 +82,23 @@ public class QiskitParser implements ImportParser {
         return circuit;
     }
 
+    @Override
+    public String serialize(QuantumCircuit circuit) {
+        StringBuilder qiskitBuilder = new StringBuilder();
+        qiskitBuilder.append("from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\n");
+        qiskitBuilder.append("from numpy import pi\n\n");
+        qiskitBuilder.append("qreg_q = QuantumRegister(").append(circuit.getNQubits()).append(", 'q')\n");
+        if (hasMeasurements(circuit)) {
+            qiskitBuilder.append("creg_c = ClassicalRegister(").append(circuit.getNQubits()).append(", 'c')\n");
+            qiskitBuilder.append("circuit = QuantumCircuit(qreg_q, creg_c)\n\n");
+        } else {
+            qiskitBuilder.append("circuit = QuantumCircuit(qreg_q)\n\n");
+        }
+        List<String> operations = convertCircuitToQiskitOperations(circuit);
+        for (String operation : operations) qiskitBuilder.append(operation).append("\n");
+        return qiskitBuilder.toString();
+    }
+
     private int extractQubitCount(String qiskitContent) {
         Pattern qregPattern = Pattern.compile("QuantumRegister\\s*\\(\\s*(\\d+)");
         Matcher matcher = qregPattern.matcher(qiskitContent);
@@ -86,6 +112,80 @@ public class QiskitParser implements ImportParser {
         if (matcher.find()) return matcher.group(1);
         return null;
     }
+
+    private List<String> convertCircuitToQiskitOperations(QuantumCircuit circuit) {
+        List<String> operations = new ArrayList<>();
+        for (CircuitLayer layer : circuit.getLayers()) {
+            for (GateOperation gateOp : layer.getOperations()) {
+                String gateName = gateOp.getGate().getName();
+                int[] qubits = gateOp.getTargetQubits();
+                String qiskitInstruction = convertGateToQiskit(gateName, qubits);
+                if (qiskitInstruction != null) {
+                    operations.add(qiskitInstruction);
+                }
+            }
+        }
+        return operations;
+    }
+
+    private String convertGateToQiskit(String gateName, int[] qubits) {
+        return switch (gateName) {
+            case "Hadamard" -> "circuit.h(qreg_q[" + qubits[0] + "])";
+            case "NOT (Pauli-X)" -> "circuit.x(qreg_q[" + qubits[0] + "])";
+            case "Pauli-Y" -> "circuit.y(qreg_q[" + qubits[0] + "])";
+            case "Pauli-Z" -> "circuit.z(qreg_q[" + qubits[0] + "])";
+            case "Phase" -> "circuit.s(qreg_q[" + qubits[0] + "])";
+            case "T (π/8)" -> "circuit.t(qreg_q[" + qubits[0] + "])";
+            case "CNOT" -> "circuit.cx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "SWAP" -> "circuit.swap(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "Toffoli" -> "circuit.ccx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "], qreg_q[" + qubits[2] + "])";
+            case "Measurement" -> "circuit.measure(qreg_q[" + qubits[0] + "], creg_c[" + qubits[0] + "])";
+            default -> {
+                if (gateName.startsWith("C-")) {
+                    String baseGate = gateName.substring(2);
+                    yield convertControlledGateToQiskit(baseGate, qubits);
+                }
+                yield "# Unknown gate: " + gateName;
+            }
+        };
+    }
+
+    private String convertControlledGateToQiskit(String baseGate, int[] qubits) {
+        if (qubits.length < 2) return null;
+        return switch (baseGate) {
+            case "Pauli-Y" -> "circuit.cy(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "Pauli-Z" -> "circuit.cz(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "Hadamard" -> "circuit.ch(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "SWAP" -> "circuit.cswap(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "], qreg_q[" + qubits[2] + "])";
+            case "NOT (Pauli-X)" -> {
+                if (qubits.length == 3) {
+                    yield "circuit.ccx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "], qreg_q[" + qubits[2] + "])";
+                } else if (qubits.length > 3) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("circuit.mcx([");
+                    for (int i = 0; i < qubits.length - 1; i++) {
+                        if (i > 0) sb.append(", ");
+                        sb.append("qreg_q[").append(qubits[i]).append("]");
+                    }
+                    sb.append("], qreg_q[").append(qubits[qubits.length - 1]).append("])");
+                    yield sb.toString();
+                }
+                yield null;
+            }
+            default -> "# Unknown controlled gate: C-" + baseGate;
+        };
+    }
+
     public String getQiskitContent() {return qiskitContent;}
 
+    private boolean hasMeasurements(QuantumCircuit circuit) {
+        for (CircuitLayer layer : circuit.getLayers()) {
+            for (GateOperation gateOp : layer.getOperations()) {
+                if ("Measurement".equals(gateOp.getGate().getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

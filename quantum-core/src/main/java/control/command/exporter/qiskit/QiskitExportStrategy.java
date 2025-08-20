@@ -14,6 +14,7 @@
 
 package control.command.exporter.qiskit;
 
+import control.command.parser.QiskitParser;
 import control.command.ports.ExportStrategy;
 import control.command.ports.UndoableCommand;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
@@ -26,27 +27,17 @@ public class QiskitExportStrategy implements ExportStrategy {
     @Override
     public void export(QuantumCircuit circuit, String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
-            writeQISKITHeader(writer);
-            writeQISKITBody(writer, circuit);
-            System.out.println("Circuit exported to qiskit: " + filename);
-        } catch (IOException e) {throw new RuntimeException("Error exporting to qiskit: " + e.getMessage(), e);}
+            QiskitParser parser = new QiskitParser();
+            String qiskitContent = parser.serialize(circuit);
+            writer.write(qiskitContent);
+            System.out.println("Circuit exported to Qiskit: " + filename);
+        } catch (IOException e) {
+            throw new RuntimeException("Error exporting to Qiskit: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public UndoableCommand createExportCommand(QuantumCircuit circuit, String filename) {
         return new ExportQISKITCommand(circuit, filename);
-    }
-
-    private void writeQISKITHeader(FileWriter writer) throws IOException {
-        writer.write("from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit\n");
-        writer.write("from numpy import pi \n");
-    }
-
-    private void writeQISKITBody(FileWriter writer, QuantumCircuit circuit) throws IOException {
-        writer.write("qreg_q = QuantumRegister("+ circuit.getNQubits() +", 'q')\n");
-        writer.write("circuit = QuantumCircuit(qreg_q)\n");
-
-        // TODO: Implement circuit to Qiskit translation
-        writer.write("// Circuit operations would be translated here\n");
     }
 }

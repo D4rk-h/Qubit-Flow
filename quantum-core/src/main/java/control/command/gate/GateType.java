@@ -23,7 +23,8 @@ public enum GateType {
     S_GATE(1, "S", "phase"),
     CNOT(2, "CNOT", "CX", "cx"),
     SWAP(2, "SWAP"),
-    TOFFOLI(3, "TOFFOLI", "CCX", "ccx");
+    TOFFOLI(3, "TOFFOLI", "CCX", "ccx"),
+    MEASUREMENT(1, "MEASUREMENT", "measurement");
 
     private final int requiredQubits;
     private final String[] aliases;

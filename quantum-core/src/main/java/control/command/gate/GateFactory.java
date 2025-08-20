@@ -29,6 +29,7 @@ public class GateFactory {
             case CNOT -> QuantumGates.cnot();
             case SWAP -> QuantumGates.swap();
             case TOFFOLI -> QuantumGates.toffoli();
+            case MEASUREMENT -> QuantumGates.measurement();
         };
     }
 }
