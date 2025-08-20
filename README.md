@@ -1,6 +1,5 @@
 # Qubit Flow
 
-
 ## Quantum Circuit Simulator Backend
 
 A high-performance Java-based quantum circuit simulation engine designed to serve as the backend for web-based quantum computing applications. This project provides a comprehensive REST API for building, simulating, and analyzing quantum circuits with support for various quantum gates and algorithms.
@@ -73,92 +72,7 @@ quantum-core/
 - Java 17 or higher
 - Maven 3.8+
 
-### Basic Usage
-
-```java
-// Create a quantum circuit with 3 qubits
-Controller controller = new Controller(3);
-
-// Add quantum gates
-controller.addHadamard(0);        // Apply Hadamard to qubit 0
-controller.addCNOT(0, 1);         // CNOT with control=0, target=1
-controller.addToffoli(0, 1, 2);   // Toffoli gate
-
-// Simulate the circuit
-SimulateCommand result = controller.simulate();
-QuantumState finalState = result.getFinalState();
-
-// Analyze results
-double[] probabilities = finalState.getProbabilities();
-MeasurementResult measurement = finalState.measure();
-
-// Circuit information
-System.out.println(controller.getCircuitInfo());
-```
-
-### Supported Quantum Gates
-
-#### Single-Qubit Gates
-```java
-controller.addHadamard(qubit);    // Hadamard gate
-controller.addPauliX(qubit);      // Pauli-X (NOT) gate
-controller.addPauliY(qubit);      // Pauli-Y gate
-controller.addPauliZ(qubit);      // Pauli-Z gate
-controller.addTGate(qubit);       // T gate (π/8 rotation)
-controller.addSGate(qubit);       // S gate (Phase gate)
-```
-
-#### Multi-Qubit Gates
-```java
-controller.addCNOT(control, target);           // Controlled-NOT
-controller.addSwap(qubit1, qubit2);            // SWAP gate
-controller.addToffoli(control1, control2, target); // Toffoli (CCNOT)
-```
-
-#### Custom Controlled Gates
-```java
-QuantumGate customGate = QuantumGates.hadamard();
-controller.addControlledGate(customGate, control, target);
-```
-
-### Circuit Export
-```java
-// Export to different formats
-controller.exportToJSON();     // JSON format
-controller.exportToQASM();     // OpenQASM format
-controller.exportToQISKIT();   // Qiskit format
-```
-
-### Measurement and Analysis
-```java
-// Get probability distribution
-double[] probabilities = state.getProbabilities();
-
-// Measure specific qubit
-MeasurementResult result = state.measureQubit(0);
-
-// Multiple measurements for statistics
-Map<Integer, Integer> statistics = state.measureMultiple(1000);
-
-// Calculate quantum properties
-double fidelity = state1.fidelity(state2);
-double entropy = state.vonNeumannEntropy();
-```
-
-### Undo/Redo Operations
-```java
-// Command history support
-controller.addHadamard(0);
-controller.addCNOT(0, 1);
-
-boolean undone = controller.undo();    // Remove CNOT
-boolean redone = controller.redo();    // Add CNOT back
-
-// Check history state
-boolean canUndo = controller.canUndo();
-String lastCommand = controller.getLastCommandType();
-int historySize = controller.getHistorySize();
-```
+### Basic Usage (examples coming soon)
 
 ## 🧮 Mathematical Foundation
 
@@ -203,32 +117,14 @@ The framework is prepared for implementing major quantum algorithms:
 - **Automatic layer optimization** for parallel gate execution
 - **State validation** with configurable tolerance (ε = 1e-10)
 
-### Performance Optimizations
-- **Cached probability calculations**
-- **Optimized single-qubit gate operations**
-- **Efficient tensor product implementations**
-- **Memory-conscious state representations**
-
 ## 🚀 REST API (In Development)
-
-The REST API layer will provide endpoints for:
-
-```http
-POST /api/circuits                    # Create new circuit
-GET  /api/circuits/{id}              # Get circuit details
-POST /api/circuits/{id}/gates        # Add gates to circuit
-POST /api/circuits/{id}/simulate     # Execute simulation
-GET  /api/circuits/{id}/export       # Export circuit
-POST /api/circuits/{id}/measure      # Perform measurements
-```
 
 ## 📦 Dependencies
 
-- **Java 17+** - Core runtime
+- **Java 21** - Core runtime
 - **Maven 3.8+** - Build system
 - **JUnit 5** - Testing framework
 - **Jackson** - JSON processing (for export features)
-- **Spring Boot** - REST API framework (planned)
 
 ## 🤝 Contributing
 
