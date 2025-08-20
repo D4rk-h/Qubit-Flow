@@ -119,7 +119,7 @@ public class SimulateCommand implements SimulationCommand {
             if (probabilities[i] > Complex.EPSILON) {
                 String binaryState = String.format("%" + circuit.getNQubits() + "s",
                         Integer.toBinaryString(i)).replace(' ', '0');
-                System.out.printf("|%s⟩: %.6f%%\n", binaryState, probabilities[i] * 100);
+                System.out.printf("|%s⟩: %.2f%%\n", binaryState, probabilities[i] * 100);
             }
         }
     }

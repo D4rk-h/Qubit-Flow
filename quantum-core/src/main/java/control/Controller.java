@@ -208,21 +208,6 @@ public class Controller {
         return simulateCommand;
     }
 
-    public SimulateCommand simulateWithMeasurements() {
-        SimulateCommand simulateCommand = simulate();
-        if (simulateCommand.getFinalState() == null) throw new IllegalArgumentException("final state is null");
-        circuit.getLayers().forEach(layer ->
-                layer.getOperations().forEach(op -> {
-                    if (op instanceof MeasurementOperation measurementOp &&
-                            measurementOp.getMeasurementResult() != null) {
-                        measurementResults.add(measurementOp.getMeasurementResult());
-                    }
-                })
-        );
-        return simulateCommand;
-    }
-
-
     public boolean undo() {return commandHistory.undo();}
 
     public boolean redo() {return commandHistory.redo();}

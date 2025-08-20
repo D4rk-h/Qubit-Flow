@@ -13,13 +13,13 @@ A high-performance Java-based quantum circuit simulation engine designed to serv
 ### Core Quantum Computing Capabilities
 - **Multi-qubit quantum state simulation** (1-10 qubits)
 - **Comprehensive gate library** including:
-  - Single-qubit gates: Hadamard, Pauli-X/Y/Z, T, S, Phase
+  - Single-qubit gates: Hadamard, Pauli-X/Y/Z, T, S, Phase (coming soon (RX, RXX, RY, U, RZZ, and more))
   - Multi-qubit gates: CNOT, SWAP, Toffoli
   - Controlled gate variants
 - **Quantum circuit construction** with automatic layer optimization
 - **State vector simulation** with efficient amplitude calculations
 - **Measurement operations** with probabilistic outcomes
-- **Quantum state analysis** (probabilities, fidelity, entropy)
+- **Quantum state analysis** (probabilities, entropy (implementation coming soon))
 
 ### Advanced Features
 - **Command pattern** with full undo/redo support
@@ -69,16 +69,39 @@ quantum-core/
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Java 17 or higher
+- Java 21
 - Maven 3.8+
 
-### Basic Usage (examples coming soon)
+### Basic Usage
+```java
+Controller control = new Controller();
+control.addQubits(2);
+control.addPauliX(0);
+control.addHadamard(0);
+control.addHadamard(1);
+control.addCNOT(0, 1);
 
+control.addMeasurementAll();
+control.simulate();
+```
+<img src="outputEg/simulate_output.png" alt="">
+
+**If want to see the collapsed state then use:**
+```java
+System.out.println(control.simulate().measure().collapsedState());
+```
+**possible output:** 1.0|011⟩
+
+**If want to see the exact probability of collapsed state:**
+```java
+System.out.println(control.simulate().measure().toString());
+```
+**MeasurementResult{outcome=001, probability=0,250000, timestamp=2025-08-20T13:15:08.298544Z}**
 ## 🧮 Mathematical Foundation
 
 ### Complex Numbers
 The `Complex` class provides comprehensive complex number operations:
-- Basic arithmetic (add, subtract, multiply, divide)
+- Basic arithmetic (add, subtract, multiply, divide...)
 - Polar coordinate conversion
 - Magnitude and phase calculations
 - Normalization and conjugation
