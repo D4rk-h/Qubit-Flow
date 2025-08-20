@@ -51,6 +51,19 @@ public class CircuitLayer {
     public void setUsedQubits(Set<Integer> usedQubits) {this.usedQubits = usedQubits;}
 
     @Override
+    public CircuitLayer clone() {
+        try {
+            CircuitLayer cloned = (CircuitLayer) super.clone();
+            cloned.usedQubits = new HashSet<>(this.usedQubits);
+            cloned.operations = new ArrayList<>();
+            for (GateOperation operation : this.operations) cloned.operations.add(operation.clone());
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Clone not supported", e);
+        }
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");

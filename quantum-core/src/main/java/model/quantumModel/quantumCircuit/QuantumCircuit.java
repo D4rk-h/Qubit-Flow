@@ -100,7 +100,16 @@ public class QuantumCircuit {
     }
 
     public QuantumCircuit clone() {
-        return this.clone();
+        try {
+            QuantumCircuit cloned = (QuantumCircuit) super.clone();
+            cloned.layers = new ArrayList<>();
+            for (CircuitLayer layer : this.layers) cloned.layers.add(layer.clone());
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            QuantumCircuit cloned = new QuantumCircuit(this.nQubit);
+            for (CircuitLayer layer : this.layers) cloned.layers.add(layer.clone());
+            return cloned;
+        }
     }
 
     @Override

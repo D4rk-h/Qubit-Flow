@@ -378,4 +378,11 @@ public class Matrix {
         if (result.contains(".")) {result = result.replaceAll("0+$", "").replaceAll("\\.$", "");}
         return result;
     }
+
+    public int dimension() {
+        if (this.isSquared()) {
+            return this.getRows();
+        }
+        return -1;
+    }
 }

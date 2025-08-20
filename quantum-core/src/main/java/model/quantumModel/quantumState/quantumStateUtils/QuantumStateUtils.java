@@ -111,6 +111,18 @@ public class QuantumStateUtils {
         return gate.getMatrix().multiplyVector(state.getAmplitudes());
     }
 
+//    public static Complex[] applyGate(QuantumState state, QuantumGate gate) {
+//        int expectedMatrixSize = 1 << state.getNumQubits();
+//        if (gate.getMatrix().getRows() != expectedMatrixSize || gate.getMatrix().getCols() != expectedMatrixSize) {
+//            throw new IllegalArgumentException(
+//                    "Gate matrix size (" + gate.getMatrix().getRows() + "x" + gate.getMatrix().getCols() +
+//                            ") doesn't match state vector size (" + expectedMatrixSize + ")"
+//            );
+//        }
+//
+//        return gate.getMatrix().multiplyVector(state.getAmplitudes());
+//    }
+
     public static Complex[] applyBitFlip(Complex[] amplitudes, int targetQubit, int numQubits) {
         validateQubitIndex(targetQubit, numQubits);
         Complex[] newAmplitudes = new Complex[amplitudes.length];

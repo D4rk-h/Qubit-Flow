@@ -37,8 +37,6 @@ import model.quantumModel.quantumState.quantumStateUtils.MeasurementResult;
 import java.util.ArrayList;
 import java.util.List;
 
-import static model.quantumModel.quantumState.quantumStateUtils.QuantumStateUtils.validateQubitIndex;
-
 public class Controller {
     private static final int MIN_QUBITS = 1;
     private static final int MAX_QUBITS = 10;
@@ -50,6 +48,9 @@ public class Controller {
     private final CircuitImporter importer;
     private final List<MeasurementResult> measurementResults;
 
+    public Controller() {
+        this(1);
+    }
     public Controller(int numQubits) {
         validateQubitCount(numQubits);
         this.circuit = new QuantumCircuit(numQubits);
@@ -79,11 +80,18 @@ public class Controller {
 
     public void addSGate(int qubit) {addGate("s", qubit);}
 
-    public void addCNOT(int control, int target) {addGate("cnot", control, target);}
+    public void addCNOT(int control, int target) {
+        ensureQubitExists(Math.max(control, target));
+        addGate("cnot", control, target);
+    }
 
-    public void addSwap(int qubit1, int qubit2) {addGate("swap", qubit1, qubit2);}
+    public void addSwap(int qubit1, int qubit2) {
+        ensureQubitExists(Math.max(qubit1, qubit2));
+        addGate("swap", qubit1, qubit2);}
 
-    public void addToffoli(int control1, int control2, int target) {addGate("toffoli", control1, control2, target);}
+    public void addToffoli(int control1, int control2, int target) {
+        ensureQubitExists(Math.max(control1, Math.max(control2, target)));
+        addGate("toffoli", control1, control2, target);}
 
     public void removeGate(GateOperation operation, int layerIndex) {
         UndoableCommand command = new RemoveGateCommand(circuit, operation, layerIndex);
@@ -194,6 +202,7 @@ public class Controller {
     public SimulateCommand simulate() {
         SimulateCommand simulateCommand = new SimulateCommand(circuit, currentState.clone());
         simulateCommand.execute();
+        simulateCommand.waitForCompletion();
         QuantumState finalState = simulateCommand.getFinalState();
         if (finalState != null) this.currentState = finalState;
         return simulateCommand;
@@ -201,6 +210,7 @@ public class Controller {
 
     public SimulateCommand simulateWithMeasurements() {
         SimulateCommand simulateCommand = simulate();
+        if (simulateCommand.getFinalState() == null) throw new IllegalArgumentException("final state is null");
         circuit.getLayers().forEach(layer ->
                 layer.getOperations().forEach(op -> {
                     if (op instanceof MeasurementOperation measurementOp &&
@@ -209,7 +219,6 @@ public class Controller {
                     }
                 })
         );
-
         return simulateCommand;
     }
 
@@ -269,6 +278,12 @@ public class Controller {
         info.append("- History size: ").append(getHistorySize()).append("\n");
         info.append("- Last command: ").append(getLastCommandType()).append("\n");
         return info.toString();
+    }
+
+    private void ensureQubitExists(int qubitIndex) {
+        while (getQubitCount() <= qubitIndex) {
+            addQubit();
+        }
     }
 
     private void validateQubitCount(int numQubits) {

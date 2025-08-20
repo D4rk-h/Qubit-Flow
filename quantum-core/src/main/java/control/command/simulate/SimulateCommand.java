@@ -139,4 +139,14 @@ public class SimulateCommand implements SimulationCommand {
         }
         return validatedState;
     }
+
+    public void waitForCompletion() {
+        if (simulationFuture != null) {
+            try {
+                simulationFuture.get();
+            } catch (Exception e) {
+                System.err.println("Error waiting for simulation: " + e.getMessage());
+            }
+        }
+    }
 }

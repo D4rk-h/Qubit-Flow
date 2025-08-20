@@ -56,7 +56,6 @@ public class AddGateCommand implements UndoableCommand {
     @Override
     public void undo() {
         if (!canUndo()) return;
-
         try {
             removeOperationFromCircuit();
             wasExecuted = false;
@@ -81,15 +80,11 @@ public class AddGateCommand implements UndoableCommand {
         if (targetQubits == null || targetQubits.length == 0) {
             throw new IllegalArgumentException("Target qubits cannot be null or empty");
         }
-
-        // Validate qubit indices
         for (int qubit : targetQubits) {
             if (qubit < 0 || qubit >= circuit.getNQubits()) {
                 throw new IllegalArgumentException("Invalid qubit index: " + qubit);
             }
         }
-
-        // Validate gate requirements
         if (!gateType.isValidForQubits(targetQubits.length)) {
             throw new IllegalArgumentException(
                     "Gate " + gateType + " requires " + gateType.getRequiredQubits() +

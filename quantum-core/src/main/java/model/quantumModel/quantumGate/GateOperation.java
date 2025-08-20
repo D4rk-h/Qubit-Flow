@@ -35,24 +35,59 @@ public class GateOperation {
     }
 
     private boolean isOptimizedGate(String gateName) {
-        return Set.of("Hadamard", "NOT (Pauli-X)", "Pauli-Y", "Pauli-Z", "T (π/8)", "Phase").contains(gateName);
+        return Set.of("Hadamard", "NOT (Pauli-X)", "Pauli-Y", "Pauli-Z", "T (π/8)", "Phase",
+                "CNOT", "SWAP", "Toffoli").contains(gateName);
     }
 
     private void applyOptimized(QuantumState state) {
-        if (targetQubits.length != 1) throw new IllegalArgumentException(gate.getName() + " requires exactly 1 qubit");
         switch(gate.getName()) {
-            case "Hadamard" -> state.applyHadamard(targetQubits[0]);
-            case "NOT (Pauli-X)" -> state.applyNot(targetQubits[0]);
-            case "Pauli-Y" -> state.applyY(targetQubits[0]);
-            case "Pauli-Z" -> state.applyZ(targetQubits[0]);
-            case "T (π/8)" -> state.applyT(targetQubits[0]);
-            case "Phase" -> state.applyPhase(targetQubits[0]);
+            case "Hadamard" -> {
+                if (targetQubits.length != 1) throw new IllegalArgumentException(gate.getName() + " requires exactly 1 qubit");
+                state.applyHadamard(targetQubits[0]);
+            }
+            case "NOT (Pauli-X)" -> {
+                if (targetQubits.length != 1) throw new IllegalArgumentException(gate.getName() + " requires exactly 1 qubit");
+                state.applyNot(targetQubits[0]);
+            }
+            case "Pauli-Y" -> {
+                if (targetQubits.length != 1) throw new IllegalArgumentException(gate.getName() + " requires exactly 1 qubit");
+                state.applyY(targetQubits[0]);
+            }
+            case "Pauli-Z" -> {
+                if (targetQubits.length != 1) throw new IllegalArgumentException(gate.getName() + " requires exactly 1 qubit");
+                state.applyZ(targetQubits[0]);
+            }
+            case "T (π/8)" -> {
+                if (targetQubits.length != 1) throw new IllegalArgumentException(gate.getName() + " requires exactly 1 qubit");
+                state.applyT(targetQubits[0]);
+            }
+            case "Phase" -> {
+                if (targetQubits.length != 1) throw new IllegalArgumentException(gate.getName() + " requires exactly 1 qubit");
+                state.applyPhase(targetQubits[0]);
+            }
+            case "CNOT" -> {
+                if (targetQubits.length != 2) throw new IllegalArgumentException("CNOT requires exactly 2 qubits");
+                state.applyCNOT(targetQubits[0], targetQubits[1]);
+            }
+            case "SWAP" -> {
+                if (targetQubits.length != 2) throw new IllegalArgumentException("SWAP requires exactly 2 qubits");
+                state.applySwap(targetQubits[0], targetQubits[1]);
+            }
+            case "Toffoli" -> {
+                if (targetQubits.length != 3) throw new IllegalArgumentException("Toffoli requires exactly 3 qubits");
+                state.applyToffoli(targetQubits[0], targetQubits[1], targetQubits[2]);
+            }
             default -> state.applyGate(gate);
         }
     }
 
     private void validateGateQubits(QuantumGate gate, int[] qubits) {
         if (gate.getNumQubits() != qubits.length) throw new IllegalArgumentException("Quantum gate must have same qubits as which it applies");
+    }
+
+    @Override
+    public GateOperation clone() {
+        return new GateOperation(this.gate, this.targetQubits);
     }
 
     @Override

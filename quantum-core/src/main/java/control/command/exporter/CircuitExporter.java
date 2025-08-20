@@ -28,7 +28,9 @@ public class CircuitExporter {
     public CircuitExporter() {
         this.strategies = Map.of(
                 ExportFormat.JSON, new JsonExportStrategy(),
-                ExportFormat.QASM, new QasmExportStrategy()
+                ExportFormat.QASM, new QasmExportStrategy(),
+                ExportFormat.QISKIT, new QasmExportStrategy()
+
         );
     }
 
