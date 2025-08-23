@@ -1,4 +1,4 @@
-package api.dto.control;
+package api.control;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -15,7 +15,6 @@
 package control;
 
 import control.command.add.AddMeasurementCommand;
-import control.command.createCustom.CreateCustomGate;
 import control.command.history.CommandHistory;
 import control.command.importer.CircuitImporter;
 import control.command.importer.ImportFormat;
@@ -28,7 +27,6 @@ import control.command.remover.RemoveGateCommand;
 import control.command.remover.RemoveQubitCommand;
 import control.command.gate.GateType;
 import control.command.simulate.SimulateCommand;
-import model.mathModel.Matrix;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumGate.GateOperation;
 import model.quantumModel.quantumGate.MeasurementOperation;
@@ -184,6 +182,10 @@ public class Controller {
     public void clearCircuit() {
         this.circuit = new QuantumCircuit(circuit.getNQubits());
         this.currentState = QuantumState.zero(circuit.getNQubits());
+        this.commandHistory.clear();
+    }
+
+    public void clearCommandHistory() {
         this.commandHistory.clear();
     }
 

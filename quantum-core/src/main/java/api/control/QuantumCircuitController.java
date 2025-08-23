@@ -1,16 +1,20 @@
-package api.dto.control;
+package api.control;
 
 import api.dto.*;
 import api.service.CircuitService;
+import api.service.QuantumControllerService;
 import api.utils.CircuitSummary;
 import api.utils.QuantumCircuitDtoUtils;
 import control.Controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -18,12 +22,12 @@ import java.util.Map;
 @Tag(name = "Quantum Circuit", description = "Quantum circuit operations")
 @CrossOrigin(origins = "*")
 public class QuantumCircuitController {
-
     private final Controller quantumController;
     private final CircuitService circuitService;
 
-    public QuantumCircuitController() {
-        this.quantumController = new Controller();
+    @Autowired
+    public QuantumCircuitController(QuantumControllerService controllerService) {
+        this.quantumController = controllerService.getController();
         this.circuitService = new CircuitService();
     }
 
@@ -43,12 +47,12 @@ public class QuantumCircuitController {
     @GetMapping("/info")
     @Operation(summary = "Get circuit information")
     public ResponseEntity<Map<String, Object>> getCircuitInfo() {
-        return ResponseEntity.ok(Map.of(
-                "info", quantumController.getCircuitInfo(),
-                "qubits", quantumController.getQubitCount(),
-                "depth", quantumController.getCircuitDepth(),
-                "gates", quantumController.getTotalGateCount()
-        ));
+        Map<String, Object> info = new HashMap<>();
+        info.put("qubits", quantumController.getQubitCount());
+        info.put("depth", quantumController.getCircuitDepth());
+        info.put("gates", quantumController.getTotalGateCount());
+        info.put("info", quantumController.getCircuitInfo());
+        return ResponseEntity.ok(info);
     }
 
     @GetMapping("/current")
@@ -63,6 +67,14 @@ public class QuantumCircuitController {
     public ResponseEntity<Void> clearCircuit() {
         quantumController.clearCircuit();
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/stats")
+    @Operation(summary = "Get circuit statistics")
+    public ResponseEntity<CircuitSummary> getStats() {
+        QuantumCircuitDto dto = CircuitService.toDto(quantumController.getCircuit());
+        CircuitSummary summary = QuantumCircuitDtoUtils.getSummary(dto);
+        return ResponseEntity.ok(summary);
     }
 
     @PostMapping("/import/qasm")
@@ -96,13 +108,5 @@ public class QuantumCircuitController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Export failed");
         }
-    }
-
-    @GetMapping("/stats")
-    @Operation(summary = "Get circuit statistics")
-    public ResponseEntity<CircuitSummary> getStats() {
-        QuantumCircuitDto dto = CircuitService.toDto(quantumController.getCircuit());
-        CircuitSummary summary = QuantumCircuitDtoUtils.getSummary(dto);
-        return ResponseEntity.ok(summary);
     }
 }
