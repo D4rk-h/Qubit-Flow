@@ -12,10 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package view;
+package api.service;
 
-public class UIService {
-        public static void main(String[] args) {
-        }
+import control.Controller;
+import org.springframework.stereotype.Service;
+
+@Service
+public class QuantumControllerService {
+    private final Controller quantumController;
+
+    public QuantumControllerService() {
+        this.quantumController = new Controller(2);
+    }
+
+    public Controller getController() {
+        return quantumController;
+    }
 }
-

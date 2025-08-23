@@ -12,10 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package view;
+package api.service;
 
-public class UIService {
-        public static void main(String[] args) {
-        }
+import java.util.List;
+
+public record CircuitStats(
+        int qubits,
+        int depth,
+        int totalGates,
+        List<String> gateTypes
+) {
+    @Override
+    public String toString() {
+        return String.format("CircuitStats{qubits=%d, depth=%d, totalGates=%d, gateTypes=%s}",
+                qubits, depth, totalGates, gateTypes);
+    }
 }
-
