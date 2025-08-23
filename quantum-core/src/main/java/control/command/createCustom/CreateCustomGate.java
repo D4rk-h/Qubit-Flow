@@ -19,11 +19,20 @@ import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
 import java.util.Stack;
 
+//todo fix this class
 public class CreateCustomGate implements UndoableCommand {
-    private Matrix matrix;
-    private int numOfQubits;
-    private String customName;
+    private final Matrix matrix;
+    private final int numOfQubits;
+    private final String customName;
     private Stack<QuantumGate> customGates;
+
+
+    public CreateCustomGate(Matrix matrix, int numOfQubits, String customName) {
+        this.matrix = matrix;
+        this.numOfQubits = numOfQubits;
+        this.customName = customName;
+        this.customGates = new Stack<>();
+    }
 
     @Override
     public void execute() {
@@ -43,5 +52,9 @@ public class CreateCustomGate implements UndoableCommand {
     @Override
     public void redo() {
         execute();
+    }
+
+    public Stack<QuantumGate> getCustomGates() {
+        return customGates;
     }
 }

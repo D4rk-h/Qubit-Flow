@@ -73,7 +73,7 @@ public class QuantumCircuit {
     }
 
     public void addMeasurement(int... targets) {
-        // todo create measurement as gate
+        addGate(QuantumGates.measurement(), targets);
     }
 
     public void executeOn(QuantumState state) {
