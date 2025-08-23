@@ -13,13 +13,10 @@
 // limitations under the License.
 
 package view;
-import control.Controller;
-import io.javalin.Javalin;
-import java.nio.file.Paths;
-
 
 public class UIService {
         public static void main(String[] args) {
+                //Test here
         }
 }
 

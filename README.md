@@ -1,174 +1,156 @@
-# Qubit Flow
+# Qubit Flow API
 
-## Quantum Circuit Simulator Backend
+A high-performance Java quantum circuit simulation engine with comprehensive REST API integration.
 
-A high-performance Java-based quantum circuit simulation engine designed to serve as the backend for web-based quantum computing applications. This project provides a comprehensive REST API for building, simulating, and analyzing quantum circuits with support for various quantum gates and algorithms.
+## Overview
 
-## 🚧 Project Status
+Qubit Flow provides a complete backend solution for quantum circuit design, simulation, and analysis. Built with clean architecture principles, it supports multi-qubit quantum operations with efficient state vector simulation.
 
-**This is a partial/initial version** - The core quantum simulation engine is implemented and functional, with REST API integration currently in development. The project serves as the backend foundation for a future web service enabling quantum circuit design and simulation.
+## Features
 
-## ✨ Features
+### Core Capabilities
+- **Quantum Circuit Simulation** - 1-10 qubit systems with state vector simulation
+- **Comprehensive Gate Library** - Single/multi-qubit gates with controlled variants
+- **Circuit Management** - Layer-optimized construction with undo/redo support
+- **Measurement Operations** - Probabilistic measurements with result tracking
+- **Export/Import** - JSON, QASM, and Qiskit format support
 
-### Core Quantum Computing Capabilities
-- **Multi-qubit quantum state simulation** (1-10 qubits)
-- **Comprehensive gate library** including:
-  - Single-qubit gates: Hadamard, Pauli-X/Y/Z, T, S, Phase (coming soon (RX, RXX, RY, U, RZZ, and more))
-  - Multi-qubit gates: CNOT, SWAP, Toffoli
-  - Controlled gate variants
-- **Quantum circuit construction** with automatic layer optimization
-- **State vector simulation** with efficient amplitude calculations
-- **Measurement operations** with probabilistic outcomes
-- **Quantum state analysis** (probabilities, entropy (implementation coming soon))
+### Architecture
+- **Clean Architecture** with domain-driven design
+- **Command Pattern** for operation management and history
+- **Strategy Pattern** for extensible display providers
+- **REST API** with comprehensive endpoint coverage
 
-### Advanced Features
-- **Command pattern** with full undo/redo support
-- **Circuit export** to multiple formats (JSON, QASM, Qiskit)
-- **Multiple display providers** (Amplitude, Probability, Bloch Sphere, Density Matrix)
-- **Optimized gate operations** for improved performance
-- **Comprehensive state management** with validation and normalization
-
-### Architecture Highlights
-- **Clean Architecture** with separation of concerns
-- **Command Pattern** for operation management
-- **Strategy Pattern** for display measurements
-- **Port-Adapter Pattern** for extensibility
-- **Immutable quantum states** with efficient cloning
-
-## 🏗️ Architecture Overview
-
-```
-quantum-core/
-├── src/main/java/
-│   ├── control/                          # Application layer
-│   │   ├── Controller.java               
-│   │   ├── command/                      
-│   │   │   ├── history/
-│   │   │   ├── ports/
-│   │   │   ├── add/
-│   │   │   ├── remover/
-│   │   │   ├── exporter/
-│   │   │   ├── gate/
-│   │   │   └── simulate/
-│   │   └── ...
-│   ├── model/                            # Domain layer
-│   │   ├── mathModel/
-│   │   │   ├── Complex.java
-│   │   │   └── Matrix.java
-│   │   ├── quantumModel/                 # Quantum computing core
-│   │   │   ├── quantumCircuit/
-│   │   │   ├── quantumGate/
-│   │   │   ├── quantumState/
-│   │   │   ├── quantumAlgorithm/
-│   │   │   ├── displayMeasurementProvider/
-│   │   │   └── quantumPort/
-│   │   └── commandModel/
-│   └── ...
-```
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
-- Java 21
+- Java 21+
 - Maven 3.8+
 
-### Basic Usage
-```java
-Controller control = new Controller();
-control.addQubits(2);
-control.addPauliX(0);
-control.addHadamard(0);
-control.addHadamard(1);
-control.addCNOT(0, 1);
+### Running the API
+```bash
+# Start the server
+mvn spring-boot:run
 
-control.addMeasurementAll();
-control.simulate();
+# Verify endpoint
+curl http://localhost:8080/api/quantum/circuit/info
 ```
-<img src="outputEg/simulate_output.png" alt="">
 
-**If want to see the collapsed state then use:**
-```java
-System.out.println(control.simulate().measure().collapsedState());
+### Docker Deployment
+```bash
+# Build and run
+docker-compose up --build
+
+# With monitoring stack
+docker-compose --profile monitoring up
 ```
-**possible output:** 1.0|011⟩
 
-**If want to see the exact probability of collapsed state:**
-```java
-System.out.println(control.simulate().measure().toString());
+## API Usage
+
+### Basic Circuit Operations
+```bash
+# Create 3-qubit circuit
+POST /api/quantum/circuit/create?qubits=3
+
+# Add quantum gates
+POST /api/quantum/gates/hadamard?qubit=0
+POST /api/quantum/gates/cnot?control=0&target=1
+
+# Execute simulation
+POST /api/quantum/simulate/execute
+
+# Get probabilities
+GET /api/quantum/state/probabilities
 ```
-**MeasurementResult{outcome=001, probability=0,250000, timestamp=2025-08-20T13:15:08.298544Z}**
-## 🧮 Mathematical Foundation
 
-### Complex Numbers
-The `Complex` class provides comprehensive complex number operations:
-- Basic arithmetic (add, subtract, multiply, divide...)
-- Polar coordinate conversion
-- Magnitude and phase calculations
-- Normalization and conjugation
+### Testing
+Run the complete test suite:
+```bash
+chmod +x test_qubit_flow_api.sh
+./test_qubit_flow_api.sh
+```
 
-### Matrix Operations
-The `Matrix` class supports:
-- Matrix multiplication and addition
-- Tensor products for multi-qubit operations
-- Matrix inversion and determinant calculation
-- Gate extension to multi-qubit systems
+## Gate Library
 
-### Quantum State Representation
-Quantum states are represented as normalized complex amplitude vectors:
-- Automatic normalization validation
-- Efficient gate application
-- Optimized measurement operations
-- State fidelity and entropy calculations
+| Gate        | Qubits | Description               |
+|-------------|--------|---------------------------|
+| Hadamard    | 1      | Superposition gate        |
+| Pauli-X/Y/Z | 1      | Bit/phase flip gates      |
+| T, S        | 1      | Phase rotation gates      |
+| CNOT        | 2      | Controlled NOT            |
+| SWAP        | 2      | Qubit exchange            |
+| Toffoli     | 3      | Controlled-controlled NOT |
+| Measure | -      | Measurement Gate          |
 
-## 🎯 Planned Algorithms
 
-The framework is prepared for implementing major quantum algorithms:
+## Programming Interface
 
-- **Deutsch Algorithm** - Determine if a function is constant or balanced
-- **Deutsch-Jozsa Algorithm** - Generalized version of Deutsch algorithm  
-- **Grover's Algorithm** - Quantum search algorithm
-- **Shor's Algorithm** - Integer factorization
-- **Quantum Fourier Transform** - Foundation for many quantum algorithms
-- **QAOA** - Quantum Approximate Optimization Algorithm
-- **VQE** - Variational Quantum Eigensolver
+### Direct Usage
+```java
+Controller controller = new Controller(3);
+controller.addHadamard(0);
+controller.addCNOT(0, 1);
+controller.simulate();
+```
 
-## 🔧 Configuration
+### State Management
+```java
+QuantumState state = QuantumState.uniformSuperposition(2);
+MeasurementResult result = state.measureQubit(0); // Only one qubit of state
+MeasurementResult result = state.measure(); // Whole state
+```
 
-### Circuit Constraints
-- **Minimum qubits**: 1
-- **Maximum qubits**: 10 (configurable)
-- **Automatic layer optimization** for parallel gate execution
-- **State validation** with configurable tolerance (ε = 1e-10)
+## Configuration
 
-## 🚀 REST API (In Development)
+Configure via `application.properties`:
+```properties
+server.port=8080
+logging.level.control=DEBUG
+spring.jackson.property-naming-strategy=SNAKE_CASE
+```
 
-## 📦 Dependencies
+## Development
 
-- **Java 21** - Core runtime
-- **Maven 3.8+** - Build system
-- **JUnit 5** - Testing framework
-- **Jackson** - JSON processing (for export features)
+### Project Structure
+```
+quantum-core/
+├── api/           # REST API layer
+├── control/       # Application services
+├── model/         # Domain layer
+│   ├── mathModel/     # Complex numbers, matrices
+│   ├── quantumModel/  # Quantum computing core
+│   └── commandModel/  # Command pattern
+```
 
-## 🤝 Contributing
+### Extending the System
+- **New Gates**: Extend `QuantumGate` class
+- **Algorithms**: Implement in `quantumAlgorithm` package
+- **Display Providers**: Implement `DisplayMeasurementPort`
 
-We welcome contributions! Please see our contributing guidelines:
+## API Endpoints
+
+| Category | Endpoint | Description |
+|----------|----------|-------------|
+| Circuit | `/api/quantum/circuit/*` | Circuit management |
+| Gates | `/api/quantum/gates/*` | Gate operations |
+| State | `/api/quantum/state/*` | State queries |
+| Simulation | `/api/quantum/simulate/*` | Circuit execution |
+| Measurement | `/api/quantum/measure/*` | Quantum measurements |
+| History | `/api/quantum/history/*` | Undo/redo operations |
+| Qubits | `/api/quantum/qubits/*` | Qubit management |
+
+## License
+
+Licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/quantum-algorithm`)
-3. Commit your changes (`git commit -am 'Add new quantum algorithm'`)
-4. Push to the branch (`git push origin feature/quantum-algorithm`)
-5. Create a Pull Request
+2. Create feature branch (`git checkout -b feature/new-algorithm`)
+3. Commit changes (`git commit -am 'Add quantum algorithm'`)
+4. Push branch (`git push origin feature/new-algorithm`)
+5. Create Pull Request
 
-### Areas for Contribution
-- **Algorithm implementations** (Grover, Shor, etc.)
-- **Performance optimizations**
-- **Additional export formats**
-- **Enhanced measurement providers**
-- **REST API endpoints**
-- **Documentation and examples**
+---
 
-## 📄 License
-
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
-
-*This project is actively developed and contributions are welcome! Join us in building the future of quantum computing education and simulation.*
+*Built for quantum computing education and research*
