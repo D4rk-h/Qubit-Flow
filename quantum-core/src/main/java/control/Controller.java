@@ -273,12 +273,12 @@ public class Controller {
 
     public String getCircuitInfo() {
         StringBuilder info = new StringBuilder();
-        info.append("Quantum Circuit Information:\n");
-        info.append("- Qubits: ").append(getQubitCount()).append("\n");
-        info.append("- Depth (layers): ").append(getCircuitDepth()).append("\n");
-        info.append("- Total gates: ").append(getTotalGateCount()).append("\n");
-        info.append("- History size: ").append(getHistorySize()).append("\n");
-        info.append("- Last command: ").append(getLastCommandType()).append("\n");
+        info.append("Quantum Circuit Information: ");
+        info.append(" -[Qubits: ").append(getQubitCount()).append("]");
+        info.append(" -[Depth (layers): ").append(getCircuitDepth()).append("]");
+        info.append(" -[Total gates: ").append(getTotalGateCount()).append("]");
+        info.append(" -[History size: ").append(getHistorySize()).append("]");
+        info.append(" -[Last command: ").append(getLastCommandType()).append("]");
         return info.toString();
     }
 
