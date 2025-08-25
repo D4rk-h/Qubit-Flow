@@ -4,7 +4,57 @@ import Layout from "../layouts/Layout.astro"
 ---
 
 <Layout title="About Qubit Flow">
-    <h1>About Qubit Flow</h1>
-    <p> Qubit Flow is a web/app project with a Java based Rest Api engine</p>
+	<section class="py-12 px-4 mx-auto max-w-7xl">
+		<div class="max-w-4xl mx-auto text-start mb-12">
+			<h3 class="text-3xl font-bold text-white mb-6">Qubit Flow - A Comprehensive Quantum Circuit Simulator</h3>
+			<p class="text-lg text-gray-300 mb-8 leading-relaxed">
+				Qubit Flow is a powerful web-based quantum circuit simulation platform built on a high-performance 
+				<a href="https://github.com/D4rk-h/Qubit-Flow-API" class="font-semibold text-blue-400 hover:underline">Java REST API engine</a>. Supporting 1-10 qubit systems 
+				with state vector simulation, it provides a complete backend solution for quantum circuit design, 
+				simulation, and analysis using clean architecture principles.
+			</p>
+			
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+				<div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+					<h4 class="font-bold text-blue-300 mb-3">Comprehensive Gate Library</h4>
+					<p class="text-gray-300 text-sm">Hadamard, Pauli gates, CNOT, SWAP, Toffoli, and more with controlled variants (more coming soon)</p>
+				</div>
+				<div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+					<h4 class="font-bold text-blue-300 mb-3">Advanced Circuit Management</h4>
+					<p class="text-gray-300 text-sm">Layer-optimized construction with undo/redo support and operation history</p>
+				</div>
+				<div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+					<h4 class="font-bold text-blue-300 mb-3">Multiple Export Formats</h4>
+					<p class="text-gray-300 text-sm">JSON, QASM, and Qiskit format support for seamless integration</p>
+				</div>
+			</div>
+		</div>
+		<div class="max-w-4xl mx-auto mt-12">
+			<div class="bg-gray-800 rounded-lg p-8 border border-gray-700">
+				<h4 class="text-xl font-bold text-white mb-4">Built for Performance & Education</h4>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<div>
+						<h5 class="font-semibold text-blue-300 mb-2">Architecture</h5>
+						<ul class="text-gray-300 text-sm space-y-1">
+							<li>• Clean Architecture with domain-driven design</li>
+							<li>• Command Pattern for operation management</li>
+							<li>• Strategy Pattern for extensible display providers</li>
+							<li>• Comprehensive REST API coverage</li>
+						</ul>
+					</div>
+					<div>
+						<h5 class="font-semibold text-blue-300 mb-2">Capabilities</h5>
+						<ul class="text-gray-300 text-sm space-y-1">
+							<li>• State vector simulation (1-10 qubits)</li>
+							<li>• Probabilistic measurement operations</li>
+							<li>• Real-time circuit visualization</li>
+							<li>• Docker deployment ready</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 </Layout>
+
 
