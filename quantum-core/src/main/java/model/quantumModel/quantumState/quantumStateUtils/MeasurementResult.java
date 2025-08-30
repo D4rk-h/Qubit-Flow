@@ -48,7 +48,7 @@ public record MeasurementResult(
 
     @Override
     public String toString() {
-        return String.format("MeasurementResult{outcome=%s, probability=%.6f, timestamp=%s}",
+        return String.format("MeasurementResult{outcome=%s, probability=%.4f, timestamp=%s}",
                 getBinaryRepresentation(), probability, timestamp);
     }
 }

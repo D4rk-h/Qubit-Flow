@@ -15,8 +15,8 @@
 package model.quantumModel.quantumGate;
 
 import model.mathModel.Matrix;
-import model.quantumModel.quantumPort.QuantumGatePort;
-public class QuantumGate implements QuantumGatePort {
+
+public class QuantumGate {
     private final Matrix matrix;
     private int numQubits;
     private final String name;
@@ -33,13 +33,6 @@ public class QuantumGate implements QuantumGatePort {
         if (matrix.getRows() != expectedSize || matrix.getCols() != expectedSize) {
             throw new IllegalArgumentException("Matrix size must be " + expectedSize + "x" + expectedSize);
         }
-    }
-
-    @Override
-    public QuantumGate expandGateDimension(int circuitDimension, int whichQubitsToApply) {
-        if (circuitDimension <= 0 || whichQubitsToApply <= 0) throw new IllegalArgumentException("Dimension and target qubits must have positive values");
-        Matrix result = this.getMatrix().extendToMultiQubitGate(circuitDimension, whichQubitsToApply);
-        return new QuantumGate(result, circuitDimension, this.name);
     }
 
     public void setNumQubits(int numQubits) {this.numQubits = numQubits;}

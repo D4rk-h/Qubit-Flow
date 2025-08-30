@@ -100,7 +100,7 @@ public class AddGateCommand implements UndoableCommand {
             case PAULI_Y -> circuit.addY(targetQubits[0]);
             case PAULI_Z -> circuit.addZ(targetQubits[0]);
             case T_GATE -> circuit.addT(targetQubits[0]);
-            case S_GATE -> circuit.addPhase(targetQubits[0]);
+            case S_GATE -> circuit.addS(targetQubits[0]);
             case CNOT -> circuit.addCNOT(targetQubits[0], targetQubits[1]);
             case SWAP -> circuit.addSwap(targetQubits[0], targetQubits[1]);
             case TOFFOLI -> circuit.addToffoli(targetQubits[0], targetQubits[1], targetQubits[2]);

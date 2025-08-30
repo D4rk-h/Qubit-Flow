@@ -55,7 +55,7 @@ public class GateOperationMapper {
             case "T (π/8)":
                 return QuantumGates.t();
             case "Phase":
-                return QuantumGates.phase();
+                return QuantumGates.s();
             case "CNOT":
                 return QuantumGates.cnot();
             case "SWAP":

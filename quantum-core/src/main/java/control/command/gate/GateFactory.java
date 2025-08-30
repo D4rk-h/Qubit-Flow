@@ -25,7 +25,7 @@ public class GateFactory {
             case PAULI_Y -> QuantumGates.y();
             case PAULI_Z -> QuantumGates.z();
             case T_GATE -> QuantumGates.t();
-            case S_GATE -> QuantumGates.phase();
+            case S_GATE -> QuantumGates.s();
             case CNOT -> QuantumGates.cnot();
             case SWAP -> QuantumGates.swap();
             case TOFFOLI -> QuantumGates.toffoli();

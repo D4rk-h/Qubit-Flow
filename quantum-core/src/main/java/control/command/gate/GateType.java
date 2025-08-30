@@ -20,7 +20,7 @@ public enum GateType {
     PAULI_Y(1, "Y", "pauli-y"),
     PAULI_Z(1, "Z", "pauli-z"),
     T_GATE(1, "T"),
-    S_GATE(1, "S", "phase"),
+    S_GATE(1, "S", "s"),
     CNOT(2, "CNOT", "CX", "cx"),
     SWAP(2, "SWAP"),
     TOFFOLI(3, "TOFFOLI", "CCX", "ccx"),

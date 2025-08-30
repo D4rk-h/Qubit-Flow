@@ -59,7 +59,7 @@ public class QasmParser implements ImportParser, ExportParser {
                 case "x":       circuit.addNot(indices.get(0)); break;
                 case "y":       circuit.addY(indices.get(0)); break;
                 case "z":       circuit.addZ(indices.get(0)); break;
-                case "s":       circuit.addPhase(indices.get(0)); break;
+                case "s":       circuit.addS(indices.get(0)); break;
                 case "t":       circuit.addT(indices.get(0)); break;
                 case "cx":      circuit.addCNOT(indices.get(0), indices.get(1)); break;
                 case "cy":      circuit.addControlled(QuantumGates.y(), indices.get(0), indices.get(1)); break;

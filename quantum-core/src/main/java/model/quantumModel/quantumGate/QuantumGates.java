@@ -24,7 +24,7 @@ public class QuantumGates {
     public static QuantumGate z() { return new ZGate(); }
     public static QuantumGate y() { return new YGate(); }
     public static QuantumGate t() { return new TGate(); }
-    public static QuantumGate phase() { return new PhaseGate(); }
+    public static QuantumGate s() { return new SGate(); }
     public static QuantumGate measurement() {return new MeasurementGate();}
 
     public static QuantumGate cnot() {return new QuantumGate(buildCNotMatrix(), 2, "CNOT");}

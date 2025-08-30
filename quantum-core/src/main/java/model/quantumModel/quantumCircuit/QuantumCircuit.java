@@ -56,7 +56,7 @@ public class QuantumCircuit {
 
     public void addT(int qubit) {addGate(QuantumGates.t(), qubit);}
 
-    public void addPhase(int qubit) {addGate(QuantumGates.phase(), qubit);}
+    public void addS(int qubit) {addGate(QuantumGates.s(), qubit);}
 
     public void addCNOT(int control, int target) {addGate(QuantumGates.cnot(), control, target);}
 
