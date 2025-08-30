@@ -43,27 +43,42 @@ public class GateOperationMapper {
     }
 
     private static QuantumGate createGateFromName(String gateName) {
-        switch (gateName) {
-            case "Hadamard":
-                return QuantumGates.hadamard();
-            case "NOT (Pauli-X)":
-                return QuantumGates.not();
-            case "Pauli-Y":
-                return QuantumGates.y();
-            case "Pauli-Z":
-                return QuantumGates.z();
-            case "T (π/8)":
-                return QuantumGates.t();
-            case "Phase":
-                return QuantumGates.s();
-            case "CNOT":
-                return QuantumGates.cnot();
-            case "SWAP":
-                return QuantumGates.swap();
-            case "Toffoli":
-                return QuantumGates.toffoli();
-            default:
-                throw new IllegalArgumentException("Unknown gate: " + gateName);
+        if (gateName.contains("Hadamard")) {
+            return QuantumGates.hadamard();
+        } else if (gateName.contains("NOT") || gateName.contains("Pauli-X")) {
+            return QuantumGates.not();
+        } else if (gateName.contains("Pauli-Y")) {
+            return QuantumGates.y();
+        } else if (gateName.contains("Pauli-Z")) {
+            return QuantumGates.z();
+        } else if (gateName.contains("T Dagger") || gateName.contains("-π/8")) {
+            return QuantumGates.tDagger();
+        } else if (gateName.contains("S")) {
+            return QuantumGates.s();
+        } else if (gateName.contains("T") && gateName.contains("π/8")) {
+            return QuantumGates.t();
+        } else if (gateName.contains("S Dagger")) {
+            return QuantumGates.sDagger();
+        } else if (gateName.contains("P")) {
+            return QuantumGates.phase();
+        } else if (gateName.contains("CNOT")) {
+            return QuantumGates.cnot();
+        } else if (gateName.contains("SWAP")) {
+            return QuantumGates.swap();
+        } else if (gateName.contains("Toffoli")) {
+            return QuantumGates.toffoli();
+        } else if (gateName.contains("RX")) {
+            return QuantumGates.rx();
+        } else if (gateName.contains("RY")) {
+            return QuantumGates.ry();
+        } else if (gateName.contains("RZ")) {
+            return QuantumGates.rz();
+        } else if (gateName.contains("√X")) {
+            return QuantumGates.xRoot();
+        } else if (gateName.contains("U")) {
+            return QuantumGates.u();
+        } else {
+            throw new IllegalArgumentException("Unknown gate: " + gateName);
         }
     }
 

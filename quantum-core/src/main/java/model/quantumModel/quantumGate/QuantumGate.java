@@ -17,7 +17,7 @@ package model.quantumModel.quantumGate;
 import model.mathModel.Matrix;
 
 public class QuantumGate {
-    private final Matrix matrix;
+    private Matrix matrix;
     private int numQubits;
     private final String name;
 
@@ -37,6 +37,9 @@ public class QuantumGate {
 
     public void setNumQubits(int numQubits) {this.numQubits = numQubits;}
     public Matrix getMatrix() { return matrix; }
+    public void updateMatrix(double angle){
+        this.matrix = this.matrix.multiply(angle);
+    }
     public String getName() { return name; }
     public int getNumQubits() { return numQubits; }
 }

@@ -20,7 +20,7 @@ import model.quantumModel.quantumGate.QuantumGate;
 
 public class SGate extends QuantumGate {
     public SGate() {
-        super(buildPhase(), 1, "Phase");
+        super(buildPhase(), 1, "S");
     }
 
     private static Matrix buildPhase() {

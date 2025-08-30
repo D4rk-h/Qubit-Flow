@@ -16,8 +16,6 @@ package control;
 
 import control.command.add.AddMeasurementCommand;
 import control.command.history.CommandHistory;
-import control.command.importer.CircuitImporter;
-import control.command.importer.ImportFormat;
 import control.command.ports.UndoableCommand;
 import control.command.add.AddGateCommand;
 import control.command.add.AddQubitCommand;
@@ -45,7 +43,6 @@ public class Controller {
     private QuantumState currentState;
     private final CommandHistory commandHistory;
     private final CircuitExporter exporter;
-    private final CircuitImporter importer;
     private final List<MeasurementResult> measurementResults;
 
     public Controller() {
@@ -57,7 +54,6 @@ public class Controller {
         this.currentState = QuantumState.zero(numQubits);
         this.commandHistory = new CommandHistory();
         this.exporter = new CircuitExporter();
-        this.importer = new CircuitImporter();
         this.measurementResults = new ArrayList<>();
         setupStateRestorer();
     }
@@ -79,6 +75,22 @@ public class Controller {
     public void addTGate(int qubit) {addGate("t", qubit);}
 
     public void addSGate(int qubit) {addGate("s", qubit);}
+
+    public void addTDagger(int qubit) {addGate("t dagger", qubit);}
+
+    public void addSDagger(int qubit) {addGate("s dagger", qubit);}
+
+    public void addPhase(int qubit) {addGate("p", qubit);}
+
+    public void addRX(int qubit) {addGate("rx", qubit);}
+
+    public void addRY(int qubit) {addGate("ry", qubit);}
+
+    public void addRZ(int qubit) {addGate("rz", qubit);}
+
+    public void addSX(int qubit) {addGate("sx", qubit);}
+
+    public void addU(int qubit) {addGate("u", qubit);}
 
     public void addCNOT(int control, int target) {
         ensureQubitExists(Math.max(control, target));
@@ -246,15 +258,6 @@ public class Controller {
     public void exportToQASM() {exportCircuit(ExportFormat.QASM);}
 
     public void exportToQISKIT() {exportCircuit(ExportFormat.QISKIT);}
-
-    public void importCircuit(String filename, ImportFormat format) {
-        importer.importCircuit(filename, format);
-        measurementResults.clear();
-    }
-
-    public void importFromQASM(String qasmFile) {importCircuit(qasmFile, ImportFormat.QASM);}
-
-    public void importFromQISKIT(String qiskitFile) {importCircuit(qiskitFile, ImportFormat.QISKIT);}
 
     public QuantumCircuit getCircuit() {return circuit;}
 

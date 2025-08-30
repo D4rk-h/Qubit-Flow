@@ -28,6 +28,14 @@ public class GateFactory {
             case S_GATE -> QuantumGates.s();
             case CNOT -> QuantumGates.cnot();
             case SWAP -> QuantumGates.swap();
+            case RX_GATE -> QuantumGates.rx();
+            case PHASE -> QuantumGates.phase();
+            case RY_GATE -> QuantumGates.ry();
+            case RZ_GATE -> QuantumGates.rz();
+            case T_DAGGER -> QuantumGates.tDagger();
+            case S_DAGGER -> QuantumGates.sDagger();
+            case U_GATE -> QuantumGates.u();
+            case X_ROOT -> QuantumGates.xRoot();
             case TOFFOLI -> QuantumGates.toffoli();
             case MEASUREMENT -> QuantumGates.measurement();
         };

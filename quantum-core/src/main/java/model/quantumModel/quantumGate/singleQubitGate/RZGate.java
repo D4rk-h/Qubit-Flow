@@ -6,15 +6,15 @@ import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
 
 public class RZGate extends QuantumGate {
-    private double phi = Math.PI;
-
-    public RZGate() {
-        super(buildRZGate(Math.PI), 1, "RZ (Rotates theta around Z-axis)");
-    }
+    private double phi;
 
     public RZGate(double phi) {
-        super(buildRZGate(phi), 1, "RZ (Rotates theta around Z-axis)");
+        super(buildRZGate(phi), 1, "RZ(" + phi + ")");
         this.phi = phi;
+    }
+
+    public RZGate() {
+        this(Math.PI);
     }
 
     private static Matrix buildRZGate(double phi) {
@@ -26,10 +26,10 @@ public class RZGate extends QuantumGate {
         return new Matrix(rz);
     }
 
-    public double getPhi() {return phi;}
+    public double getPhi() { return phi; }
 
     public void setPhi(double phi) {
         this.phi = phi;
-        new RZGate(phi);
+        this.updateMatrix(phi);
     }
 }
