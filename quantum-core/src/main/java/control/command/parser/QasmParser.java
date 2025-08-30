@@ -169,6 +169,12 @@ public class QasmParser implements ImportParser, ExportParser {
             case "Pauli-Y" -> "cy q[" + qubits[0] + "],q[" + qubits[1] + "];";
             case "Pauli-Z" -> "cz q[" + qubits[0] + "],q[" + qubits[1] + "];";
             case "Hadamard" -> "ch q[" + qubits[0] + "],q[" + qubits[1] + "];";
+            case "P" -> "cp(pi/2) q[" + qubits[0] + "],q[" + qubits[1] + "];";
+            case "RX" -> "crx q[" + qubits[0] + "],q[" + qubits[1] + "];";
+            case "RZ" -> "crz q[" + qubits[0] + "],q[" + qubits[1] + "];";
+            case "RY" -> "cry q[" + qubits[0] + "],q[" + qubits[1] + "];";
+            case "√X" -> "csx q[" + qubits[0] + "],q[" + qubits[1] + "];";
+            case "U" -> "cu q[" + qubits[0] + "],q[" + qubits[1] + "];";
             case "SWAP" -> "cswap q[" + qubits[0] + "],q[" + qubits[1] + "],q[" + qubits[2] + "];";
             case "NOT (Pauli-X)" -> {
                 if (qubits.length == 3) {
