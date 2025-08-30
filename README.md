@@ -13,7 +13,7 @@ Qubit Flow provides a complete backend solution for quantum circuit design, simu
 - **Comprehensive Gate Library** - Single/multi-qubit gates with controlled variants
 - **Circuit Management** - Layer-optimized construction with undo/redo support
 - **Measurement Operations** - Probabilistic measurements with result tracking
-- **Export/Import** - JSON, QASM, and Qiskit format support
+- **Export** - JSON, QASM, and Qiskit format support
 
 ### Architecture
 - **Clean Architecture** with domain-driven design
@@ -72,15 +72,18 @@ chmod +x test_qubit_flow_api.sh
 
 ## Gate Library
 
-| Gate        | Qubits | Description               |
-|-------------|--------|---------------------------|
-| Hadamard    | 1      | Superposition gate        |
-| Pauli-X/Y/Z | 1      | Bit/phase flip gates      |
-| T, S        | 1      | Phase rotation gates      |
-| CNOT        | 2      | Controlled NOT            |
-| SWAP        | 2      | Qubit exchange            |
-| Toffoli     | 3      | Controlled-controlled NOT |
-| Measure | -      | Measurement Gate          |
+| Gate                   | Qubits | Description               |
+|------------------------|--------|---------------------------|
+| Hadamard               | 1      | Superposition gate        |
+| Pauli-X/Y/Z            | 1      | Bit/phase flip gates      |
+| √X                     | 1      | Partial X gate            |
+| P                      | 1      | Phase rotation gate       |
+| T, S & dagger variants | 1      | Phase rotation gates      |
+| U                      | 1      | General Unitary           |
+| CNOT                   | 2      | Controlled NOT            |
+| SWAP                   | 2      | Qubit exchange            |
+| Toffoli                | 3      | Controlled-controlled NOT |
+| Measure                | -      | Measurement Gate          |
 
 
 ## Programming Interface
