@@ -13,7 +13,7 @@ public class UnitaryGate extends QuantumGate {
         super(buildUnitary(Math.PI, Math.PI, Math.PI), 1, "U(" + Math.PI + "," + Math.PI + "," + Math.PI + ")");
     }
 
-    private UnitaryGate(double theta, double phi, double lambda) {
+    public UnitaryGate(double theta, double phi, double lambda) {
         super(buildUnitary(theta, phi, lambda), 1, "U(" + theta + "," + phi + "," + lambda + ")");
         this.theta = theta;
         this.phi = phi;
@@ -42,18 +42,19 @@ public class UnitaryGate extends QuantumGate {
 
     public void setTheta(double theta) {
         this.theta = theta;
-        buildUnitary(theta, phi, lambda);
+        this.setUpdatedMatrix(buildUnitary(theta, phi, lambda));
+        this.setUpdatedName("U(" + theta + "," + phi + "," + lambda + ")");
     }
 
     public void setPhi(double phi) {
         this.phi = phi;
-        buildUnitary(theta, phi, lambda);
+        this.setUpdatedMatrix(buildUnitary(theta, phi, lambda));
+        this.setUpdatedName("U(" + theta + "," + phi + "," + lambda + ")");
     }
 
     public void setLambda(double lambda) {
         this.lambda = lambda;
-        buildUnitary(theta, phi, lambda);
+        this.setUpdatedMatrix(buildUnitary(theta, phi, lambda));
+        this.setUpdatedName("U(" + theta + "," + phi + "," + lambda + ")");
     }
-
-
 }

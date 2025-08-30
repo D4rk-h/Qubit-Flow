@@ -28,23 +28,28 @@ public class AddGateCommand implements UndoableCommand {
     private final QuantumCircuit circuit;
     private final GateType gateType;
     private final int[] targetQubits;
+    private final double[] parameters;
     private GateOperation addedOperation;
     private int layerIndex;
     private boolean wasExecuted;
 
-    public AddGateCommand(QuantumCircuit circuit, GateType gateType, int... targetQubits) {
+    public AddGateCommand(QuantumCircuit circuit, GateType gateType, double[] parameters, int... targetQubits) {
         validateInputs(circuit, gateType, targetQubits);
         this.circuit = circuit;
         this.gateType = gateType;
         this.targetQubits = targetQubits.clone();
+        this.parameters = parameters;
         this.wasExecuted = false;
+    }
+
+    public AddGateCommand(QuantumCircuit circuit, GateType gateType, int... targetQubits) {
+        this(circuit, gateType, null, targetQubits);
     }
 
     @Override
     public void execute() {
         try {
-            QuantumGate gate = GateFactory.createGate(gateType);
-            addGateToCircuit(gate);
+            addGateToCircuit();
             trackAddedOperation();
             wasExecuted = true;
         } catch (Exception e) {
@@ -77,13 +82,9 @@ public class AddGateCommand implements UndoableCommand {
     private void validateInputs(QuantumCircuit circuit, GateType gateType, int[] targetQubits) {
         if (circuit == null) throw new IllegalArgumentException("Circuit cannot be null");
         if (gateType == null) throw new IllegalArgumentException("Gate type cannot be null");
-        if (targetQubits == null || targetQubits.length == 0) {
-            throw new IllegalArgumentException("Target qubits cannot be null or empty");
-        }
+        if (targetQubits == null || targetQubits.length == 0) throw new IllegalArgumentException("Target qubits cannot be null or empty");
         for (int qubit : targetQubits) {
-            if (qubit < 0 || qubit >= circuit.getNQubits()) {
-                throw new IllegalArgumentException("Invalid qubit index: " + qubit);
-            }
+            if (qubit < 0 || qubit >= circuit.getNQubits()) throw new IllegalArgumentException("Invalid qubit index: " + qubit);
         }
         if (!gateType.isValidForQubits(targetQubits.length)) {
             throw new IllegalArgumentException(
@@ -93,26 +94,37 @@ public class AddGateCommand implements UndoableCommand {
         }
     }
 
-    private void addGateToCircuit(QuantumGate gate) {
-        switch (gateType) {
-            case HADAMARD -> circuit.addHadamard(targetQubits[0]);
-            case PAULI_X -> circuit.addNot(targetQubits[0]);
-            case PAULI_Y -> circuit.addY(targetQubits[0]);
-            case PAULI_Z -> circuit.addZ(targetQubits[0]);
-            case T_GATE -> circuit.addT(targetQubits[0]);
-            case S_GATE -> circuit.addS(targetQubits[0]);
-            case T_DAGGER -> circuit.addTDagger(targetQubits[0]);
-            case S_DAGGER -> circuit.addSDagger(targetQubits[0]);
-            case PHASE -> circuit.addPhase(targetQubits[0]);
-            case U_GATE -> circuit.addU(targetQubits[0]);
-            case X_ROOT -> circuit.addXRoot(targetQubits[0]);
-            case RX_GATE -> circuit.addRX(targetQubits[0]);
-            case RZ_GATE -> circuit.addRZ(targetQubits[0]);
-            case RY_GATE -> circuit.addRY(targetQubits[0]);
-            case CNOT -> circuit.addCNOT(targetQubits[0], targetQubits[1]);
-            case SWAP -> circuit.addSwap(targetQubits[0], targetQubits[1]);
-            case TOFFOLI -> circuit.addToffoli(targetQubits[0], targetQubits[1], targetQubits[2]);
-            default -> throw new UnsupportedOperationException("Gate type not supported: " + gateType);
+    private void addGateToCircuit() {
+        if (parameters != null) {
+            switch (gateType) {
+                case RX_GATE -> circuit.addRX(targetQubits[0]);
+                case RY_GATE -> circuit.addRY(targetQubits[0]);
+                case RZ_GATE -> circuit.addRZ(targetQubits[0]);
+                case PHASE -> circuit.addPhase(targetQubits[0]);
+                case U_GATE -> circuit.addU(targetQubits[0]);
+                default -> throw new UnsupportedOperationException("Parameterized gate type not supported: " + gateType);
+            }
+        } else {
+            switch (gateType) {
+                case HADAMARD -> circuit.addHadamard(targetQubits[0]);
+                case PAULI_X -> circuit.addNot(targetQubits[0]);
+                case PAULI_Y -> circuit.addY(targetQubits[0]);
+                case PAULI_Z -> circuit.addZ(targetQubits[0]);
+                case T_GATE -> circuit.addT(targetQubits[0]);
+                case S_GATE -> circuit.addS(targetQubits[0]);
+                case T_DAGGER -> circuit.addTDagger(targetQubits[0]);
+                case S_DAGGER -> circuit.addSDagger(targetQubits[0]);
+                case PHASE -> circuit.addPhase(targetQubits[0]);
+                case U_GATE -> circuit.addU(targetQubits[0]);
+                case X_ROOT -> circuit.addXRoot(targetQubits[0]);
+                case RX_GATE -> circuit.addRX(targetQubits[0]);
+                case RZ_GATE -> circuit.addRZ(targetQubits[0]);
+                case RY_GATE -> circuit.addRY(targetQubits[0]);
+                case CNOT -> circuit.addCNOT(targetQubits[0], targetQubits[1]);
+                case SWAP -> circuit.addSwap(targetQubits[0], targetQubits[1]);
+                case TOFFOLI -> circuit.addToffoli(targetQubits[0], targetQubits[1], targetQubits[2]);
+                default -> throw new UnsupportedOperationException("Gate type not supported: " + gateType);
+            }
         }
     }
 

@@ -208,8 +208,6 @@ public class QuantumGateController {
         }
     }
 
-
-
     @PostMapping("/ry")
     @Operation(summary = "Add RY gate")
     public ResponseEntity<Map<String, Object>> addRY(@RequestParam int qubit) {
@@ -226,8 +224,6 @@ public class QuantumGateController {
             return ResponseEntity.badRequest().body(error);
         }
     }
-
-
 
     @PostMapping("/rz")
     @Operation(summary = "Add RZ gate")

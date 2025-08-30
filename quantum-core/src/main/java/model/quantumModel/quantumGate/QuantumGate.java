@@ -19,7 +19,7 @@ import model.mathModel.Matrix;
 public class QuantumGate {
     private Matrix matrix;
     private int numQubits;
-    private final String name;
+    private String name;
 
     public QuantumGate(Matrix matrix, int numQubits, String name) {
         this.matrix = matrix;
@@ -42,4 +42,12 @@ public class QuantumGate {
     }
     public String getName() { return name; }
     public int getNumQubits() { return numQubits; }
+
+    public void setUpdatedMatrix(Matrix matrix) {
+        this.matrix = matrix;
+    }
+
+    public void setUpdatedName(String name) {
+        this.name = name;
+    }
 }

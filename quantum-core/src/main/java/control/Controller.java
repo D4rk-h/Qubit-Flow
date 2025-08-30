@@ -80,17 +80,67 @@ public class Controller {
 
     public void addSDagger(int qubit) {addGate("s dagger", qubit);}
 
-    public void addPhase(int qubit) {addGate("p", qubit);}
+    public void addRX(int qubit) {
+        GateType type = GateType.fromString("rx");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
 
-    public void addRX(int qubit) {addGate("rx", qubit);}
+    public void addRX(int qubit, double theta) {
+        GateType type = GateType.fromString("rx");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{theta}, qubit);
+        commandHistory.executeCommand(command);
+    }
 
-    public void addRY(int qubit) {addGate("ry", qubit);}
+    public void addRY(int qubit) {
+        GateType type = GateType.fromString("ry");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
 
-    public void addRZ(int qubit) {addGate("rz", qubit);}
+    public void addRY(int qubit, double theta) {
+        GateType type = GateType.fromString("ry");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{theta}, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addRZ(int qubit) {
+        GateType type = GateType.fromString("rz");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addRZ(int qubit, double phi) {
+        GateType type = GateType.fromString("rz");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{phi}, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addU(int qubit) {
+        GateType type = GateType.fromString("u");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addU(int qubit, double theta, double phi, double lambda) {
+        GateType type = GateType.fromString("u");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{theta, phi, lambda}, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addPhase(int qubit) {
+        GateType type = GateType.fromString("p");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addPhase(int qubit, double phi) {
+        GateType type = GateType.fromString("p");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{phi}, qubit);
+        commandHistory.executeCommand(command);
+    }
 
     public void addSX(int qubit) {addGate("sx", qubit);}
-
-    public void addU(int qubit) {addGate("u", qubit);}
 
     public void addCNOT(int control, int target) {
         ensureQubitExists(Math.max(control, target));

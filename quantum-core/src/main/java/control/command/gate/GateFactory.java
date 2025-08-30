@@ -16,6 +16,7 @@ package control.command.gate;
 
 import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumGate.QuantumGates;
+import model.quantumModel.quantumGate.singleQubitGate.*;
 
 public class GateFactory {
     public static QuantumGate createGate(GateType gateType) {
@@ -38,6 +39,18 @@ public class GateFactory {
             case X_ROOT -> QuantumGates.xRoot();
             case TOFFOLI -> QuantumGates.toffoli();
             case MEASUREMENT -> QuantumGates.measurement();
+        };
+    }
+
+    public static QuantumGate createGate(GateType gateType, double[] parameters) {
+        return switch (gateType) {
+            case RX_GATE -> parameters.length >= 1 ? new RXGate(parameters[0]) : new RXGate();
+            case RY_GATE -> parameters.length >= 1 ? new RYGate(parameters[0]) : new RYGate();
+            case RZ_GATE -> parameters.length >= 1 ? new RZGate(parameters[0]) : new RZGate();
+            case PHASE -> parameters.length >= 1 ? new Phase(parameters[0]) : new Phase();
+            case U_GATE -> parameters.length >= 3 ?
+                    new UnitaryGate(parameters[0], parameters[1], parameters[2]) : new UnitaryGate();
+            default -> createGate(gateType);
         };
     }
 }
