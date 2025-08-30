@@ -237,7 +237,7 @@ public class QuantumGateController {
             else quantumController.addRZ(qubit);
             Map<String, Object> response = new HashMap<>();
             response.put("message", "RZ gate added to qubit=" + qubit +
-                    (phi != null ? " with phi" + phi : " with default phi=π"));
+                    (phi != null ? " with phi=" + phi : " with default phi=π"));
             response.put("circuitDepth", quantumController.getCircuitDepth());
             response.put("totalGates", quantumController.getTotalGateCount());
             return ResponseEntity.ok(response);
