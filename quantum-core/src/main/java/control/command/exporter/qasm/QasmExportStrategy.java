@@ -14,6 +14,7 @@
 
 package control.command.exporter.qasm;
 
+import control.command.parser.QasmParser;
 import control.command.parser.QiskitParser;
 import control.command.ports.UndoableCommand;
 import control.command.ports.ExportStrategy;
@@ -27,7 +28,7 @@ public class QasmExportStrategy implements ExportStrategy {
     @Override
     public void export(QuantumCircuit circuit, String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
-            QiskitParser parser = new QiskitParser();
+            QasmParser parser = new QasmParser();
             String qasmContent = parser.serialize(circuit);
             writer.write(qasmContent);
             System.out.println("Circuit exported to QASM: " + filename);

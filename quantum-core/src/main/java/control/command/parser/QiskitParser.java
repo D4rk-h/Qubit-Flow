@@ -60,19 +60,33 @@ public class QiskitParser implements ImportParser, ExportParser {
                 }
                 if (indices.isEmpty()) {continue;}
                 switch (operation) {
-                    case "h":       circuit.addHadamard(indices.get(0)); break;
-                    case "x":       circuit.addNot(indices.get(0)); break;
-                    case "y":       circuit.addY(indices.get(0)); break;
-                    case "z":       circuit.addZ(indices.get(0)); break;
-                    case "s":       circuit.addS(indices.get(0)); break;
-                    case "t":       circuit.addT(indices.get(0)); break;
-                    case "cx":      circuit.addCNOT(indices.get(0), indices.get(1)); break;
-                    case "cy":      circuit.addControlled(QuantumGates.y(), indices.get(0), indices.get(1)); break;
-                    case "cz":      circuit.addControlled(QuantumGates.z(), indices.get(0), indices.get(1)); break;
-                    case "ch":      circuit.addControlled(QuantumGates.hadamard(), indices.get(0), indices.get(1)); break;
-                    case "swap":    circuit.addSwap(indices.get(0), indices.get(1)); break;
-                    case "ccx":     circuit.addToffoli(indices.get(0), indices.get(1), indices.get(2)); break;
-                    case "cswap":   circuit.addControlled(QuantumGates.swap(), indices.get(0), indices.get(1), indices.get(2)); break;
+                    case "h": circuit.addHadamard(indices.get(0)); break;
+                    case "x": circuit.addNot(indices.get(0)); break;
+                    case "y": circuit.addY(indices.get(0)); break;
+                    case "z": circuit.addZ(indices.get(0)); break;
+                    case "s": circuit.addS(indices.get(0)); break;
+                    case "t": circuit.addT(indices.get(0)); break;
+                    case "tdg": circuit.addTDagger(indices.get(0)); break;
+                    case "sdg": circuit.addSDagger(indices.get(0)); break;
+                    case "p": circuit.addPhase(indices.get(0)); break;
+                    case "rx": circuit.addRX(indices.get(0)); break;
+                    case "ry": circuit.addRY(indices.get(0)); break;
+                    case "rz": circuit.addRZ(indices.get(0)); break;
+                    case "sx": circuit.addXRoot(indices.get(0)); break;
+                    case "u": circuit.addU(indices.get(0)); break;
+                    case "cp": circuit.addControlled(QuantumGates.phase(), indices.get(0)); break;
+                    case "crx": circuit.addControlled(QuantumGates.rx(), indices.get(0)); break;
+                    case "cry": circuit.addControlled(QuantumGates.ry(), indices.get(0)); break;
+                    case "crz": circuit.addControlled(QuantumGates.rz(), indices.get(0)); break;
+                    case "csx": circuit.addControlled(QuantumGates.xRoot(), indices.get(0)); break;
+                    case "cu": circuit.addControlled(QuantumGates.u(), indices.get(0)); break;
+                    case "cx": circuit.addCNOT(indices.get(0), indices.get(1)); break;
+                    case "cy": circuit.addControlled(QuantumGates.y(), indices.get(0), indices.get(1)); break;
+                    case "cz": circuit.addControlled(QuantumGates.z(), indices.get(0), indices.get(1)); break;
+                    case "ch": circuit.addControlled(QuantumGates.hadamard(), indices.get(0), indices.get(1)); break;
+                    case "swap": circuit.addSwap(indices.get(0), indices.get(1)); break;
+                    case "ccx": circuit.addToffoli(indices.get(0), indices.get(1), indices.get(2)); break;
+                    case "cswap": circuit.addControlled(QuantumGates.swap(), indices.get(0), indices.get(1), indices.get(2)); break;
                     case "measure":
                         circuit.addMeasurement(indices.get(0), indices.get(1));
                         break;

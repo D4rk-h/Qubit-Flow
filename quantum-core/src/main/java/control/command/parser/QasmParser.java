@@ -55,19 +55,33 @@ public class QasmParser implements ImportParser, ExportParser {
             }
             if (indices.isEmpty()) {continue;}
             switch (operation) {
-                case "h":       circuit.addHadamard(indices.get(0)); break;
-                case "x":       circuit.addNot(indices.get(0)); break;
-                case "y":       circuit.addY(indices.get(0)); break;
-                case "z":       circuit.addZ(indices.get(0)); break;
-                case "s":       circuit.addS(indices.get(0)); break;
-                case "t":       circuit.addT(indices.get(0)); break;
-                case "cx":      circuit.addCNOT(indices.get(0), indices.get(1)); break;
-                case "cy":      circuit.addControlled(QuantumGates.y(), indices.get(0), indices.get(1)); break;
-                case "cz":      circuit.addControlled(QuantumGates.z(), indices.get(0), indices.get(1)); break;
-                case "ch":      circuit.addControlled(QuantumGates.hadamard(), indices.get(0), indices.get(1)); break;
-                case "swap":    circuit.addSwap(indices.get(0), indices.get(1)); break;
-                case "ccx":     circuit.addToffoli(indices.get(0), indices.get(1), indices.get(2)); break;
-                case "cswap":   circuit.addControlled(QuantumGates.swap(), indices.get(0), indices.get(1), indices.get(2)); break;
+                case "h": circuit.addHadamard(indices.get(0)); break;
+                case "x": circuit.addNot(indices.get(0)); break;
+                case "y": circuit.addY(indices.get(0)); break;
+                case "z": circuit.addZ(indices.get(0)); break;
+                case "s": circuit.addS(indices.get(0)); break;
+                case "t": circuit.addT(indices.get(0)); break;
+                case "tdg": circuit.addTDagger(indices.get(0)); break;
+                case "sdg": circuit.addSDagger(indices.get(0)); break;
+                case "p": circuit.addPhase(indices.get(0)); break;
+                case "rx": circuit.addRX(indices.get(0)); break;
+                case "ry": circuit.addRY(indices.get(0)); break;
+                case "rz": circuit.addRZ(indices.get(0)); break;
+                case "sx": circuit.addXRoot(indices.get(0)); break;
+                case "u": circuit.addU(indices.get(0)); break;
+                case "cp": circuit.addControlled(QuantumGates.phase(), indices.get(0)); break;
+                case "crx": circuit.addControlled(QuantumGates.rx(), indices.get(0)); break;
+                case "cry": circuit.addControlled(QuantumGates.ry(), indices.get(0)); break;
+                case "crz": circuit.addControlled(QuantumGates.rz(), indices.get(0)); break;
+                case "csx": circuit.addControlled(QuantumGates.xRoot(), indices.get(0)); break;
+                case "cu": circuit.addControlled(QuantumGates.u(), indices.get(0)); break;
+                case "cx": circuit.addCNOT(indices.get(0), indices.get(1)); break;
+                case "cy": circuit.addControlled(QuantumGates.y(), indices.get(0), indices.get(1)); break;
+                case "cz": circuit.addControlled(QuantumGates.z(), indices.get(0), indices.get(1)); break;
+                case "ch": circuit.addControlled(QuantumGates.hadamard(), indices.get(0), indices.get(1)); break;
+                case "swap": circuit.addSwap(indices.get(0), indices.get(1)); break;
+                case "ccx": circuit.addToffoli(indices.get(0), indices.get(1), indices.get(2)); break;
+                case "cswap": circuit.addControlled(QuantumGates.swap(), indices.get(0), indices.get(1), indices.get(2)); break;
                 case "c3x":
                 case "c4x":
                     int target = indices.get(indices.size() - 1);
@@ -125,8 +139,16 @@ public class QasmParser implements ImportParser, ExportParser {
             case "NOT (Pauli-X)" -> "x q[" + qubits[0] + "];";
             case "Pauli-Y" -> "y q[" + qubits[0] + "];";
             case "Pauli-Z" -> "z q[" + qubits[0] + "];";
-            case "Phase" -> "s q[" + qubits[0] + "];";
+            case "S" -> "s q[" + qubits[0] + "];";
             case "T (π/8)" -> "t q[" + qubits[0] + "];";
+            case "P" -> "p(pi/2) q[" + qubits[0] + "];";
+            case "RX" -> "rx q[" + qubits[0] + "];";
+            case "RZ" -> "rz q[" + qubits[0] + "];";
+            case "RY" -> "ry q[" + qubits[0] + "];";
+            case "√X" -> "sx q[" + qubits[0] + "];";
+            case "T Dagger" -> "sdg q[" + qubits[0] + "];";
+            case "S Dagger" -> "tdg q[" + qubits[0] + "];";
+            case "U" -> "u q[" + qubits[0] + "];";
             case "CNOT" -> "cx q[" + qubits[0] + "],q[" + qubits[1] + "];";
             case "SWAP" -> "swap q[" + qubits[0] + "],q[" + qubits[1] + "];";
             case "Toffoli" -> "ccx q[" + qubits[0] + "],q[" + qubits[1] + "],q[" + qubits[2] + "];";
