@@ -218,7 +218,7 @@ public class QuantumGateController {
             else quantumController.addRY(qubit);
             Map<String, Object> response = new HashMap<>();
             response.put("message", "RY gate added to qubit=" + qubit +
-                    (theta != null ? " with θ=" + theta : " with default θ=π"));
+                    (theta != null ? " with theta=" + theta : " with default theta=π"));
             response.put("circuitDepth", quantumController.getCircuitDepth());
             response.put("totalGates", quantumController.getTotalGateCount());
             return ResponseEntity.ok(response);
@@ -237,7 +237,7 @@ public class QuantumGateController {
             else quantumController.addRZ(qubit);
             Map<String, Object> response = new HashMap<>();
             response.put("message", "RZ gate added to qubit=" + qubit +
-                    (phi != null ? " with φ=" + phi : " with default φ=π"));
+                    (phi != null ? " with phi" + phi : " with default phi=π"));
             response.put("circuitDepth", quantumController.getCircuitDepth());
             response.put("totalGates", quantumController.getTotalGateCount());
             return ResponseEntity.ok(response);
@@ -260,7 +260,7 @@ public class QuantumGateController {
             else quantumController.addU(qubit);
             Map<String, Object> response = new HashMap<>();
             String angleInfo = (theta != null && phi != null && lambda != null)
-                    ? " with θ=" + theta + ", φ=" + phi + ", λ=" + lambda
+                    ? " with theta=" + theta + ", phi=" + phi + ", lambda=" + lambda
                     : " with default angles (π, π, π)";
             response.put("message", "U gate added to qubit=" + qubit + angleInfo);
             response.put("circuitDepth", quantumController.getCircuitDepth());
@@ -281,7 +281,7 @@ public class QuantumGateController {
             else quantumController.addPhase(qubit);
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Phase gate added to qubit=" + qubit +
-                    (phi != null ? " with φ=" + phi : " with default φ=π/2"));
+                    (phi != null ? " with phi=" + phi : " with default phi=π/2"));
             response.put("circuitDepth", quantumController.getCircuitDepth());
             response.put("totalGates", quantumController.getTotalGateCount());
             return ResponseEntity.ok(response);
