@@ -148,8 +148,16 @@ public class QiskitParser implements ImportParser, ExportParser {
             case "NOT (Pauli-X)" -> "circuit.x(qreg_q[" + qubits[0] + "])";
             case "Pauli-Y" -> "circuit.y(qreg_q[" + qubits[0] + "])";
             case "Pauli-Z" -> "circuit.z(qreg_q[" + qubits[0] + "])";
-            case "Phase" -> "circuit.s(qreg_q[" + qubits[0] + "])";
+            case "S" -> "circuit.s(qreg_q[" + qubits[0] + "])";
             case "T (π/8)" -> "circuit.t(qreg_q[" + qubits[0] + "])";
+            case "Phase" -> "circuit.p(qreg_q[" + qubits[0] + "])";
+            case "T Dagger" -> "circuit.tdg(qreg_q[" + qubits[0] + "])";
+            case "S Dagger" -> "circuit.sdg(qreg_q[" + qubits[0] + "])";
+            case "RX" -> "circuit.rx(qreg_q[" + qubits[0] + "])";
+            case "RY" -> "circuit.ry(qreg_q[" + qubits[0] + "])";
+            case "RZ" -> "circuit.t(qreg_rz[" + qubits[0] + "])";
+            case "√X" -> "circuit.s(qreg_sx[" + qubits[0] + "])";
+            case "U" -> "circuit.u(qreg_q[" + qubits[0] + "])";
             case "CNOT" -> "circuit.cx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "SWAP" -> "circuit.swap(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "Toffoli" -> "circuit.ccx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "], qreg_q[" + qubits[2] + "])";
@@ -170,6 +178,12 @@ public class QiskitParser implements ImportParser, ExportParser {
             case "Pauli-Y" -> "circuit.cy(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "Pauli-Z" -> "circuit.cz(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "Hadamard" -> "circuit.ch(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "Phase" -> "circuit.cp(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "RX" -> "circuit.crx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "RY" -> "circuit.cry(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "RZ" -> "circuit.ct(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "√X" -> "circuit.cs(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "U" -> "circuit.cu(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "SWAP" -> "circuit.cswap(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "], qreg_q[" + qubits[2] + "])";
             case "NOT (Pauli-X)" -> {
                 if (qubits.length == 3) {
