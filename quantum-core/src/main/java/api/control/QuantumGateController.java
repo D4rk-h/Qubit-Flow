@@ -190,4 +190,145 @@ public class QuantumGateController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+
+    @PostMapping("/rx")
+    @Operation(summary = "Add RX gate")
+    public ResponseEntity<Map<String, Object>> addRX(@RequestParam int qubit) {
+        try {
+            quantumController.addRX(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "RX gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+
+
+    @PostMapping("/ry")
+    @Operation(summary = "Add RY gate")
+    public ResponseEntity<Map<String, Object>> addRY(@RequestParam int qubit) {
+        try {
+            quantumController.addRY(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "RY gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+
+
+    @PostMapping("/rz")
+    @Operation(summary = "Add RZ gate")
+    public ResponseEntity<Map<String, Object>> addRZ(@RequestParam int qubit) {
+        try {
+            quantumController.addRZ(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "RZ gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/u")
+    @Operation(summary = "Add U gate")
+    public ResponseEntity<Map<String, Object>> addU(@RequestParam int qubit) {
+        try {
+            quantumController.addU(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "U gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/phase")
+    @Operation(summary = "Add Phase gate")
+    public ResponseEntity<Map<String, Object>> addPhase(@RequestParam int qubit) {
+        try {
+            quantumController.addPhase(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Phase gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/sqrt-x")
+    @Operation(summary = "Add SX gate")
+    public ResponseEntity<Map<String, Object>> addSX(@RequestParam int qubit) {
+        try {
+            quantumController.addSX(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "SX gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+
+    @PostMapping("/t-dagger")
+    @Operation(summary = "Add T Dagger gate")
+    public ResponseEntity<Map<String, Object>> addTDagger(@RequestParam int qubit) {
+        try {
+            quantumController.addTDagger(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "T-Dagger gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/s-dagger")
+    @Operation(summary = "Add S Dagger gate")
+    public ResponseEntity<Map<String, Object>> addSDagger(@RequestParam int qubit) {
+        try {
+            quantumController.addSDagger(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "S-Dagger gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
 }
