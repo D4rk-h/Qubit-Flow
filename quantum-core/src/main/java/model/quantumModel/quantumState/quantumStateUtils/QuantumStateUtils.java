@@ -111,18 +111,6 @@ public class QuantumStateUtils {
         return gate.getMatrix().multiplyVector(state.getAmplitudes());
     }
 
-//    public static Complex[] applyGate(QuantumState state, QuantumGate gate) {
-//        int expectedMatrixSize = 1 << state.getNumQubits();
-//        if (gate.getMatrix().getRows() != expectedMatrixSize || gate.getMatrix().getCols() != expectedMatrixSize) {
-//            throw new IllegalArgumentException(
-//                    "Gate matrix size (" + gate.getMatrix().getRows() + "x" + gate.getMatrix().getCols() +
-//                            ") doesn't match state vector size (" + expectedMatrixSize + ")"
-//            );
-//        }
-//
-//        return gate.getMatrix().multiplyVector(state.getAmplitudes());
-//    }
-
     public static Complex[] applyBitFlip(Complex[] amplitudes, int targetQubit, int numQubits) {
         validateQubitIndex(targetQubit, numQubits);
         Complex[] newAmplitudes = new Complex[amplitudes.length];
@@ -217,13 +205,6 @@ public class QuantumStateUtils {
         return new QuantumState(newAmplitudes, state.getNumQubits());
     }
 
-    public static void collapseOptimized(int measuredState, Complex[] amplitudes) {
-        validateStateIndex(measuredState, amplitudes.length);
-        for (int i = 0; i < amplitudes.length; i++) {
-            amplitudes[i] = (i == measuredState) ? Complex.ONE : Complex.ZERO;
-        }
-    }
-
     public static double[] getProbabilities(Complex[] amplitudes) {
         String key = Arrays.hashCode(amplitudes) + "_probs";
         Double[] cached = probabilityCache.get(key);
@@ -234,11 +215,6 @@ public class QuantumStateUtils {
             probabilityCache.put(key, cached);
         }
         return Arrays.stream(cached).mapToDouble(Double::doubleValue).toArray();
-    }
-
-    public static double getProbability(Complex[] amplitudes, int state) {
-        validateStateIndex(state, amplitudes.length);
-        return amplitudes[state].magnitudeSquared();
     }
 
     public static double fidelity(QuantumState state1, QuantumState state2) {
@@ -276,22 +252,13 @@ public class QuantumStateUtils {
         return new QuantumState(newAmplitudes, newNumQubits);
     }
 
-    public static Complex getAmplitude(Complex[] amplitudes, int state) {
-        validateStateIndex(state, amplitudes.length);
-        return amplitudes[state];
-    }
-
-    public static Complex getAlpha(QuantumState state) {
-        if (state.getNumQubits() != 1) {
-            throw new IllegalStateException("getAlpha is only available for single qubit states");
-        }
+    public static Complex alpha(QuantumState state) {
+        if (state.getNumQubits() != 1) throw new IllegalStateException("getAlpha is only available for single qubit states");
         return state.getAmplitudes()[0];
     }
 
-    public static Complex getBeta(QuantumState state) {
-        if (state.getNumQubits() != 1) {
-            throw new IllegalStateException("getBeta is only available for single qubit states");
-        }
+    public static Complex beta(QuantumState state) {
+        if (state.getNumQubits() != 1) throw new IllegalStateException("getBeta is only available for single qubit states");
         return state.getAmplitudes()[1];
     }
 
@@ -300,7 +267,6 @@ public class QuantumStateUtils {
                 .filter(i -> amplitudes[i].magnitude() > Complex.EPSILON)
                 .mapToObj(i -> formatStateComponent(amplitudes[i], i, numQubits))
                 .collect(Collectors.joining(" + "));
-
         return result.isEmpty() ? "0" : result;
     }
 

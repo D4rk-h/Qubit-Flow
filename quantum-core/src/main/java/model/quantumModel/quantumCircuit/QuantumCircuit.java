@@ -48,6 +48,22 @@ public class QuantumCircuit {
 
     public void addHadamard(int qubit) {addGate(QuantumGates.hadamard(), qubit);}
 
+    public void addRX(int qubit) {addGate(QuantumGates.rx(), qubit);}
+
+    public void addRY(int qubit) {addGate(QuantumGates.ry(), qubit);}
+
+    public void addRZ(int qubit) {addGate(QuantumGates.rz(), qubit);}
+
+    public void addXRoot(int qubit) {addGate(QuantumGates.xRoot(), qubit);}
+
+    public void addU(int qubit) {addGate(QuantumGates.u(), qubit);}
+
+    public void addSDagger(int qubit) {addGate(QuantumGates.sDagger(), qubit);}
+
+    public void addPhase(int qubit) {addGate(QuantumGates.phase(), qubit);}
+
+    public void addTDagger(int qubit) {addGate(QuantumGates.tDagger(), qubit);}
+
     public void addNot(int qubit) {addGate(QuantumGates.not(), qubit);}
 
     public void addY(int qubit) {addGate(QuantumGates.y(), qubit);}
@@ -56,7 +72,7 @@ public class QuantumCircuit {
 
     public void addT(int qubit) {addGate(QuantumGates.t(), qubit);}
 
-    public void addPhase(int qubit) {addGate(QuantumGates.phase(), qubit);}
+    public void addS(int qubit) {addGate(QuantumGates.s(), qubit);}
 
     public void addCNOT(int control, int target) {addGate(QuantumGates.cnot(), control, target);}
 

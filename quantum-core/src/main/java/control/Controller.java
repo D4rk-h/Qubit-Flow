@@ -16,8 +16,6 @@ package control;
 
 import control.command.add.AddMeasurementCommand;
 import control.command.history.CommandHistory;
-import control.command.importer.CircuitImporter;
-import control.command.importer.ImportFormat;
 import control.command.ports.UndoableCommand;
 import control.command.add.AddGateCommand;
 import control.command.add.AddQubitCommand;
@@ -45,7 +43,6 @@ public class Controller {
     private QuantumState currentState;
     private final CommandHistory commandHistory;
     private final CircuitExporter exporter;
-    private final CircuitImporter importer;
     private final List<MeasurementResult> measurementResults;
 
     public Controller() {
@@ -57,7 +54,6 @@ public class Controller {
         this.currentState = QuantumState.zero(numQubits);
         this.commandHistory = new CommandHistory();
         this.exporter = new CircuitExporter();
-        this.importer = new CircuitImporter();
         this.measurementResults = new ArrayList<>();
         setupStateRestorer();
     }
@@ -79,6 +75,72 @@ public class Controller {
     public void addTGate(int qubit) {addGate("t", qubit);}
 
     public void addSGate(int qubit) {addGate("s", qubit);}
+
+    public void addTDagger(int qubit) {addGate("t dagger", qubit);}
+
+    public void addSDagger(int qubit) {addGate("s dagger", qubit);}
+
+    public void addRX(int qubit) {
+        GateType type = GateType.fromString("rx");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addRX(int qubit, double theta) {
+        GateType type = GateType.fromString("rx");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{theta}, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addRY(int qubit) {
+        GateType type = GateType.fromString("ry");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addRY(int qubit, double theta) {
+        GateType type = GateType.fromString("ry");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{theta}, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addRZ(int qubit) {
+        GateType type = GateType.fromString("rz");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addRZ(int qubit, double phi) {
+        GateType type = GateType.fromString("rz");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{phi}, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addU(int qubit) {
+        GateType type = GateType.fromString("u");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addU(int qubit, double theta, double phi, double lambda) {
+        GateType type = GateType.fromString("u");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{theta, phi, lambda}, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addPhase(int qubit) {
+        GateType type = GateType.fromString("p");
+        UndoableCommand command = new AddGateCommand(circuit, type, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addPhase(int qubit, double phi) {
+        GateType type = GateType.fromString("p");
+        UndoableCommand command = new AddGateCommand(circuit, type, new double[]{phi}, qubit);
+        commandHistory.executeCommand(command);
+    }
+
+    public void addSX(int qubit) {addGate("sx", qubit);}
 
     public void addCNOT(int control, int target) {
         ensureQubitExists(Math.max(control, target));
@@ -231,15 +293,6 @@ public class Controller {
     public void exportToQASM() {exportCircuit(ExportFormat.QASM);}
 
     public void exportToQISKIT() {exportCircuit(ExportFormat.QISKIT);}
-
-    public void importCircuit(String filename, ImportFormat format) {
-        importer.importCircuit(filename, format);
-        measurementResults.clear();
-    }
-
-    public void importFromQASM(String qasmFile) {importCircuit(qasmFile, ImportFormat.QASM);}
-
-    public void importFromQISKIT(String qiskitFile) {importCircuit(qiskitFile, ImportFormat.QISKIT);}
 
     public QuantumCircuit getCircuit() {return circuit;}
 

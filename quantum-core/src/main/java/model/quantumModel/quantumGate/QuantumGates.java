@@ -24,7 +24,16 @@ public class QuantumGates {
     public static QuantumGate z() { return new ZGate(); }
     public static QuantumGate y() { return new YGate(); }
     public static QuantumGate t() { return new TGate(); }
-    public static QuantumGate phase() { return new PhaseGate(); }
+    public static QuantumGate s() { return new SGate(); }
+    public static QuantumGate rx() {return new RXGate();}
+    public static QuantumGate ry() {return new RYGate();}
+    public static QuantumGate rz() {return new RZGate();}
+    public static QuantumGate sDagger() {return new SDagger();}
+    public static QuantumGate tDagger() {return new TDaggerGate();}
+    public static QuantumGate xRoot() {return new XRootGate();}
+    public static QuantumGate u() {return new UnitaryGate();}
+    public static QuantumGate phase() {return new Phase();}
+
     public static QuantumGate measurement() {return new MeasurementGate();}
 
     public static QuantumGate cnot() {return new QuantumGate(buildCNotMatrix(), 2, "CNOT");}
