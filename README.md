@@ -77,6 +77,7 @@ chmod +x test_qubit_flow_api.sh
 |------------------------|--------|---------------------------|
 | Hadamard               | 1      | Superposition gate        |
 | Pauli-X/Y/Z            | 1      | Bit/phase flip gates      |
+| RX/RY/RZ               | 1      | Rotation gates            |
 | √X                     | 1      | Partial X gate            |
 | P                      | 1      | Phase rotation gate       |
 | T, S & dagger variants | 1      | Phase rotation gates      |
