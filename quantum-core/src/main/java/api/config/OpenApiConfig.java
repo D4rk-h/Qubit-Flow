@@ -40,7 +40,7 @@ public class OpenApiConfig {
                 .url("https://www.apache.org/licenses/LICENSE-2.0");
         Info info = new Info()
                 .title("Qubit Flow REST API")
-                .version("1.0.0")
+                .version("1.2.0")
                 .contact(contact)
                 .description("REST API for quantum circuit simulation and manipulation. " +
                         "This API allows you to create quantum circuits, add quantum gates, " +
