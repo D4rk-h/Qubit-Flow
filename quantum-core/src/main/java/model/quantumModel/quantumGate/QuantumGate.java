@@ -15,11 +15,11 @@
 package model.quantumModel.quantumGate;
 
 import model.mathModel.Matrix;
-import model.quantumModel.quantumPort.QuantumGatePort;
-public class QuantumGate implements QuantumGatePort {
-    private final Matrix matrix;
+
+public class QuantumGate {
+    private Matrix matrix;
     private int numQubits;
-    private final String name;
+    private String name;
 
     public QuantumGate(Matrix matrix, int numQubits, String name) {
         this.matrix = matrix;
@@ -35,15 +35,19 @@ public class QuantumGate implements QuantumGatePort {
         }
     }
 
-    @Override
-    public QuantumGate expandGateDimension(int circuitDimension, int whichQubitsToApply) {
-        if (circuitDimension <= 0 || whichQubitsToApply <= 0) throw new IllegalArgumentException("Dimension and target qubits must have positive values");
-        Matrix result = this.getMatrix().extendToMultiQubitGate(circuitDimension, whichQubitsToApply);
-        return new QuantumGate(result, circuitDimension, this.name);
-    }
-
     public void setNumQubits(int numQubits) {this.numQubits = numQubits;}
     public Matrix getMatrix() { return matrix; }
+    public void updateMatrix(double angle){
+        this.matrix = this.matrix.multiply(angle);
+    }
     public String getName() { return name; }
     public int getNumQubits() { return numQubits; }
+
+    public void setUpdatedMatrix(Matrix matrix) {
+        this.matrix = matrix;
+    }
+
+    public void setUpdatedName(String name) {
+        this.name = name;
+    }
 }

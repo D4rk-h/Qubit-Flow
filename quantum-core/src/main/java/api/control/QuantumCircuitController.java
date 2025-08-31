@@ -91,14 +91,14 @@ public class QuantumCircuitController {
         return ResponseEntity.ok(summary);
     }
 
-    @PostMapping("/import/qasm")
-    @Operation(summary = "Import circuit from QASM")
-    public ResponseEntity<QuantumCircuitDto> importFromQASM(@RequestParam String filename) {
+    @PostMapping("/export/qiskit")
+    @Operation(summary = "Export circuit to QISKIT")
+    public ResponseEntity<String> exportToQISKIT() {
         try {
-            quantumController.importFromQASM(filename);
-            return ResponseEntity.ok(CircuitService.toDto(quantumController.getCircuit()));
+            quantumController.exportToQISKIT();
+            return ResponseEntity.ok("Circuit exported to QISKIT successfully");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Export failed");
         }
     }
 

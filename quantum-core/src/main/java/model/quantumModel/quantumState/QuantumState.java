@@ -211,19 +211,16 @@ public class QuantumState implements Cloneable {
 
     public double[] getProbabilities() {return QuantumStateUtils.getProbabilities(amplitudes);}
 
-    public double getProbability(int state) {return QuantumStateUtils.getProbability(amplitudes, state);}
-
     public double fidelity(QuantumState other) {return QuantumStateUtils.fidelity(this, other);}
 
     public double vonNeumannEntropy() {return QuantumStateUtils.vonNeumannEntropy(amplitudes);}
 
     public Complex[] getAmplitudes() { return amplitudes.clone(); }
-    public Complex getAmplitude(int state) { return QuantumStateUtils.getAmplitude(amplitudes, state); }
     public int getNumQubits() { return numQubits; }
     public int getDimension() { return amplitudes.length; }
     public boolean isNormalized() { return isNormalized; }
-    public Complex getAlpha() { return QuantumStateUtils.getAlpha(this); }
-    public Complex getBeta() { return QuantumStateUtils.getBeta(this); }
+    public Complex getAlpha() { return QuantumStateUtils.alpha(this); }
+    public Complex getBeta() { return QuantumStateUtils.beta(this); }
 
     @Override
     public QuantumState clone() {return new QuantumState(amplitudes, numQubits, true);}

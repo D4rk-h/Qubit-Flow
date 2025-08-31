@@ -190,4 +190,157 @@ public class QuantumGateController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+
+    @PostMapping("/rx")
+    @Operation(summary = "Add RX gate with optional angle parameter")
+    public ResponseEntity<Map<String, Object>> addRX(@RequestParam int qubit, @RequestParam(required = false) Double theta) {
+        try {
+            if (theta != null) quantumController.addRX(qubit, theta);
+            else quantumController.addRX(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "RX gate added to qubit=" + qubit +
+                    (theta != null ? " with θ=" + theta : " with default θ=π"));
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/ry")
+    @Operation(summary = "Add RY gate with optional angle parameter")
+    public ResponseEntity<Map<String, Object>> addRY(@RequestParam int qubit, @RequestParam(required = false) Double theta) {
+        try {
+            if (theta != null) quantumController.addRY(qubit, theta);
+            else quantumController.addRY(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "RY gate added to qubit=" + qubit +
+                    (theta != null ? " with theta=" + theta : " with default theta=π"));
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/rz")
+    @Operation(summary = "Add RZ gate with optional angle parameter")
+    public ResponseEntity<Map<String, Object>> addRZ(@RequestParam int qubit, @RequestParam(required = false) Double phi) {
+        try {
+            if (phi != null) quantumController.addRZ(qubit, phi);
+            else quantumController.addRZ(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "RZ gate added to qubit=" + qubit +
+                    (phi != null ? " with phi=" + phi : " with default phi=π"));
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/u")
+    @Operation(summary = "Add U gate with optional angle parameters")
+    public ResponseEntity<Map<String, Object>> addU(@RequestParam int qubit,
+            @RequestParam(required = false) Double theta,
+            @RequestParam(required = false) Double phi,
+            @RequestParam(required = false) Double lambda
+    ) {
+        try {
+            if (theta != null && phi != null && lambda != null) quantumController.addU(qubit, theta, phi, lambda);
+            else quantumController.addU(qubit);
+            Map<String, Object> response = new HashMap<>();
+            String angleInfo = (theta != null && phi != null && lambda != null)
+                    ? " with theta=" + theta + ", phi=" + phi + ", lambda=" + lambda
+                    : " with default angles (π, π, π)";
+            response.put("message", "U gate added to qubit=" + qubit + angleInfo);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/phase")
+    @Operation(summary = "Add Phase gate with optional angle parameter")
+    public ResponseEntity<Map<String, Object>> addPhase(@RequestParam int qubit, @RequestParam(required = false) Double phi) {
+        try {
+            if (phi != null) quantumController.addPhase(qubit, phi);
+            else quantumController.addPhase(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Phase gate added to qubit=" + qubit +
+                    (phi != null ? " with phi=" + phi : " with default phi=π/2"));
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/sqrt-x")
+    @Operation(summary = "Add SX gate")
+    public ResponseEntity<Map<String, Object>> addSX(@RequestParam int qubit) {
+        try {
+            quantumController.addSX(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "SX gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+
+    @PostMapping("/t-dagger")
+    @Operation(summary = "Add T Dagger gate")
+    public ResponseEntity<Map<String, Object>> addTDagger(@RequestParam int qubit) {
+        try {
+            quantumController.addTDagger(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "T-Dagger gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
+
+    @PostMapping("/s-dagger")
+    @Operation(summary = "Add S Dagger gate")
+    public ResponseEntity<Map<String, Object>> addSDagger(@RequestParam int qubit) {
+        try {
+            quantumController.addSDagger(qubit);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "S-Dagger gate added to qubit=" + qubit);
+            response.put("circuitDepth", quantumController.getCircuitDepth());
+            response.put("totalGates", quantumController.getTotalGateCount());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
 }

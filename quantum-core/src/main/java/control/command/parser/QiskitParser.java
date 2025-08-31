@@ -60,19 +60,33 @@ public class QiskitParser implements ImportParser, ExportParser {
                 }
                 if (indices.isEmpty()) {continue;}
                 switch (operation) {
-                    case "h":       circuit.addHadamard(indices.get(0)); break;
-                    case "x":       circuit.addNot(indices.get(0)); break;
-                    case "y":       circuit.addY(indices.get(0)); break;
-                    case "z":       circuit.addZ(indices.get(0)); break;
-                    case "s":       circuit.addPhase(indices.get(0)); break;
-                    case "t":       circuit.addT(indices.get(0)); break;
-                    case "cx":      circuit.addCNOT(indices.get(0), indices.get(1)); break;
-                    case "cy":      circuit.addControlled(QuantumGates.y(), indices.get(0), indices.get(1)); break;
-                    case "cz":      circuit.addControlled(QuantumGates.z(), indices.get(0), indices.get(1)); break;
-                    case "ch":      circuit.addControlled(QuantumGates.hadamard(), indices.get(0), indices.get(1)); break;
-                    case "swap":    circuit.addSwap(indices.get(0), indices.get(1)); break;
-                    case "ccx":     circuit.addToffoli(indices.get(0), indices.get(1), indices.get(2)); break;
-                    case "cswap":   circuit.addControlled(QuantumGates.swap(), indices.get(0), indices.get(1), indices.get(2)); break;
+                    case "h": circuit.addHadamard(indices.get(0)); break;
+                    case "x": circuit.addNot(indices.get(0)); break;
+                    case "y": circuit.addY(indices.get(0)); break;
+                    case "z": circuit.addZ(indices.get(0)); break;
+                    case "s": circuit.addS(indices.get(0)); break;
+                    case "t": circuit.addT(indices.get(0)); break;
+                    case "tdg": circuit.addTDagger(indices.get(0)); break;
+                    case "sdg": circuit.addSDagger(indices.get(0)); break;
+                    case "p": circuit.addPhase(indices.get(0)); break;
+                    case "rx": circuit.addRX(indices.get(0)); break;
+                    case "ry": circuit.addRY(indices.get(0)); break;
+                    case "rz": circuit.addRZ(indices.get(0)); break;
+                    case "sx": circuit.addXRoot(indices.get(0)); break;
+                    case "u": circuit.addU(indices.get(0)); break;
+                    case "cp": circuit.addControlled(QuantumGates.phase(), indices.get(0)); break;
+                    case "crx": circuit.addControlled(QuantumGates.rx(), indices.get(0)); break;
+                    case "cry": circuit.addControlled(QuantumGates.ry(), indices.get(0)); break;
+                    case "crz": circuit.addControlled(QuantumGates.rz(), indices.get(0)); break;
+                    case "csx": circuit.addControlled(QuantumGates.xRoot(), indices.get(0)); break;
+                    case "cu": circuit.addControlled(QuantumGates.u(), indices.get(0)); break;
+                    case "cx": circuit.addCNOT(indices.get(0), indices.get(1)); break;
+                    case "cy": circuit.addControlled(QuantumGates.y(), indices.get(0), indices.get(1)); break;
+                    case "cz": circuit.addControlled(QuantumGates.z(), indices.get(0), indices.get(1)); break;
+                    case "ch": circuit.addControlled(QuantumGates.hadamard(), indices.get(0), indices.get(1)); break;
+                    case "swap": circuit.addSwap(indices.get(0), indices.get(1)); break;
+                    case "ccx": circuit.addToffoli(indices.get(0), indices.get(1), indices.get(2)); break;
+                    case "cswap": circuit.addControlled(QuantumGates.swap(), indices.get(0), indices.get(1), indices.get(2)); break;
                     case "measure":
                         circuit.addMeasurement(indices.get(0), indices.get(1));
                         break;
@@ -134,8 +148,16 @@ public class QiskitParser implements ImportParser, ExportParser {
             case "NOT (Pauli-X)" -> "circuit.x(qreg_q[" + qubits[0] + "])";
             case "Pauli-Y" -> "circuit.y(qreg_q[" + qubits[0] + "])";
             case "Pauli-Z" -> "circuit.z(qreg_q[" + qubits[0] + "])";
-            case "Phase" -> "circuit.s(qreg_q[" + qubits[0] + "])";
+            case "S" -> "circuit.s(qreg_q[" + qubits[0] + "])";
             case "T (π/8)" -> "circuit.t(qreg_q[" + qubits[0] + "])";
+            case "Phase" -> "circuit.p(qreg_q[" + qubits[0] + "])";
+            case "T Dagger" -> "circuit.tdg(qreg_q[" + qubits[0] + "])";
+            case "S Dagger" -> "circuit.sdg(qreg_q[" + qubits[0] + "])";
+            case "RX" -> "circuit.rx(qreg_q[" + qubits[0] + "])";
+            case "RY" -> "circuit.ry(qreg_q[" + qubits[0] + "])";
+            case "RZ" -> "circuit.t(qreg_rz[" + qubits[0] + "])";
+            case "√X" -> "circuit.s(qreg_sx[" + qubits[0] + "])";
+            case "U" -> "circuit.u(qreg_q[" + qubits[0] + "])";
             case "CNOT" -> "circuit.cx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "SWAP" -> "circuit.swap(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "Toffoli" -> "circuit.ccx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "], qreg_q[" + qubits[2] + "])";
@@ -156,6 +178,12 @@ public class QiskitParser implements ImportParser, ExportParser {
             case "Pauli-Y" -> "circuit.cy(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "Pauli-Z" -> "circuit.cz(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "Hadamard" -> "circuit.ch(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "Phase" -> "circuit.cp(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "RX" -> "circuit.crx(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "RY" -> "circuit.cry(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "RZ" -> "circuit.ct(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "√X" -> "circuit.cs(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
+            case "U" -> "circuit.cu(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "])";
             case "SWAP" -> "circuit.cswap(qreg_q[" + qubits[0] + "], qreg_q[" + qubits[1] + "], qreg_q[" + qubits[2] + "])";
             case "NOT (Pauli-X)" -> {
                 if (qubits.length == 3) {
