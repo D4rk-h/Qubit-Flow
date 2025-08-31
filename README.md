@@ -55,6 +55,7 @@ POST /api/quantum/circuit/create?qubits=3
 # Add quantum gates
 POST /api/quantum/gates/hadamard?qubit=0
 POST /api/quantum/gates/cnot?control=0&target=1
+POST /api/quantum/gates/rx?qubit=0?theta=2.14
 
 # Execute simulation
 POST /api/quantum/simulate/execute
