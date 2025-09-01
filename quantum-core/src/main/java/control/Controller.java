@@ -25,6 +25,7 @@ import control.command.remover.RemoveGateCommand;
 import control.command.remover.RemoveQubitCommand;
 import control.command.gate.GateType;
 import control.command.simulate.SimulateCommand;
+import model.mathModel.Matrix;
 import model.quantumModel.quantumCircuit.QuantumCircuit;
 import model.quantumModel.quantumGate.GateOperation;
 import model.quantumModel.quantumGate.MeasurementOperation;
@@ -309,6 +310,10 @@ public class Controller {
                 .flatMap(layer -> layer.getOperations().stream())
                 .filter(op -> op instanceof MeasurementOperation)
                 .count();
+    }
+
+    public Matrix getDensityMatrix() {
+        return this.currentState.densityMatrix();
     }
 
     public String getCircuitInfo() {
