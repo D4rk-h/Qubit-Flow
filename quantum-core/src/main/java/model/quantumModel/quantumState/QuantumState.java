@@ -15,6 +15,7 @@
 package model.quantumModel.quantumState;
 
 import model.mathModel.Complex;
+import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.quantumStateUtils.MeasurementResult;
 import model.quantumModel.quantumState.quantumStateUtils.QuantumStateUtils;
@@ -197,6 +198,10 @@ public class QuantumState implements Cloneable {
     public QuantumState normalize() {
         if (isNormalized) return this;
         return new QuantumState(QuantumStateUtils.normalize(amplitudes), numQubits, true);
+    }
+
+    public Matrix densityMatrix() {
+        return QuantumStateUtils.findDensityMatrix(this.amplitudes);
     }
 
     public QuantumState tensorProduct(QuantumState other) {return QuantumStateUtils.tensorProduct(this, other);}
