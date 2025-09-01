@@ -14,6 +14,11 @@
 
 package model.mathModel;
 
+import model.mathModel.qpca.EigenDecomposition;
+import model.mathModel.qpca.GivensRotation;
+import model.mathModel.qpca.QRResult;
+import model.mathModel.qpca.SVDResult;
+
 public class Matrix {
     private final int rows;
     private final int cols;
