@@ -74,10 +74,25 @@ public class Matrix {
         return result;
     }
 
-    public Matrix multiply(Matrix other) {
-        if (this.cols != other.rows){
-            throw new IllegalArgumentException("Cannot Multiply Matrices of distinct dimensions");
+    public Matrix exponential() { // Taylor series (small matrices)
+        if (!isSquared()) throw new IllegalArgumentException("Matrix should be squared");
+        Matrix result = createIdentityMatrix(this.rows);
+        Matrix term = createIdentityMatrix(this.rows);
+        int maxIter = 49;
+        double tolerance = 1e-12;
+        for (int k=0;k<maxIter;k++) { // term= Aˆk / k!
+            term = term.multiply(this).multiply(1.0/k);
+            Matrix oldResult = result.copy();
+            result = result.add(term);
+            if (matrixNorm(result.sub(oldResult)) < tolerance) break;
         }
+        return result;
+    }
+
+    public Matrix exponential(Complex scalar) {return this.multiply(scalar).exponential();}
+
+    public Matrix multiply(Matrix other) {
+        if (this.cols != other.rows)throw new IllegalArgumentException("Cannot Multiply Matrices of distinct dimensions");
         Matrix result = new Matrix(this.rows, other.cols);
         for (int i=0;i<this.rows;i++){
             for (int j=0;j<other.cols;j++){
@@ -92,9 +107,7 @@ public class Matrix {
     }
 
     public Matrix tensorProduct(Matrix other) {
-        if (other == null) {
-            throw new IllegalArgumentException("Other matrix cannot be null");
-        }
+        if (other == null) throw new IllegalArgumentException("Other matrix cannot be null");
         int newRows = this.rows * other.rows;
         int newCols = this.cols * other.cols;
         Matrix result = new Matrix(newRows, newCols);
@@ -440,5 +453,13 @@ public class Matrix {
             return this.getRows();
         }
         return -1;
+    }
+
+    private double matrixNorm(Matrix matrix) { // Frobenius normalization of M
+        double sum = 0;
+        for (int i = 0; i < matrix.rows; i++) {
+            for (int j = 0; j < matrix.cols; j++) sum += matrix.get(i, j).magnitudeSquared();
+        }
+        return Math.sqrt(sum);
     }
 }
