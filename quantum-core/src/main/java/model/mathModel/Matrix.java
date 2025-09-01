@@ -84,7 +84,7 @@ public class Matrix {
             term = term.multiply(this).multiply(1.0/k);
             Matrix oldResult = result.copy();
             result = result.add(term);
-            if (matrixNorm(result.sub(oldResult)) < tolerance) break;
+            if (frobeniusNorm(result.sub(oldResult)) < tolerance) break;
         }
         return result;
     }
@@ -309,6 +309,245 @@ public class Matrix {
         return result;
     }
 
+    public double conditionNumber() {
+        SVDResult svd = singularValueDecomposition();
+        Complex[] singularValues = svd.singularValues();
+        if (singularValues.length == 0) throw new IllegalStateException("No singular values found");
+        double maxSV = 0;
+        double minSV = Double.MAX_VALUE;
+        for (Complex sv : singularValues) {
+            double magnitude = sv.magnitude();
+            maxSV = Math.max(maxSV, magnitude);
+            if (magnitude > 1e-15) minSV = Math.min(minSV, magnitude);
+        }
+        if (minSV == Double.MAX_VALUE || minSV < 1e-15) return Double.POSITIVE_INFINITY;
+        return maxSV / minSV;
+    }
+
+    public SVDResult singularValueDecomposition() { //Golub-Reinsch algorithm
+        int m = this.rows;
+        int n = this.cols;
+        Matrix A = this.copy();
+        Matrix U = createIdentityMatrix(m);
+        Matrix V = createIdentityMatrix(n);
+        bidiagonalize(A, U, V);
+        diagonalizeBidiagonal(A, U, V);
+        Complex[] singularValues = extractAndSortSingularValues(A, U, V);
+        return new SVDResult(U, singularValues, V);
+    }
+
+    private void bidiagonalize(Matrix A, Matrix U, Matrix V) {
+        int m = A.rows;
+        int n = A.cols;
+        int minDim = Math.min(m, n);
+        for (int k = 0; k < minDim; k++) {
+            if (k < m - 1) {
+                Complex[] x = new Complex[m - k];
+                for (int i = k; i < m; i++) x[i - k] = A.get(i, k);
+                Complex[] v = computeHouseholderVector(x);
+                if (v != null) {
+                    applyHouseholderLeft(A, v, k, k);
+                    applyHouseholderLeft(U, v, k, 0);
+                }
+            }
+            if (k < n - 2) {
+                Complex[] y = new Complex[n - k - 1];
+                for (int j = k + 1; j < n; j++) {
+                    y[j - k - 1] = A.get(k, j);
+                }
+                Complex[] v = computeHouseholderVector(y);
+                if (v != null) {
+                    applyHouseholderRight(A, v, k + 1, k);
+                    applyHouseholderRight(V, v, k + 1, 0);
+                }
+            }
+        }
+    }
+
+    private Complex[] computeHouseholderVector(Complex[] x) {
+        if (x.length <= 1) return null;
+        Complex alpha = x[0];
+        double norm = 0;
+        for (Complex c : x) norm += c.magnitudeSquared();
+        norm = Math.sqrt(norm);
+        if (norm < 1e-15) return null;
+        Complex sign = alpha.magnitude() > 1e-15 ?
+                new Complex(alpha.getRealPart() / alpha.magnitude(), alpha.getImaginaryPart() / alpha.magnitude()) :
+                Complex.ONE;
+        Complex u1 = alpha.add(sign.scale(norm));
+        Complex[] v = new Complex[x.length];
+        v[0] = u1;
+        for (int i = 1; i < x.length; i++) v[i] = x[i];
+        double vNorm = 0;
+        for (Complex c : v) vNorm += c.magnitudeSquared();
+        vNorm = Math.sqrt(vNorm);
+        if (vNorm < 1e-15) return null;
+        for (int i = 0; i < v.length; i++) v[i] = v[i].scale(1.0 / vNorm);
+        return v;
+    }
+
+    private void applyHouseholderLeft(Matrix A, Complex[] v, int startRow, int startCol) {
+        int m = A.rows;
+        int n = A.cols;
+        for (int j = startCol; j < n; j++) {
+            Complex dot = Complex.ZERO;
+            for (int i = 0; i < v.length && startRow + i < m; i++) {
+                dot = dot.add(v[i].conjugate().multiply(A.get(startRow + i, j)));
+            }
+            Complex factor = dot.scale(2.0);
+            for (int i = 0; i < v.length && startRow + i < m; i++) {
+                Complex oldValue = A.get(startRow + i, j);
+                Complex newValue = oldValue.subtract(v[i].multiply(factor));
+                A.set(startRow + i, j, newValue);
+            }
+        }
+    }
+
+    private void applyHouseholderRight(Matrix A, Complex[] v, int startCol, int startRow) {
+        int m = A.rows;
+        int n = A.cols;
+        for (int i = startRow; i < m; i++) {
+            Complex dot = Complex.ZERO;
+            for (int j = 0; j < v.length && startCol + j < n; j++) {
+                dot = dot.add(A.get(i, startCol + j).multiply(v[j]));
+            }
+            Complex factor = dot.scale(2.0);
+            for (int j = 0; j < v.length && startCol + j < n; j++) {
+                Complex oldValue = A.get(i, startCol + j);
+                Complex newValue = oldValue.subtract(factor.multiply(v[j].conjugate()));
+                A.set(i, startCol + j, newValue);
+            }
+        }
+    }
+
+    private void diagonalizeBidiagonal(Matrix B, Matrix U, Matrix V) {
+        int n = Math.min(B.rows, B.cols);
+        double tolerance = 1e-15;
+        int maxIterations = 100;
+        for (int iter = 0; iter < maxIterations; iter++) {
+            boolean converged = true;
+            for (int i = 0; i < n - 1; i++) {
+                if (i < B.cols - 1 && B.get(i, i + 1).magnitude() > tolerance) {
+                    converged = false;
+                    break;
+                }
+                if (i + 1 < B.rows && B.get(i + 1, i).magnitude() > tolerance) {
+                    converged = false;
+                    break;
+                }
+            }
+            if (converged) break;
+            qrIterationBidiagonal(B, U, V);
+        }
+    }
+
+    private void qrIterationBidiagonal(Matrix B, Matrix U, Matrix V) {
+        int n = Math.min(B.rows, B.cols);
+        for (int i = 0; i < n - 1; i++) {
+            Complex a = B.get(i, i);
+            Complex b = (i < B.cols - 1) ? B.get(i, i + 1) : Complex.ZERO;
+            Complex c = (i + 1 < B.rows) ? B.get(i + 1, i) : Complex.ZERO;
+            Complex d = (i + 1 < B.rows && i + 1 < B.cols) ? B.get(i + 1, i + 1) : Complex.ZERO;
+            if (b.magnitude() > 1e-15) {
+                GivensRotation rotation = computeGivensRotation(a, b);
+                applyGivensRight(B, rotation, i, i + 1);
+                applyGivensRight(V, rotation, i, i + 1);
+            }
+            if (c.magnitude() > 1e-15) {
+                GivensRotation rotation = computeGivensRotation(a, c);
+                applyGivensLeft(B, rotation, i, i + 1);
+                applyGivensLeft(U, rotation, i, i + 1);
+            }
+        }
+    }
+
+    private GivensRotation computeGivensRotation(Complex a, Complex b) {
+        if (b.magnitude() < 1e-15) return new GivensRotation(Complex.ONE, Complex.ZERO);
+        if (a.magnitude() < 1e-15) return new GivensRotation(Complex.ZERO, Complex.ONE);
+        Complex r = Complex.ZERO;
+        for (Complex x : new Complex[]{a, b}) r = r.add(new Complex(x.magnitudeSquared(), 0));
+        r = new Complex(Math.sqrt(r.getRealPart()), 0);
+        Complex cos = a.divide(r);
+        Complex sin = b.divide(r);
+        return new GivensRotation(cos, sin);
+    }
+
+    private void applyGivensLeft(Matrix A, GivensRotation rotation, int i, int j) {
+        int n = A.cols;
+        for (int k = 0; k < n; k++) {
+            Complex ai = A.get(i, k);
+            Complex aj = A.get(j, k);
+            A.set(i, k, rotation.cos().multiply(ai).add(rotation.sin().multiply(aj)));
+            A.set(j, k, rotation.cos().multiply(aj).subtract(rotation.sin().conjugate().multiply(ai)));
+        }
+    }
+
+    private void applyGivensRight(Matrix A, GivensRotation rotation, int i, int j) {
+        int m = A.rows;
+        for (int k = 0; k < m; k++) {
+            Complex ai = A.get(k, i);
+            Complex aj = A.get(k, j);
+            A.set(k, i, rotation.cos().multiply(ai).add(rotation.sin().multiply(aj)));
+            A.set(k, j, rotation.cos().multiply(aj).subtract(rotation.sin().conjugate().multiply(ai)));
+        }
+    }
+
+    private Complex[] extractAndSortSingularValues(Matrix B, Matrix U, Matrix V) {
+        int n = Math.min(B.rows, B.cols);
+        Complex[] singularValues = new Complex[n];
+        for (int i = 0; i < n; i++) {
+            double sv = Math.abs(B.get(i, i).getRealPart());
+            singularValues[i] = new Complex(sv, 0);
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (singularValues[i].getRealPart() < singularValues[j].getRealPart()) {
+                    // Swap singular values
+                    Complex temp = singularValues[i];
+                    singularValues[i] = singularValues[j];
+                    singularValues[j] = temp;
+                    swapColumns(U, i, j);
+                    swapColumns(V, i, j);
+                }
+            }
+        }
+        return singularValues;
+    }
+
+    private void swapColumns(Matrix matrix, int col1, int col2) {
+        for (int i = 0; i < matrix.rows; i++) {
+            Complex temp = matrix.get(i, col1);
+            matrix.set(i, col1, matrix.get(i, col2));
+            matrix.set(i, col2, temp);
+        }
+    }
+
+    private Matrix computeU(Matrix A, Matrix V, Complex[] singularValues) {
+        int m = A.rows;
+        int n = Math.min(A.cols, singularValues.length);
+        Matrix U = new Matrix(m, n);
+        for (int j = 0; j < n; j++) {
+            if (singularValues[j].magnitude() > 1e-15) {
+                Complex[] v_j = new Complex[A.cols];
+                for (int i = 0; i < A.cols; i++) v_j[i] = V.get(i, j);
+                Complex[] u_j = A.multiplyVector(v_j);
+                Complex invSigma = Complex.ONE.divide(singularValues[j]);
+                for (int i = 0; i < m; i++) U.set(i, j, u_j[i].multiply(invSigma));
+            }
+        }
+        return U;
+    }
+
+    public double conditionNumberEstimate() {
+        if (!isSquared()) throw new IllegalArgumentException("Condition number estimation requires square matrix");
+        double normA = frobeniusNorm();
+        Matrix inv;
+        try {inv = this.inverse();
+        } catch (IllegalStateException e) {return Double.POSITIVE_INFINITY;}
+        double normInvA = inv.frobeniusNorm();
+        return normA * normInvA;
+    }
+
     public Complex determinant() {
         if (rows != cols) {throw new IllegalStateException("Determinant can only be calculated for square matrices. Got " + rows + "x" + cols);}
         if (rows == 0) {return Complex.ONE;}
@@ -317,7 +556,7 @@ public class Matrix {
 
     private Complex calculateDeterminant(Complex[][] matrixData) {
         int n = matrixData.length;
-        if (n == 1) {return matrixData[0][0];}
+        if (n == 1) return matrixData[0][0];
         if (n == 2) {
             Complex term1 = matrixData[0][0].multiply(matrixData[1][1]);
             Complex term2 = matrixData[0][1].multiply(matrixData[1][0]);
@@ -475,12 +714,44 @@ public class Matrix {
         return -1;
     }
 
-    private double matrixNorm(Matrix matrix) { // Frobenius normalization of M
+    private double frobeniusNorm(Matrix matrix) { // Frobenius normalization of M
         double sum = 0;
         for (int i = 0; i < matrix.rows; i++) {
             for (int j = 0; j < matrix.cols; j++) sum += matrix.get(i, j).magnitudeSquared();
         }
         return Math.sqrt(sum);
+    }
+
+    public double frobeniusNorm() {
+        double sum = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                sum += this.get(i, j).magnitudeSquared();
+            }
+        }
+        return Math.sqrt(sum);
+    }
+
+    public double spectralNorm() {
+        SVDResult svd = singularValueDecomposition();
+        Complex[] singularValues = svd.singularValues();
+        double maxSV = 0;
+        for (Complex sv : singularValues) maxSV = Math.max(maxSV, sv.magnitude());
+        return maxSV;
+    }
+
+    public boolean isWellConditioned() {
+        double cond = conditionNumber();
+        return cond < 1e12;
+    }
+
+    public int rank() {
+        SVDResult svd = singularValueDecomposition();
+        Complex[] singularValues = svd.singularValues();
+        int rank = 0;
+        double tolerance = 1e-12;
+        for (Complex sv : singularValues) if (sv.magnitude() > tolerance) rank++;
+        return rank;
     }
 
     public boolean isHermitian() {
