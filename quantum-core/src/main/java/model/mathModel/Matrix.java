@@ -91,6 +91,26 @@ public class Matrix {
 
     public Matrix exponential(Complex scalar) {return this.multiply(scalar).exponential();}
 
+    public Matrix exponentialHermitian() {
+        if (!isHermitian()) throw new IllegalArgumentException("Matrix should be Hermitian");
+        EigenDecomposition eigen = this.eigenDecomposition();
+        Matrix Q = eigen.getEigenvectors();
+        Complex[] eigenvalues = eigen.getEigenvalues();
+        Matrix expLambda = new Matrix(this.rows, this.cols);
+        for (int i = 0;i<this.rows;i++) {
+            Complex expEigen = complexExponential(eigenvalues[i]);
+            expLambda.set(i, i, expEigen);
+        }
+        return Q.multiply(expLambda).multiply(Q.adjoint());
+    }
+
+    private Complex complexExponential(Complex z) {
+        double expReal = Math.exp(z.getRealPart());
+        double cosImag = Math.cos(z.getImaginaryPart());
+        double sinImag = Math.sin(z.getImaginaryPart());
+        return new Complex(expReal * cosImag, expReal * sinImag);
+    }
+
     public Matrix multiply(Matrix other) {
         if (this.cols != other.rows)throw new IllegalArgumentException("Cannot Multiply Matrices of distinct dimensions");
         Matrix result = new Matrix(this.rows, other.cols);
@@ -461,5 +481,22 @@ public class Matrix {
             for (int j = 0; j < matrix.cols; j++) sum += matrix.get(i, j).magnitudeSquared();
         }
         return Math.sqrt(sum);
+    }
+
+    public boolean isHermitian() {
+        if (!isSquared()) return false;
+        Matrix adjoint = this.adjoint();
+        double tolerance = 1e-10;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (!this.get(i, j).isApproximatelyEqual(adjoint.get(i, j), tolerance)) return false;
+            }
+        }
+        return true;
+    }
+
+    public Matrix timeEvolution(double time) { //quantum time evolution under Schrödinger equ
+        Complex imaginaryTime = new Complex(0, -time);
+        return this.multiply(imaginaryTime).exponentialHermitian();
     }
 }
