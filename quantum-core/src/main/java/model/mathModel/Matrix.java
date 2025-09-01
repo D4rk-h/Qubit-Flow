@@ -208,6 +208,62 @@ public class Matrix {
         return result;
     }
 
+    public EigenDecomposition eigenDecomposition() {
+        if (!isSquared()) throw new IllegalArgumentException("Eigendecomposition requires square matrix");
+        int n = this.rows;
+        Matrix A = this.copy();
+        Matrix Q_total = createIdentityMatrix(n);
+        for (int iter = 0; iter < 100; iter++) {
+            QRResult qr = A.qrDecomposition();
+            A = qr.R().multiply(qr.Q());
+            Q_total = Q_total.multiply(qr.Q());
+            if (isUpperTriangular(A, 1e-10)) break;
+        }
+        Complex[] eigenvalues = new Complex[n];
+        for (int i = 0; i < n; i++) {
+            eigenvalues[i] = A.get(i, i);
+        }
+        return new EigenDecomposition(eigenvalues, Q_total);
+    }
+
+    public QRResult qrDecomposition() {
+        int m = this.rows;
+        int n = this.cols;
+        Matrix Q = new Matrix(m, n);
+        Matrix R = new Matrix(n, n);
+        for (int j = 0; j < n; j++) {
+            Complex[] col = new Complex[m];
+            for (int i = 0; i < m; i++) col[i] = this.get(i, j);
+            for (int k = 0; k < j; k++) {
+                Complex dot = Complex.ZERO;
+                for (int i = 0; i < m; i++) {
+                    dot = dot.add(Q.get(i, k).conjugate().multiply(col[i]));
+                }
+                R.set(k, j, dot);
+                for (int i = 0; i < m; i++) {
+                    col[i] = col[i].subtract(Q.get(i, k).multiply(dot));
+                }
+            }
+            double norm = 0;
+            for (Complex c : col) norm += c.magnitudeSquared();
+            norm = Math.sqrt(norm);
+            R.set(j, j, new Complex(norm, 0));
+            for (int i = 0; i < m; i++) Q.set(i, j, col[i].scale(1.0 / norm));
+        }
+        return new QRResult(Q, R);
+    }
+
+    private boolean isUpperTriangular(Matrix matrix, double tolerance) {
+        for (int i = 1; i < matrix.rows; i++) {
+            for (int j = 0; j < i; j++) {
+                if (matrix.get(i, j).magnitude() > tolerance) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public Matrix conjugate() {
         Matrix result = new Matrix(this.rows, this.cols);
         if (this.data.length > 0){
