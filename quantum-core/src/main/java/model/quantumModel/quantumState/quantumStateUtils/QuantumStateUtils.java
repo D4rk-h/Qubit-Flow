@@ -120,7 +120,7 @@ public class QuantumStateUtils {
     }
 
     public static Complex[] applyGate(QuantumState state, QuantumGate gate) {
-        if (gate.getNumQubits() != state.getNumQubits()) throw new IllegalArgumentException("State and gate number of qubits must be equal");
+        if (gate.getMatrix().getRows() != state.getNumQubits()) throw new IllegalArgumentException("State and gate number of qubits must be equal");
         return gate.getMatrix().multiplyVector(state.getAmplitudes());
     }
 

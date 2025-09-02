@@ -152,15 +152,15 @@ public class Matrix {
         return result;
     }
 
-    public Matrix extendToMultiQubitGate(int totalQubits, int targetQubit) {
+    public Matrix extendToMultiQubitGate(int totalQubits, int... targetQubit) {
         if (totalQubits < 1) throw new IllegalArgumentException("Total qubits must be at least 1");
-        if (targetQubit < 0 || targetQubit >= totalQubits) throw new IllegalArgumentException("Target qubit must be between 0 and " + (totalQubits - 1));
+        if (targetQubit[0] < 0 || targetQubit.length >= totalQubits) throw new IllegalArgumentException("Target qubit must be between 0 and " + (totalQubits - 1));
         if (!isSquared() || !isPowerOfTwo(this.rows)) throw new IllegalArgumentException("Gate must be square and dimension must be power of 2");
         int gateQubits = (int) (Math.log(this.rows) / Math.log(2));
-        if (targetQubit + gateQubits > totalQubits) throw new IllegalArgumentException("Gate doesn't fit at target position");
+        if (targetQubit.length + gateQubits > totalQubits) throw new IllegalArgumentException("Gate doesn't fit at target position");
         Matrix result = createIdentityMatrix(1);
         for (int i = 0; i < totalQubits; i += gateQubits) {
-            if (i == targetQubit) {
+            if (i == targetQubit[i]) {
                 result = result.tensorProduct(this);
                 i += gateQubits - 1;
             } else {

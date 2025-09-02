@@ -6,7 +6,7 @@ import model.quantumModel.quantumGate.QuantumGate;
 
 public class TDaggerGate extends QuantumGate {
     public TDaggerGate() {
-        super(buildTDagger(), 1, "T Dagger (-π/8)");
+        super(buildTDagger(), 1, "T Dagger");
     }
 
     private static Matrix buildTDagger() {

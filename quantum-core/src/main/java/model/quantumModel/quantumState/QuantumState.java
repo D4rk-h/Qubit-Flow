@@ -121,11 +121,122 @@ public class QuantumState implements Cloneable {
         }
     }
 
-    public void applyPhase(int targetQubit) {
+    public void applyS(int targetQubit) {
         QuantumStateUtils.validateQubitIndex(targetQubit, this.numQubits);
         int mask = 1 << targetQubit;
         for (int i = 0; i < amplitudes.length; i++) {
             if ((i & mask) != 0) amplitudes[i] = amplitudes[i].multiply(Complex.I);
+        }
+    }
+
+    public void applySDagger(int qubit) {
+        QuantumStateUtils.validateQubitIndex(qubit, this.numQubits);
+        int mask = 1 << qubit;
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & mask) != 0) {
+                amplitudes[i] = amplitudes[i].multiply(Complex.MINUS_I);
+            }
+        }
+    }
+
+    public void applyTDagger(int qubit) {
+        QuantumStateUtils.validateQubitIndex(qubit, this.numQubits);
+        int mask = 1 << qubit;
+        Complex tDaggerPhase = Complex.exponential(-Math.PI / 4);
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & mask) != 0) {
+                amplitudes[i] = amplitudes[i].multiply(tDaggerPhase);
+            }
+        }
+    }
+
+    public void applyXRoot(int qubit) {
+        QuantumStateUtils.validateQubitIndex(qubit, this.numQubits);
+        int mask = 1 << qubit;
+        Complex onePlusI = new Complex(0.5, 0.5);
+        Complex oneMinusI = new Complex(0.5, -0.5);
+        for (int i = 0; i < amplitudes.length; i += 2 * mask) {
+            for (int j = 0; j < mask; j++) {
+                Complex a0 = amplitudes[i + j];
+                Complex a1 = amplitudes[i + j + mask];
+                amplitudes[i + j] = a0.multiply(onePlusI).add(a1.multiply(oneMinusI));
+                amplitudes[i + j + mask] = a0.multiply(oneMinusI).add(a1.multiply(onePlusI));
+            }
+        }
+    }
+
+    public void applyUnitary(int qubit, double theta, double phi, double lambda) {
+        QuantumStateUtils.validateQubitIndex(qubit, this.numQubits);
+        int mask = 1 << qubit;
+        double cosHalfTheta = Math.cos(theta / 2);
+        double sinHalfTheta = Math.sin(theta / 2);
+        Complex u00 = new Complex(cosHalfTheta, 0);
+        Complex u01 = Complex.exponential(lambda).multiply(new Complex(-sinHalfTheta, 0));
+        Complex u10 = Complex.exponential(phi).multiply(new Complex(sinHalfTheta, 0));
+        Complex u11 = Complex.exponential(phi + lambda).multiply(new Complex(cosHalfTheta, 0));
+        for (int i = 0; i < amplitudes.length; i += 2 * mask) {
+            for (int j = 0; j < mask; j++) {
+                Complex a0 = amplitudes[i + j];
+                Complex a1 = amplitudes[i + j + mask];
+                amplitudes[i + j] = u00.multiply(a0).add(u01.multiply(a1));
+                amplitudes[i + j + mask] = u10.multiply(a0).add(u11.multiply(a1));
+            }
+        }
+    }
+
+    public void applyRZ(int qubit, double phi) {
+        QuantumStateUtils.validateQubitIndex(qubit, this.numQubits);
+        int mask = 1 << qubit;
+        Complex phase0 = Complex.exponential(-phi / 2);
+        Complex phase1 = Complex.exponential(phi / 2);
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & mask) == 0) {
+                amplitudes[i] = amplitudes[i].multiply(phase0);
+            } else {
+                amplitudes[i] = amplitudes[i].multiply(phase1);
+            }
+        }
+    }
+
+    public void applyRY(int qubit, double theta) {
+        QuantumStateUtils.validateQubitIndex(qubit, this.numQubits);
+        int mask = 1 << qubit;
+        double cosHalfTheta = Math.cos(theta / 2);
+        double sinHalfTheta = Math.sin(theta / 2);
+        for (int i = 0; i < amplitudes.length; i += 2 * mask) {
+            for (int j = 0; j < mask; j++) {
+                Complex a0 = amplitudes[i + j];
+                Complex a1 = amplitudes[i + j + mask];
+                amplitudes[i + j] = a0.scale(cosHalfTheta).subtract(a1.scale(sinHalfTheta));
+                amplitudes[i + j + mask] = a0.scale(sinHalfTheta).add(a1.scale(cosHalfTheta));
+            }
+        }
+    }
+
+    public void applyRX(int qubit, double theta) {
+        QuantumStateUtils.validateQubitIndex(qubit, this.numQubits);
+        int mask = 1 << qubit;
+        double cosHalfTheta = Math.cos(theta / 2);
+        double sinHalfTheta = Math.sin(theta / 2);
+        Complex minusISin = new Complex(0, -sinHalfTheta);
+        for (int i = 0; i < amplitudes.length; i += 2 * mask) {
+            for (int j = 0; j < mask; j++) {
+                Complex a0 = amplitudes[i + j];
+                Complex a1 = amplitudes[i + j + mask];
+                amplitudes[i + j] = a0.scale(cosHalfTheta).add(a1.multiply(minusISin));
+                amplitudes[i + j + mask] = a0.multiply(minusISin).add(a1.scale(cosHalfTheta));
+            }
+        }
+    }
+
+    public void applyPhaseShift(int qubit, double phi) {
+        QuantumStateUtils.validateQubitIndex(qubit, this.numQubits);
+        int mask = 1 << qubit;
+        Complex phase = Complex.exponential(phi);
+        for (int i = 0; i < amplitudes.length; i++) {
+            if ((i & mask) != 0) {
+                amplitudes[i] = amplitudes[i].multiply(phase);
+            }
         }
     }
 

@@ -312,10 +312,6 @@ public class Controller {
                 .count();
     }
 
-    public Matrix getDensityMatrix() {
-        return this.currentState.densityMatrix();
-    }
-
     public String getCircuitInfo() {
         StringBuilder info = new StringBuilder();
         info.append("Quantum Circuit Information: ");
