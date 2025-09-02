@@ -14,6 +14,8 @@
 
 package model.quantumModel.quantumGate;
 
+import model.mathModel.Complex;
+import model.mathModel.Matrix;
 import model.quantumModel.quantumState.QuantumState;
 
 import java.util.Arrays;
@@ -31,9 +33,53 @@ public class GateOperation {
 
     public void applyTo(QuantumState state) {
         if (isOptimizedGate(gate.getName())) applyOptimized(state);
-        else {
-            gate.setUpdatedMatrix(gate.getMatrix().extendToMultiQubitGate(state.getNumQubits(), targetQubits));
-            state.applyGate(gate);
+        else applyGeneralGate(state);
+    }
+
+    private void applyGeneralGate(QuantumState state) {
+        Matrix gateMatrix = gate.getMatrix();
+        Complex[] amplitudes = state.getAmplitudes();
+        Complex[] newAmplitudes = new Complex[amplitudes.length];
+        Arrays.fill(newAmplitudes, Complex.ZERO);
+        if (gate.getNumQubits() == 1) {
+            int targetQubit = targetQubits[0];
+            applySingleQubitMatrix(amplitudes, newAmplitudes, gateMatrix, targetQubit);
+        } else applyMultiQubitMatrix(amplitudes, newAmplitudes, gateMatrix, targetQubits);
+        System.arraycopy(newAmplitudes, 0, amplitudes, 0, amplitudes.length);
+    }
+
+    private void applySingleQubitMatrix(Complex[] amplitudes, Complex[] newAmplitudes, Matrix gate, int targetQubit) {
+        Complex g00 = gate.get(0, 0);
+        Complex g01 = gate.get(0, 1);
+        Complex g10 = gate.get(1, 0);
+        Complex g11 = gate.get(1, 1);
+        int mask = 1 << targetQubit;
+        for (int i = 0; i < amplitudes.length; i += 2 * mask) {
+            for (int j = 0; j < mask; j++) {
+                Complex a0 = amplitudes[i + j];
+                Complex a1 = amplitudes[i + j + mask];
+                newAmplitudes[i + j] = g00.multiply(a0).add(g01.multiply(a1));
+                newAmplitudes[i + j + mask] = g10.multiply(a0).add(g11.multiply(a1));
+            }
+        }
+    }
+
+    private void applyMultiQubitMatrix(Complex[] amplitudes, Complex[] newAmplitudes, Matrix gate, int[] targets) {
+        int gateSize = gate.getRows();
+        for (int i=0; i < amplitudes.length; i++) {
+            if (amplitudes[i].magnitude() < Complex.EPSILON) continue;
+            int targetBits = 0;
+            for (int k=0; k < targets.length; k++) if ((i & (1 << targets[k])) != 0) targetBits |= (1 << k);
+            for (int gateRow=0; gateRow < gateSize; gateRow++) {
+                Complex matrixElement = gate.get(gateRow, targetBits);
+                if (matrixElement.magnitude() < Complex.EPSILON) continue;
+                int j = i;
+                for (int k=0; k < targets.length; k++) {
+                    j &= ~(1 << targets[k]);
+                    if ((gateRow & (1 << k)) != 0) j |= (1 << targets[k]);
+                }
+                newAmplitudes[j] = newAmplitudes[j].add(matrixElement.multiply(amplitudes[i]));
+            }
         }
     }
 
