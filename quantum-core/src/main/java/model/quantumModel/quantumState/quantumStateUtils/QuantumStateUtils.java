@@ -15,6 +15,7 @@
 package model.quantumModel.quantumState.quantumStateUtils;
 
 import model.mathModel.Complex;
+import model.mathModel.Matrix;
 import model.quantumModel.quantumGate.QuantumGate;
 import model.quantumModel.quantumState.QuantumState;
 import java.util.*;
@@ -51,6 +52,18 @@ public class QuantumStateUtils {
     public static void validateNormalization(Complex[] amplitudes) {
         if (!isNormalized(amplitudes)) {throw new IllegalArgumentException("State is not normalized");}
     }
+
+    public static Matrix findDensityMatrix(Complex[] amplitudes) {
+        int dimension = amplitudes.length;
+        Matrix densityData = new Matrix(dimension, dimension);
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                densityData.set(i, j, amplitudes[i].multiply(amplitudes[j].conjugate()));
+            }
+        }
+        return densityData;
+    }
+
 
     public static Complex[] createZeroState(int numQubits) {
         int size = 1 << numQubits;
@@ -107,7 +120,7 @@ public class QuantumStateUtils {
     }
 
     public static Complex[] applyGate(QuantumState state, QuantumGate gate) {
-        if (gate.getNumQubits() != state.getNumQubits()) throw new IllegalArgumentException("State and gate number of qubits must be equal");
+        if (gate.getMatrix().getRows() != state.getNumQubits()) throw new IllegalArgumentException("State and gate number of qubits must be equal");
         return gate.getMatrix().multiplyVector(state.getAmplitudes());
     }
 
