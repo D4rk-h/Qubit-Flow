@@ -31,10 +31,7 @@ public class GateOperation {
 
     public void applyTo(QuantumState state) {
         if (isOptimizedGate(gate.getName())) applyOptimized(state);
-        else {
-            gate.setUpdatedMatrix(gate.getMatrix().extendToMultiQubitGate(state.getNumQubits(), targetQubits));
-            state.applyGate(gate);
-        }
+        else state.applyGate(gate); // todo: needs functionality fix for those unrecognized as optimized gates
     }
 
     private boolean isOptimizedGate(String gateName) {
