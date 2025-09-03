@@ -9,7 +9,7 @@ Qubit Flow provides a complete backend solution for quantum circuit design, simu
 ## Features
 
 ### Core Capabilities
-- **Quantum Circuit Simulation** - 1-10 qubit systems with state vector simulation
+- **Quantum Circuit Simulation** - 1-10 (10 is default but it can handle up to 16 with no performance problems) qubit systems with state vector simulation
 - **Comprehensive Gate Library** - Single/multi-qubit gates with controlled variants
 - **Circuit Management** - Layer-optimized construction with undo/redo support
 - **Measurement Operations** - Probabilistic measurements with result tracking
